@@ -1,35 +1,29 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
 
 <template>
   <div class="main-container">
     <div class="box"></div>
     <div class="pic"></div>
-    <span class="text">ForSpeak</span><span class="text-2">Головна </span
-    ><span class="text-3">Мої мови</span><span class="text-4">Профіль</span
-    ><span class="text-5">Навчання</span>
+    <span class="title">ForSpeak</span>
+    <nav class="navs">
+      <RouterLink class="nav main" to="/">Головна</RouterLink>
+      <RouterLink class="nav my-langs" to="/my-languages">Мої мови</RouterLink>
+      <RouterLink class="nav education" to="/">Навчання</RouterLink>
+      <RouterLink class="nav profile" to="/">Профіль</RouterLink>
+    </nav>
   </div>
 </template>
 
 <style scoped>
 .main-container {
-  overflow: hidden;
-}
-
-.main-container,
-.main-container * {
-  box-sizing: border-box;
-}
-
-.main-container {
-  position: relative;
   width: 100%;
-  height: 44px;
-  margin: 0 auto;
 }
 
 .box {
   position: absolute;
-  width: 567px;
+  width: 100%;
   height: 44px;
   top: 0;
   left: 0;
@@ -48,7 +42,7 @@
   z-index: 1;
   overflow: hidden;
 }
-.text {
+.title {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -68,7 +62,12 @@
   letter-spacing: 1.6px;
   z-index: 2;
 }
-.text-2 {
+
+.nav {
+  text-decoration: none;
+}
+
+.main {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -87,7 +86,7 @@
   white-space: nowrap;
   z-index: 3;
 }
-.text-3 {
+.my-langs {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -106,7 +105,7 @@
   white-space: nowrap;
   z-index: 4;
 }
-.text-4 {
+.profile {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -125,7 +124,7 @@
   white-space: nowrap;
   z-index: 5;
 }
-.text-5 {
+.education {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;

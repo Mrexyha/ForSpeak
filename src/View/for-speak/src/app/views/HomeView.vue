@@ -1,11 +1,13 @@
-<script setup lang="ts">
-import NavigationBar from '../modules/main/components/navigation-bar/NavigationBar.vue'
-import TestComponent from '../modules/main/components/TestComponent.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <main>
-    <NavigationBar />
-    <TestComponent />
+    <h1>Home page</h1>
   </main>
 </template>
+
+<style scoped>
+h1 {
+  margin-top: 100px;
+}
+</style>

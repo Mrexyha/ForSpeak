@@ -1,4 +1,4 @@
-import MainComponent from '../MainComponent.vue'
+import MainComponent from '../components/MainComponent.vue'
 
 describe('HelloWorld', () => {
   it('playground', () => {
