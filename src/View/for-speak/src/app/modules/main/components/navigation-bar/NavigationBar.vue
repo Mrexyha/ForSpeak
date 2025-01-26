@@ -11,30 +11,22 @@
 </template>
 
 <style scoped>
-:root {
-  --default-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
-    'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei UI',
-    'Microsoft Yahei', 'Source Han Sans CN', sans-serif;
-}
 .main-container {
   overflow: hidden;
 }
+
 .main-container,
 .main-container * {
   box-sizing: border-box;
 }
-input,
-select,
-textarea,
-button {
-  outline: 0;
-}
+
 .main-container {
   position: relative;
-  width: 567px;
+  width: 100%;
   height: 44px;
   margin: 0 auto;
 }
+
 .box {
   position: absolute;
   width: 567px;
@@ -51,7 +43,7 @@ button {
   height: 24px;
   top: 10px;
   left: 511px;
-  background: url('../assets/images/385be879-46a8-4777-b61c-19f3346384df.png') no-repeat center;
+  background: url('../../../../../assets/user-profile.svg') no-repeat center;
   background-size: cover;
   z-index: 1;
   overflow: hidden;
