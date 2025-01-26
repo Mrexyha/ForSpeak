@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import MainComponent from './components/MainComponent.vue'
+import MainComponent from './modules/main/components/MainComponent.vue'
 </script>
 
 <template>
