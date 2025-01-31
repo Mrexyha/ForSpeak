@@ -1,9 +1,6 @@
-<script setup lang="ts">
-// import NavigationBar from '../modules/main/components/navigation-bar/NavigationBar.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <!-- <NavigationBar /> -->
   <div class="langs-page">
     <h1>This is an MY LANGUAGES page</h1>
   </div>
