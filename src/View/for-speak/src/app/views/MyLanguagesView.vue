@@ -12,7 +12,7 @@
 }
 
 @media (min-width: 1024px) {
-  .my-langs {
+  .langs-page {
     min-height: 100vh;
     display: flex;
     align-items: center;
