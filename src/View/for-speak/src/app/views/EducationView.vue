@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import MainLayout from '../layouts/MainLayout.vue'
+import PageLayout from '../layouts/PageLayout.vue'
 </script>
 
 <template>
-  <MainLayout>
+  <PageLayout>
     <div class="education-page">
       <h1>This is an EDUCATION page</h1>
     </div>
-  </MainLayout>
+  </PageLayout>
 </template>
 
 <style>
