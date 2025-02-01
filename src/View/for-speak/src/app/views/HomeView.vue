@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import MainLayout from '../layouts/MainLayout.vue'
+import SearchLang from '../components/SearchLang.vue'
 </script>
 
 <template>
   <MainLayout>
     <h1>ForSpeak</h1>
+    <SearchLang />
     <img class="main-img" src="../../assets/main.jpeg" alt="main page" />
   </MainLayout>
 </template>
 
 <style scoped>
 h1 {
-  margin: 12% 17%;
+  margin: 15% 17%;
   color: #032a5e;
   font-family:
     Istok Web,

@@ -4,14 +4,14 @@ import MainLayout from '../layouts/MainLayout.vue'
 
 <template>
   <MainLayout>
-    <div class="langs-page">
-      <h1>This is an MY LANGUAGES page</h1>
+    <div class="education-page">
+      <h1>This is an EDUCATION page</h1>
     </div>
   </MainLayout>
 </template>
 
 <style>
-.langs-page {
+.education-page {
   margin-top: 100px;
 }
 </style>
