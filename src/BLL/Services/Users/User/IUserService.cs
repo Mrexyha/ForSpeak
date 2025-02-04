@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace BLL.Services.Users.User
 {
-    internal interface IUserService
+    public interface IUserService
     {
         Task<UserModel> SignUp(UserModel user);
+        Task<UserSettingsModel> SignIn(UserModel user);
+        Task<bool> ChangeSettings(UserSettingsModel settings);
     }
 }
