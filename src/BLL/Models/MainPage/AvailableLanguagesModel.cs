@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.MainPage
 {
-    internal class AvailableLanguagesModel
+    public class AvailableLanguagesModel
     {
         public string Title { get; set; }
         public string ImagePath { get; set; }
