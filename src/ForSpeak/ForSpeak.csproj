@@ -23,4 +23,9 @@
     <ProjectReference Include="..\BLL\BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+    <Folder Include="Integrations\" />
+  </ItemGroup>
+
 </Project>

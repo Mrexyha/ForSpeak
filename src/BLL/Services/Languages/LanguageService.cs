@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL.Services.MainPage
+namespace BLL.Services.Languages
 {
-    public class MainPageService:IMainPageService
+    public class LanguageService:ILanguageService
     {
-
-        public MainPageService()
+        public LanguageService()
         {
             
         }

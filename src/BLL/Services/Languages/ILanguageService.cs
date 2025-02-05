@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Repositories.MainPage
+namespace BLL.Services.Languages
 {
-    public interface IMainPageRepository:IDisposable
+    internal interface ILanguageService
     {
-
     }
 }
