@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToEducation = () => {
+  router.push('/education')
+}
+</script>
 
 <template>
   <div class="my-lang-container">
@@ -11,7 +19,7 @@
       </div>
     </div>
     <div class="btns-container">
-      <button class="continue-btn">Продовжити</button>
+      <button class="continue-btn" @click="goToEducation">Продовжити</button>
       <button class="finish-btn">Завершити</button>
     </div>
   </div>

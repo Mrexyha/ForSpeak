@@ -5,7 +5,7 @@ import PageLayout from '../layouts/PageLayout.vue'
 <template>
   <PageLayout>
     <div class="langs-page">
-      <h1>This is an MY LANGUAGES page</h1>
+      <h1>This is an PROFILE page</h1>
     </div>
   </PageLayout>
 </template>

@@ -9,7 +9,7 @@ import LanguageCardMain from '../components/LanguageCardMain.vue'
     <div class="header">
       <h1>ForSpeak</h1>
       <SearchLang />
-      <img class="main-img" src="../../assets/main.jpeg" alt="main page" />
+      <img class="main-img" src="../../assets/main/main.jpeg" alt="main page" />
     </div>
     <div class="content">
       <LanguageCardMain />

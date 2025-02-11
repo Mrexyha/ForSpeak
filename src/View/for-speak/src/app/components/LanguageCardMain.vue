@@ -2,7 +2,7 @@
 
 <template>
   <div class="lang-container">
-    <img class="lang-pic" src="../../assets/UK-main.jpg" alt="United Kingdom" />
+    <img class="lang-pic" src="../../assets/main/UK-main.jpg" alt="United Kingdom" />
     <div class="lang-content">
       <h1 class="title">Англійська мова</h1>
       <div class="flag"></div>
@@ -51,7 +51,7 @@
 }
 
 .flag {
-  background: url('../../assets/flag-united-kingdom.png') no-repeat center;
+  background: url('../../assets/general/flag-united-kingdom.png') no-repeat center;
   background-size: cover;
   width: 42px;
   height: 42px;
