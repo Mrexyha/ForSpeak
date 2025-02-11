@@ -1,16 +1,30 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { defineProps, computed } from 'vue'
+
+const props = defineProps<{
+  language: {
+    id: number
+    name: string
+    description: string
+    image: string
+    flag: string
+  }
+  reverse?: boolean
+}>()
+
+const containerClass = computed(() => ({
+  'lang-container': true,
+  reverse: props.reverse,
+}))
+</script>
 
 <template>
-  <div class="lang-container">
-    <img class="lang-pic" src="../../assets/main/UK-main.jpg" alt="United Kingdom" />
+  <div :class="containerClass">
+    <img class="lang-pic" :src="language.image" :alt="language.name" />
     <div class="lang-content">
-      <h1 class="title">Англійська мова</h1>
-      <div class="flag"></div>
-      <p class="description">
-        Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у
-        світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент
-        для подорожей, саморозвитку та успіху в багатьох сферах життя.
-      </p>
+      <h1 class="title">{{ language.name }}</h1>
+      <div class="flag" :style="{ backgroundImage: `url(${language.flag})` }"></div>
+      <p class="description">{{ language.description }}</p>
       <div class="btn-container">
         <span class="text">Почати вивчення</span>
         <div class="group"></div>
@@ -26,6 +40,10 @@
   justify-content: center;
   width: 100%;
   margin-bottom: 36px;
+}
+
+.reverse {
+  flex-direction: row-reverse;
 }
 
 .lang-pic {
@@ -51,12 +69,10 @@
 }
 
 .flag {
-  background: url('../../assets/general/flag-united-kingdom.png') no-repeat center;
-  background-size: cover;
   width: 42px;
   height: 42px;
-  margin-bottom: 36px;
-  margin-top: 24px;
+  background-size: cover;
+  margin: 24px 0 36px;
 }
 
 .description {
@@ -73,8 +89,7 @@
   position: relative;
   width: 200px;
   height: 32px;
-  margin: 0 auto;
-  font-size: 0px;
+  font-size: 0;
   border-radius: 12px;
 }
 .text {
