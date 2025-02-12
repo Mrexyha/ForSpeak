@@ -1,14 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps({
+  title: String,
+  difficulty: String,
+})
+</script>
 
 <template>
   <div class="main-lesson-container">
     <div class="points">+5</div>
     <div class="card">
-      <h1 class="main-lesson-title">Сім'я / Family</h1>
+      <h1 class="main-lesson-title">{{ title }}</h1>
       <img src="../../assets/lessons/family.png" alt="family photo" class="main-lesson-photo" />
-      <div class="complexity">
-        <div class="complexity-color"></div>
-        <div class="complexity-label">Elementary</div>
+      <div class="difficulty">
+        <div class="difficulty-color"></div>
+        <div class="difficulty-label">{{ difficulty }}</div>
       </div>
     </div>
   </div>
@@ -76,21 +81,21 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.complexity {
+.difficulty {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 }
 
-.complexity-color {
+.difficulty-color {
   background-color: #4ed536;
   width: 24px;
   height: 24px;
   border-radius: 50%;
 }
 
-.complexity-label {
+.difficulty-label {
   font-size: 14px;
   color: #023e8a;
   font-weight: 500;

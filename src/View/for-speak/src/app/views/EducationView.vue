@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import PageLayout from '../layouts/PageLayout.vue'
 import LessonCard from '../components/LessonCard.vue'
+
+const lessons = [
+  { id: 1, title: "Сім'я / Family", difficulty: 'Elementary' },
+  { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate' },
+  { id: 3, title: 'Робота / Work', difficulty: 'Advanced' },
+  { id: 4, title: 'Урок 4', difficulty: 'Elementary' },
+  { id: 5, title: 'Урок 5', difficulty: 'Intermediate' },
+]
 </script>
 
 <template>
@@ -31,11 +39,12 @@ import LessonCard from '../components/LessonCard.vue'
       </div>
 
       <div class="cards-container">
-        <LessonCard />
-        <LessonCard />
-        <LessonCard />
-        <LessonCard />
-        <LessonCard />
+        <LessonCard
+          v-for="lesson in lessons"
+          :key="lesson.id"
+          :title="lesson.title"
+          :difficulty="lesson.difficulty"
+        />
       </div>
     </div>
   </PageLayout>
