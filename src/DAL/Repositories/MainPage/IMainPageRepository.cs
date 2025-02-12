@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories.MainPage
 {
-    internal interface IMainPageRepository:IDisposable
+    public interface IMainPageRepository:IDisposable
     {
 
     }

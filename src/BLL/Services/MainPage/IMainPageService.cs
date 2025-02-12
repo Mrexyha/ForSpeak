@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Services.MainPage
 {
-    internal interface IMainPageService
+    public interface IMainPageService
     {
         //Task<IEnumerable<LightSideAchievementModel>> GetAchievementsAsync();
         //Task<IEnumerable<FeedbackModel>> GetFeedbacksAsync();

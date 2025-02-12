@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Services.MainPage
 {
-    internal class MainPageService:IMainPageService
+    public class MainPageService:IMainPageService
     {
 
         public MainPageService()

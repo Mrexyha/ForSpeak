@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavigationBar from '../components/NavigationBar.vue'
 import FooterBar from '../components/FooterBar.vue'
+import GoUpButton from '../components/GoUpButton.vue'
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import FooterBar from '../components/FooterBar.vue'
     <div class="content">
       <slot />
     </div>
+    <GoUpButton />
     <FooterBar />
   </div>
 </template>

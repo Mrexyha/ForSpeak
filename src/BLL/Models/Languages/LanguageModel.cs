@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL.Models.MainPage
+namespace BLL.Models.Languages
 {
-    internal class AvailableLanguagesModel
+    public class LanguageModel
     {
         public string Title { get; set; }
         public string ImagePath { get; set; }
         public string Description { get; set; }
+        public Boolean IsAvailable { get; set; }
 
-        public AvailableLanguagesModel()
+        public LanguageModel()
         {
             
         }

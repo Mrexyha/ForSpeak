@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 const route = useRoute()
 const isActive = (path: string) => route.path === path
 
-const isNotHomePage = route.path !== '/'
+const isHomePage = route.path === '/'
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const isNotHomePage = route.path !== '/'
       <RouterLink class="nav" :class="{ active: isActive('/education') }" to="/education">
         Навчання
       </RouterLink>
-      <div :class="['pic', { 'right-corner': isNotHomePage }]">
+      <div :class="['pic', { 'right-corner': !isHomePage }]">
         <RouterLink class="nav profile" to="/profile"></RouterLink>
       </div>
     </nav>
@@ -34,7 +34,7 @@ const isNotHomePage = route.path !== '/'
 .pic {
   width: 36px;
   height: 36px;
-  background: url('../../assets/user-profile.svg') no-repeat center;
+  background: url('../../assets/general/user-profile.svg') no-repeat center;
   background-size: cover;
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
