@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue'
+import { useRouter } from 'vue-router'
 import StepOne from './StepOne.vue'
 import StepTwo from './StepTwo.vue'
+
+const router = useRouter()
 
 const step = ref(1)
 const formData = ref({
@@ -46,6 +49,7 @@ const submitForm = (data: {
         @previous="previousStep"
         @submit="submitForm"
       />
+      <p class="switch-form" @click="router.push('/login')">Уже є акаунт? <span>Увійти</span></p>
     </div>
   </div>
 </template>
@@ -67,5 +71,17 @@ const submitForm = (data: {
   text-align: center;
   max-width: 600px;
   width: 100%;
+}
+
+.switch-form {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.switch-form span {
+  color: #007bff;
+  text-decoration: underline;
 }
 </style>
