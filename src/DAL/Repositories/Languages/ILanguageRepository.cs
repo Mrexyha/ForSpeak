@@ -15,6 +15,8 @@ namespace DAL.Repositories.Languages
         //void Update(Language language);
         //void Delete(int id);
 
-        Task<List<string>> GetAllLanguagesAsync();
+        Task<List<Language>> GetAllLanguagesAsync();
+        Task<Language> GetByIdAsync(int id);
+        Task AddLanguageAsync(Language language);
     }
 }

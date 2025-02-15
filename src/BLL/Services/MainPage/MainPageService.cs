@@ -1,4 +1,5 @@
-﻿using DAL.Repositories.Languages;
+﻿using DAL.Entities.Languages;
+using DAL.Repositories.Languages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,9 +14,15 @@ namespace BLL.Services.MainPage
             _languageRepository = languageRepository;
         }
 
-        public async Task<List<string>> GetAllLanguagesAsync()
+        public async Task<List<Language>> GetAvailableLanguagesAsync()
         {
             return await _languageRepository.GetAllLanguagesAsync();
         }
+
+        public async Task<Language> GetLanguageByIdAsync(int id)
+        {
+            return await _languageRepository.GetByIdAsync(id);
+        }
+
     }
 }

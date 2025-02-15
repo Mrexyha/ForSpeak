@@ -17,6 +17,38 @@ namespace DAL
 
         public DbSet<Language> Languages { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Language>().HasData(
+                new Language
+                {
+                    Id = 1,
+                    Name = "Англійська",
+                    FlagImage = "uk_flag.png",
+                    CountryImage = "uk_flag.png",
+                    Description = "Description UK",
+                },
+                new Language
+                {
+                    Id = 2,
+                    Name = "Французька",
+                    FlagImage = "fr_flag.png",
+                    CountryImage = "fr_flag.png",
+                    Description = "Description FR",
+                },
+                new Language
+                {
+                    Id = 3,
+                    Name = "Німецька",
+                    FlagImage = "de_flag.png",
+                    CountryImage = "de_flag.png",
+                    Description = "Description DE",
+                }
+            );
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

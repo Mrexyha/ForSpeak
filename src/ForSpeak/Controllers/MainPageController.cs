@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Services.MainPage;
+using DAL.Entities.Languages;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -21,8 +22,9 @@ namespace ForSpeak.Controllers
         [HttpGet("get-all-languages")]
         public async Task<IActionResult> GetAllLanguages()
         {
-            var languages = await _mainPageService.GetAllLanguagesAsync();
+            var languages = await _mainPageService.GetAvailableLanguagesAsync();
             return Ok(languages);
         }
+
     }
 }

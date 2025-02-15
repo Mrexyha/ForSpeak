@@ -1,4 +1,5 @@
-﻿using DAL.Repositories.Languages;
+﻿using DAL.Entities.Languages;
+using DAL.Repositories.Languages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,20 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<string>> GetAllLanguagesAsync()
+        public async Task<List<Language>> GetAllLanguagesAsync()
         {
-            return await _context.Languages.Select(l => l.Name).ToListAsync();
+            return await _context.Languages.ToListAsync();
+        }
+
+        public async Task<Language> GetByIdAsync(int id)
+        {
+            return await _context.Languages.FindAsync(id);
+        }
+
+        public async Task AddLanguageAsync(Language language)
+        {
+            _context.Languages.Add(language);
+            await _context.SaveChangesAsync();
         }
     }
 }

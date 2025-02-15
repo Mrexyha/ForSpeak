@@ -12,6 +12,8 @@ namespace DAL.Entities.Users
         public int Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public List<Language> Languages { get; set; }
+        public string PasswordHash { get; set; }
+
+        public List<UserLanguage> UserLanguages { get; set; }
     }
 }
