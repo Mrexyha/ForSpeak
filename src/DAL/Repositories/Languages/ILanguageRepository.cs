@@ -9,10 +9,12 @@ namespace DAL.Repositories.Languages
 {
     public interface ILanguageRepository
     {
-        Language GetById(int id);
-        List<Language> GetAll();
-        void Add(Language language);
-        void Update(Language language);
-        void Delete(int id);
+        //Language GetById(int id);
+        //List<Language> GetAll();
+        //void Add(Language language);
+        //void Update(Language language);
+        //void Delete(int id);
+
+        Task<List<string>> GetAllLanguagesAsync();
     }
 }

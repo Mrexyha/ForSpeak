@@ -12,6 +12,7 @@ namespace BLL.Services.MainPage
         //Task<IEnumerable<FeedbackModel>> GetFeedbacksAsync();
         //Task<IEnumerable<FeedbackModel>> GetTopTenFeedbacksAsync();
 
+        Task<List<string>> GetAllLanguagesAsync();
 
     }
 }
