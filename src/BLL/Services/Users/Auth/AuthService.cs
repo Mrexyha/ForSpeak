@@ -49,9 +49,14 @@ namespace BLL.Services.Users.Auth
         public async Task<string> Login(UserModel user)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
-            if (existingUser == null || !BCrypt.Net.BCrypt.Verify(user.PasswordHash, existingUser.PasswordHash))
+            if (existingUser == null)
             {
-                throw new Exception("Invalid credentials");
+                throw new UnauthorizedAccessException("User not found");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(user.PasswordHash, existingUser.PasswordHash))
+            {
+                throw new UnauthorizedAccessException("Invalid password");
             }
 
             var userModel = _mapper.Map<UserModel>(existingUser);
