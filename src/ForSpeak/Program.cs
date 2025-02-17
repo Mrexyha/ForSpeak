@@ -3,6 +3,10 @@ using DAL;
 using DAL.Repositories.Languages;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using DAL.Repositories.Users;
+using BLL.Services.Users.Auth;
+using BLL.Services.Users.JWT;
+using BLL.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,12 +17,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+builder.Services.AddScoped<IMainPageService, MainPageService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
-
-builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
-builder.Services.AddScoped<IMainPageService, MainPageService>();
 
 var app = builder.Build();
 

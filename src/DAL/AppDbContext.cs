@@ -1,4 +1,5 @@
 ﻿using DAL.Entities.Languages;
+using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,16 @@ namespace DAL
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Language> Languages { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<LanguageEntity> Languages { get; set; }
+        public DbSet<UserLanguage> UserLanguages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Language>().HasData(
-                new Language
+            modelBuilder.Entity<LanguageEntity>().HasData(
+                new LanguageEntity
                 {
                     Id = 1,
                     Name = "Англійська",
@@ -30,7 +33,7 @@ namespace DAL
                     CountryImage = "uk_flag.png",
                     Description = "Description UK",
                 },
-                new Language
+                new LanguageEntity
                 {
                     Id = 2,
                     Name = "Французька",
@@ -38,7 +41,7 @@ namespace DAL
                     CountryImage = "fr_flag.png",
                     Description = "Description FR",
                 },
-                new Language
+                new LanguageEntity
                 {
                     Id = 3,
                     Name = "Німецька",

@@ -14,12 +14,12 @@ namespace BLL.Services.MainPage
             _languageRepository = languageRepository;
         }
 
-        public async Task<List<Language>> GetAvailableLanguagesAsync()
+        public async Task<List<LanguageEntity>> GetAvailableLanguagesAsync()
         {
             return await _languageRepository.GetAllLanguagesAsync();
         }
 
-        public async Task<Language> GetLanguageByIdAsync(int id)
+        public async Task<LanguageEntity> GetLanguageByIdAsync(int id)
         {
             return await _languageRepository.GetByIdAsync(id);
         }

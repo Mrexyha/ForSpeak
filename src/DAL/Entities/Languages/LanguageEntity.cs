@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities.Languages
 {
-    public class Language
+    public class LanguageEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }

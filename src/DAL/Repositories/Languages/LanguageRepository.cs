@@ -17,17 +17,17 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<Language>> GetAllLanguagesAsync()
+        public async Task<List<LanguageEntity>> GetAllLanguagesAsync()
         {
             return await _context.Languages.ToListAsync();
         }
 
-        public async Task<Language> GetByIdAsync(int id)
+        public async Task<LanguageEntity> GetByIdAsync(int id)
         {
             return await _context.Languages.FindAsync(id);
         }
 
-        public async Task AddLanguageAsync(Language language)
+        public async Task AddLanguageAsync(LanguageEntity language)
         {
             _context.Languages.Add(language);
             await _context.SaveChangesAsync();

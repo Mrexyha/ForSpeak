@@ -3,6 +3,7 @@ import { reactive, defineEmits } from 'vue'
 
 const form = reactive({
   email: '',
+  username: '',
   password: '',
   confirmPassword: '',
 })
@@ -21,6 +22,7 @@ const nextStep = () => {
 <template>
   <div class="step-one">
     <input type="email" v-model="form.email" placeholder="Електронна пошта" required />
+    <input type="text" v-model="form.username" placeholder="Користувацьке ім'я" required />
     <input type="password" v-model="form.password" placeholder="Пароль" required />
     <input
       type="password"

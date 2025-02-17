@@ -1,20 +1,21 @@
-﻿using DAL.Entities.Users;
+﻿using BLL.Models.User;
+using DAL.Entities.Languages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Entities.Languages
+namespace BLL.Models.Languages
 {
-    public class UserLanguage
+    public class UserLanguageModel
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
+        public UserModel User { get; set; }
 
         public int LanguageId { get; set; }
-        public Language Language { get; set; }
+        public LanguageEntity Language { get; set; }
 
         public double Progress { get; set; }
     }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities.Lessons
 {
-    public class SpeechRecognition
+    public class SpeechRecognitionEntity
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
+        public UserEntity User { get; set; }
 
         public string Phrase { get; set; } 
         public double Accuracy { get; set; } 

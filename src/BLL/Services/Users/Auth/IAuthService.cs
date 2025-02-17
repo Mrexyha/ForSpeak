@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using BLL.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace BLL.Services.Users.Auth
 {
-    public class AuthPlatformService
+    public interface IAuthService
     {
-        private readonly IMapper _mapper;
-
-        public AuthPlatformService() { }
+        Task<string> Register(UserModel user);
+        Task<string> Login(UserModel user);
     }
 }
