@@ -59,6 +59,7 @@ const filteredLanguages = computed(() => {
       <div
         v-for="(language, index) in filteredLanguages"
         :key="language.id"
+        :language="language"
         :class="{ 'reverse-card': index % 2 !== 0 }"
       >
         <LanguageCardMain :language="language" />

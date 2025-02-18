@@ -12,7 +12,7 @@ import LanguageCardMyLangs from '../components/LanguageCardMyLangs.vue'
   </PageLayout>
 </template>
 
-<style>
+<style scoped>
 .langs-page {
   margin-top: 100px;
   margin-bottom: 64px;
