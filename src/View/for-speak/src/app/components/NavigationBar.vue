@@ -14,7 +14,11 @@ const isHomePage = route.path === '/'
       <RouterLink class="nav" :class="{ active: isActive('/my-languages') }" to="/my-languages">
         Мої мови
       </RouterLink>
-      <RouterLink class="nav" :class="{ active: isActive('/education') }" to="/education">
+      <RouterLink
+        class="nav"
+        :class="{ active: isActive('/education/english') }"
+        to="/education/english"
+      >
         Навчання
       </RouterLink>
       <div :class="['pic', { 'right-corner': !isHomePage }]">
