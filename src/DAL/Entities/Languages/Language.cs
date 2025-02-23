@@ -1,13 +1,8 @@
 ﻿using DAL.Entities.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Entities.Languages
 {
-    public class Language
+    public class Language : BaseEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
