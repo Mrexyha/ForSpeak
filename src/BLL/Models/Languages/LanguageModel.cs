@@ -8,14 +8,11 @@ namespace BLL.Models.Languages
 {
     public class LanguageModel
     {
-        public string Title { get; set; }
-        public string ImagePath { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string FlagImage { get; set; }
+        public string CountryImage { get; set; }
         public string Description { get; set; }
-        public Boolean IsAvailable { get; set; }
 
-        public LanguageModel()
-        {
-            
-        }
     }
 }

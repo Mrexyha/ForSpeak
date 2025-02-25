@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using BLL.Services.MainPage;
+using DAL.Entities.Languages;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ForSpeak.Controllers
 {
@@ -7,9 +10,21 @@ namespace ForSpeak.Controllers
     [ApiController]
     public class MainPageController : ControllerBase
     {
-        public MainPageController()
+        private readonly IMainPageService _mainPageService;
+        private readonly IMapper _mapper;
+
+        public MainPageController(IMainPageService mainPageService, IMapper mapper)
         {
-            
+            _mainPageService = mainPageService;
+            _mapper = mapper;
         }
+
+        [HttpGet("get-all-languages")]
+        public async Task<IActionResult> GetAllLanguages()
+        {
+            var languages = await _mainPageService.GetAvailableLanguagesAsync();
+            return Ok(languages);
+        }
+
     }
 }

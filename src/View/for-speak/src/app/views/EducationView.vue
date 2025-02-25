@@ -50,7 +50,7 @@ const lessons = [
   </PageLayout>
 </template>
 
-<style>
+<style scoped>
 .education-page {
   margin-top: 100px;
 }

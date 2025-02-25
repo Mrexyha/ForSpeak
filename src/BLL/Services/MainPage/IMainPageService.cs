@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Entities.Languages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ namespace BLL.Services.MainPage
         //Task<IEnumerable<FeedbackModel>> GetFeedbacksAsync();
         //Task<IEnumerable<FeedbackModel>> GetTopTenFeedbacksAsync();
 
+        Task<List<LanguageEntity>> GetAvailableLanguagesAsync();
+        Task<LanguageEntity> GetLanguageByIdAsync(int id);
 
     }
 }
