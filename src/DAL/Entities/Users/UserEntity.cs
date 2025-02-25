@@ -1,4 +1,5 @@
 ﻿using DAL.Entities.Languages;
+using DAL.Entities.Relations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities.Users
 {
-    public class UserEntity
+    public class UserEntity : BaseEntity
     {
-        public int Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
@@ -20,5 +20,8 @@ namespace DAL.Entities.Users
         public DateTime DateOfBirth { get; set; }
         public List<string> SelectedLanguages { get; set; }
         public List<UserLanguage> UserLanguages { get; set; }
+
+        public List<LanguageEntity> Languages { get; set; }
+        public UsersToLessons UsersToLessons { get; set; }
     }
 }
