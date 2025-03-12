@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import PageLayout from '../../layouts/PageLayout.vue'
-import SpeakingTask from '@/app/components/Tasks/SpeakingTask.vue'
-import GoToLessonButton from '@/app/components/GoToLessonButton.vue'
+import VocabularyTask from '@/app/components/Tasks/VocabularyTask.vue'
 import { defineProps } from 'vue'
+import GoToLessonButton from '@/app/components/GoToLessonButton.vue'
 
 interface Lesson {
   id: number
@@ -17,7 +17,7 @@ defineProps<{ lesson: Lesson }>()
 <template>
   <PageLayout>
     <GoToLessonButton />
-    <SpeakingTask />
+    <VocabularyTask :lesson="lesson" />
   </PageLayout>
 </template>
 

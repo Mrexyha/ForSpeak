@@ -33,6 +33,9 @@ const lesson = ref<Lesson>(lessons.find((l) => l.id === parseInt(lessonId)) || l
         <router-link :to="`/education/english/${lesson.id}/theory`">
           <button class="task-button">📖 Теорія</button>
         </router-link>
+        <router-link :to="`/education/english/${lesson.id}/vocabulary`">
+          <button class="task-button">📔 Словник</button>
+        </router-link>
         <router-link :to="`/education/english/${lesson.id}/quiz`">
           <button class="task-button">📝 Квіз</button>
         </router-link>

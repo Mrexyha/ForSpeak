@@ -10,6 +10,7 @@ import TheoryTaskView from '../views/TaskViews/TheoryTaskView.vue'
 import QuizTaskView from '../views/TaskViews/QuizTaskView.vue'
 import ReadingTaskView from '../views/TaskViews/ReadingTaskView.vue'
 import SpeakingTaskView from '../views/TaskViews/SpeakingTaskView.vue'
+import VocabularyTaskView from '../views/TaskViews/VocabularyTaskView.vue'
 
 const lessons = [
   {
@@ -61,6 +62,12 @@ const router = createRouter({
       path: '/education/english/:id/theory',
       name: 'theory',
       component: TheoryTaskView,
+      props: getLessonProps,
+    },
+    {
+      path: '/education/english/:id/vocabulary',
+      name: 'vocabulary',
+      component: VocabularyTaskView,
       props: getLessonProps,
     },
     {
