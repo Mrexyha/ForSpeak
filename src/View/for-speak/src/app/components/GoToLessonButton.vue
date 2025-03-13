@@ -10,38 +10,42 @@ const goToLesson = (id: number) => {
 
 <template>
   <div class="btn-container">
-    <button @click="goToLesson(1)" class="nav-button">Назад 📚</button>
+    <button @click="goToLesson(1)" class="nav-button">⬅ Назад</button>
   </div>
 </template>
 
 <style scoped>
 .btn-container {
-  position: absolute;
-  margin-top: 100px;
-  margin-left: 20px;
+  position: fixed;
+  top: 100px;
+  left: 60px;
 }
 
 .nav-button {
-  background: linear-gradient(135deg, #4a90e2, #1e3a8a);
+  background: linear-gradient(135deg, #3b82f6, #1e40af);
   color: white;
   border: none;
-  padding: 15px 25px;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 8px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .nav-button:hover {
-  background: linear-gradient(135deg, #1e3a8a, #4a90e2);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
 }
 
 .nav-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(0.98);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 </style>
