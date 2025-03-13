@@ -6,6 +6,17 @@ import profileDefault from '../../assets/general/man-icon.png'
 
 const profileImage = ref(profileDefault)
 
+const studyTime = ref({
+  english: 12,
+  french: 8,
+})
+
+const recentActivities = ref([
+  { id: 1, text: 'Пройдено тест з англійської – 85%' },
+  { id: 2, text: 'Вивчено 10 нових слів у французькій' },
+  { id: 3, text: '30 хвилин навчання сьогодні' },
+])
+
 const handleImageUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
@@ -20,7 +31,6 @@ const handleImageUpload = (event: Event) => {
       <div class="profile-header">
         <h1>Особиста інформація</h1>
         <div class="profile-header-content">
-          <!-- <img src="../../assets/general/man-icon.png" alt="man photo" class="profile-image" /> -->
           <label for="file-upload" class="custom-file-upload">
             <input id="file-upload" type="file" @change="handleImageUpload" />
             <img :src="profileImage" alt="user photo" class="profile-image" />
@@ -34,9 +44,31 @@ const handleImageUpload = (event: Event) => {
           </div>
         </div>
       </div>
+
       <div class="statistics">
         <h2>Статистика навчання</h2>
         <ChartPoints />
+      </div>
+
+      <div class="study-time">
+        <h2>Час навчання</h2>
+        <ul>
+          <li>
+            Англійська: <span class="time">{{ studyTime.english }} год.</span>
+          </li>
+          <li>
+            Французька: <span class="time">{{ studyTime.french }} год.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="recent-activities">
+        <h2>Останні активності</h2>
+        <ul>
+          <li v-for="activity in recentActivities" :key="activity.id">
+            {{ activity.text }}
+          </li>
+        </ul>
       </div>
     </div>
   </PageLayout>
@@ -118,18 +150,59 @@ const handleImageUpload = (event: Event) => {
   color: #6c757d;
 }
 
-.statistics {
+.study-time {
   margin-top: 30px;
+  padding: 20px;
+  background: #e3f2fd;
+  border-radius: 10px;
   text-align: center;
+}
+
+.study-time h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.study-time ul {
+  list-style: none;
+  padding: 0;
+}
+
+.study-time li {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.time {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.recent-activities {
+  margin-top: 30px;
   padding: 20px;
   background: #f8f9fa;
   border-radius: 10px;
+  text-align: center;
 }
 
-.statistics h2 {
+.recent-activities h2 {
   font-size: 22px;
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-weight: 600;
+}
+
+.recent-activities ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recent-activities li {
+  font-size: 16px;
+  margin: 5px 0;
+  color: #555;
 }
 </style>
