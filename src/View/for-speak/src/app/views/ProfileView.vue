@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import PageLayout from '../layouts/PageLayout.vue'
 import ChartPoints from '../components/ChartPoints.vue'
 import profileDefault from '../../assets/general/man-icon.png'
 
+const router = useRouter()
 const profileImage = ref(profileDefault)
+const isEditing = ref(false)
+const isEditingPassword = ref(false)
+
+const userInfo = ref({
+  name: 'Json Smith',
+  email: 'testuseremail@gmail.com',
+  age: 27,
+  country: 'Україна',
+  registered: '10/04/2024',
+})
 
 const studyTime = ref({
   english: 12,
@@ -17,11 +29,35 @@ const recentActivities = ref([
   { id: 3, text: '30 хвилин навчання сьогодні' },
 ])
 
+const passwordData = ref({
+  currentPassword: '',
+  newPassword: '',
+  confirmNewPassword: '',
+})
+
 const handleImageUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     profileImage.value = URL.createObjectURL(file)
   }
+}
+
+const saveChanges = () => {
+  isEditing.value = false
+}
+
+const saveNewPassword = () => {
+  if (passwordData.value.newPassword !== passwordData.value.confirmNewPassword) {
+    alert('Новий пароль і підтвердження не співпадають!')
+    return
+  }
+  alert('Пароль успішно змінено!')
+  passwordData.value = { currentPassword: '', newPassword: '', confirmNewPassword: '' }
+  isEditingPassword.value = false
+}
+const logout = () => {
+  alert('Ви вийшли з профілю!')
+  router.push('/')
 }
 </script>
 
@@ -36,11 +72,25 @@ const handleImageUpload = (event: Event) => {
             <img :src="profileImage" alt="user photo" class="profile-image" />
           </label>
           <div class="profile-details">
-            <h2>Json Smith</h2>
-            <p class="email">testuseremail@gmail.com</p>
-            <p>27 років, Україна</p>
-            <p>Зареєстровано: <span class="date">10/04/2024</span></p>
-            <p class="languages">Мови, що вивчаються: <span>англійська, французька.</span></p>
+            <template v-if="isEditing">
+              <input v-model="userInfo.name" type="text" class="edit-input" />
+              <input v-model="userInfo.age" type="number" class="edit-input" />
+              <input v-model="userInfo.country" type="text" class="edit-input" />
+              <p class="email">{{ userInfo.email }}</p>
+              <p>
+                Зареєстровано: <span class="date">{{ userInfo.registered }}</span>
+              </p>
+              <button @click="saveChanges" class="save-btn">Зберегти</button>
+            </template>
+            <template v-else>
+              <h2>{{ userInfo.name }}</h2>
+              <p class="email">{{ userInfo.email }}</p>
+              <p>{{ userInfo.age }} років, {{ userInfo.country }}</p>
+              <p>
+                Зареєстровано: <span class="date">{{ userInfo.registered }}</span>
+              </p>
+              <button @click="isEditing = true" class="edit-btn">Редагувати</button>
+            </template>
           </div>
         </div>
       </div>
@@ -70,6 +120,28 @@ const handleImageUpload = (event: Event) => {
           </li>
         </ul>
       </div>
+
+      <div class="password-section">
+        <h2>Зміна пароля</h2>
+        <button v-if="!isEditingPassword" @click="isEditingPassword = true" class="edit-btn">
+          Змінити пароль
+        </button>
+        <div v-if="isEditingPassword" class="password-form">
+          <input
+            v-model="passwordData.currentPassword"
+            type="password"
+            placeholder="Поточний пароль"
+          />
+          <input v-model="passwordData.newPassword" type="password" placeholder="Новий пароль" />
+          <input
+            v-model="passwordData.confirmNewPassword"
+            type="password"
+            placeholder="Підтвердження пароля"
+          />
+          <button @click="saveNewPassword" class="save-btn">Зберегти</button>
+        </div>
+      </div>
+      <button @click="logout" class="logout-btn">Вийти з профілю</button>
     </div>
   </PageLayout>
 </template>
@@ -204,5 +276,64 @@ const handleImageUpload = (event: Event) => {
   font-size: 16px;
   margin: 5px 0;
   color: #555;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.edit-btn,
+.save-btn {
+  background: #007bff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.save-btn {
+  background: #28a745;
+}
+
+.password-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.password-form input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.logout-btn {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin: 20px auto;
+  padding: 10px 15px;
+  font-size: 16px;
+  text-align: center;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
 }
 </style>
