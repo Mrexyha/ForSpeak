@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250317180831_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,25 +57,25 @@ namespace DAL.Migrations
                         new
                         {
                             Id = 1,
-                            CountryImage = "..\\View\\for-speak\\src\\assets\\main\\UK-main.jpg",
-                            Description = "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
-                            FlagImage = "..\\View\\for-speak\\src\\assets\\main\\UK-flag.jpg",
+                            CountryImage = "uk_flag.png",
+                            Description = "Description UK",
+                            FlagImage = "uk_flag.png",
                             Name = "Англійська"
                         },
                         new
                         {
                             Id = 2,
-                            CountryImage = "View\\for-speak\\src\\assets\\main\\France-main.jpg",
-                            Description = "Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.",
-                            FlagImage = "View\\for-speak\\src\\assets\\main\\France-flag.jpg",
+                            CountryImage = "fr_flag.png",
+                            Description = "Description FR",
+                            FlagImage = "fr_flag.png",
                             Name = "Французька"
                         },
                         new
                         {
                             Id = 3,
-                            CountryImage = "View\\for-speak\\src\\assets\\main\\Germany-main.jpg",
-                            Description = "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
-                            FlagImage = "View\\for-speak\\src\\assets\\main\\Germany-flag.jpg",
+                            CountryImage = "de_flag.png",
+                            Description = "Description DE",
+                            FlagImage = "de_flag.png",
                             Name = "Німецька"
                         });
                 });

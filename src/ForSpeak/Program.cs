@@ -7,20 +7,19 @@ using DAL.Repositories.Users;
 using BLL.Services.Users.Auth;
 using BLL.Services.Users.JWT;
 using BLL.Mapping;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("AspNetCore_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
     .Build();
 
-builder.Services.AddDbContextFactory<AppDbContext>(options =>
-{
-    string connectionString = configuration.GetConnectionString("LocalConnection") ?? String.Empty;
-
-    options.UseSqlServer(connectionString);
-});
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
 
 builder.Services.AddControllers();
 

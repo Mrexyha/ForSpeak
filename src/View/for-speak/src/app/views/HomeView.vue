@@ -1,35 +1,50 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { fetchLanguages } from '../services/languageService'
 import MainLayout from '../layouts/MainLayout.vue'
 import LanguageCardMain from '../components/LanguageCardMain.vue'
 
+interface Language {
+  id: number
+  name: string
+  description: string
+  image: string
+  flag: string
+}
+
 const searchQuery = ref('')
-const languages = ref([
-  {
-    id: 1,
-    name: 'Англійська мова',
-    description:
-      "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
-    image: new URL('../../assets/main/UK-main.jpg', import.meta.url).href,
-    flag: new URL('../../assets/main/UK-flag.jpg', import.meta.url).href,
-  },
-  {
-    id: 2,
-    name: 'Німецька мова',
-    description:
-      "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
-    image: new URL('../../assets/main/German-main.jpg', import.meta.url).href,
-    flag: new URL('../../assets/main/Germany-flag.jpg', import.meta.url).href,
-  },
-  {
-    id: 3,
-    name: 'Французька мова',
-    description:
-      'Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.',
-    image: new URL('../../assets/main/France-main.jpg', import.meta.url).href,
-    flag: new URL('../../assets/main/France-flag.jpg', import.meta.url).href,
-  },
-])
+// const languages = ref([
+//   {
+//     id: 1,
+//     name: 'Англійська мова',
+//     description:
+//       "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
+//     image: new URL('../../assets/main/UK-main.jpg', import.meta.url).href,
+//     flag: new URL('../../assets/main/UK-flag.jpg', import.meta.url).href,
+//   },
+//   {
+//     id: 2,
+//     name: 'Німецька мова',
+//     description:
+//       "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
+//     image: new URL('../../assets/main/German-main.jpg', import.meta.url).href,
+//     flag: new URL('../../assets/main/Germany-flag.jpg', import.meta.url).href,
+//   },
+//   {
+//     id: 3,
+//     name: 'Французька мова',
+//     description:
+//       'Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.',
+//     image: new URL('../../assets/main/France-main.jpg', import.meta.url).href,
+//     flag: new URL('../../assets/main/France-flag.jpg', import.meta.url).href,
+//   },
+// ])
+
+const languages = ref<Language[]>([])
+
+onMounted(async () => {
+  languages.value = await fetchLanguages()
+})
 
 const filteredLanguages = computed(() => {
   return languages.value.filter((lang) =>
