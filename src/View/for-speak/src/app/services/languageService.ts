@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'https://localhost:7058/api/MainPage/get-all-languages'
+const API_URL = 'https://localhost:7058/api/Language/get-all-languages'
 
 export async function fetchLanguages() {
   try {

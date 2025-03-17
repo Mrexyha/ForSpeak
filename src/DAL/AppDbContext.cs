@@ -28,7 +28,7 @@ namespace DAL
                 new LanguageEntity
                 {
                     Id = 1,
-                    Name = "Англійська",
+                    Name = "Англійська мова",
                     FlagImage = "..\\View\\for-speak\\src\\assets\\main\\UK-flag.jpg",
                     CountryImage = "..\\View\\for-speak\\src\\assets\\main\\UK-main.jpg",
                     Description = "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
@@ -36,7 +36,7 @@ namespace DAL
                 new LanguageEntity
                 {
                     Id = 2,
-                    Name = "Французька",
+                    Name = "Французька мова",
                     FlagImage = "View\\for-speak\\src\\assets\\main\\France-flag.jpg",
                     CountryImage = "View\\for-speak\\src\\assets\\main\\France-main.jpg",
                     Description = "Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.",
@@ -44,7 +44,7 @@ namespace DAL
                 new LanguageEntity
                 {
                     Id = 3,
-                    Name = "Німецька",
+                    Name = "Німецька мова",
                     FlagImage = "View\\for-speak\\src\\assets\\main\\Germany-flag.jpg",
                     CountryImage = "View\\for-speak\\src\\assets\\main\\Germany-main.jpg",
                     Description = "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
