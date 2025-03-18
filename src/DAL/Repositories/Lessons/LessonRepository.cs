@@ -17,7 +17,7 @@ namespace DAL.Repositories.Lessons
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<LessonEntity>().Include(l => l.Tasks).ToListAsync();
+                return await context.Set<LessonEntity>().Include(l => l.Modules).ThenInclude(m => m.Tasks).ToListAsync();
             }
         }
 
@@ -25,7 +25,7 @@ namespace DAL.Repositories.Lessons
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<LessonEntity>().Include(l => l.Tasks).FirstOrDefaultAsync(x => x.Id == id);
+                return await context.Set<LessonEntity>().Include(l => l.Modules).ThenInclude(m => m.Tasks).FirstOrDefaultAsync(x => x.Id == id);
             }
         }
 
@@ -34,8 +34,9 @@ namespace DAL.Repositories.Lessons
             using (var context = _contextFactory.CreateDbContext())
             {
                 return await context.Set<LessonEntity>()
-                    .Where(l => l.UsersToLessons.UserId == userId)
-                    .SelectMany(l => l.Tasks)
+                    .Where(l => l.UsersToLessons.Any(utl => utl.UserId == userId))
+                    .SelectMany(l => l.Modules)
+                    .SelectMany(m => m.Tasks)
                     .SumAsync(t => (int)t.TaskLevel);
             }
         }

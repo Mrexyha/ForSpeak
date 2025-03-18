@@ -1,11 +1,8 @@
 ﻿using DAL.Entities.Enums;
-using DAL.Entities.Lessons;
-using DAL.Repositories.Lessons;
+using DAL.Entities.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories.Tasks
@@ -13,13 +10,15 @@ namespace DAL.Repositories.Tasks
     public class LangTaskRepository : BaseRepository<TaskLangEntity>, ILangTaskRepository
     {
         public LangTaskRepository(IDbContextFactory<AppDbContext> contextFactory)
-            : base(contextFactory) { }
+            : base(contextFactory)
+        {
+        }
 
         public async Task<IEnumerable<TaskLangEntity>> GetQuizTasks()
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Quiz).ToListAsync();
+                return await context.Set<TaskLangEntity>().Where(t => t.Type == LessonType.Quiz).ToListAsync();
             }
         }
 
@@ -27,7 +26,7 @@ namespace DAL.Repositories.Tasks
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Listening).ToListAsync();
+                return await context.Set<TaskLangEntity>().Where(t => t.Type == LessonType.Listening).ToListAsync();
             }
         }
 
@@ -35,7 +34,7 @@ namespace DAL.Repositories.Tasks
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Reading).ToListAsync();
+                return await context.Set<TaskLangEntity>() .Where(t => t.Type == LessonType.Reading).ToListAsync();
             }
         }
 
@@ -43,7 +42,7 @@ namespace DAL.Repositories.Tasks
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Theory).ToListAsync();
+                return await context.Set<TaskLangEntity>().Where(t => t.Type == LessonType.Theory).ToListAsync();
             }
         }
 
@@ -51,7 +50,7 @@ namespace DAL.Repositories.Tasks
         {
             using (var context = _contextFactory.CreateDbContext())
             {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Vocabulary).ToListAsync();
+                return await context.Set<TaskLangEntity>().Where(t => t.Type == LessonType.Vocabulary).ToListAsync();
             }
         }
     }
