@@ -1,4 +1,6 @@
-﻿using DAL.Entities.Lessons;
+﻿using BLL.Models.Lessons;
+using BLL.Models.Modules;
+using DAL.Entities.Lessons;
 using DAL.Repositories.Lessons;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,26 @@ namespace BLL.Services.Lessons
             var lessons = await _lessonRepository.GetAllAsync();
 
             return lessons;
+        }
+
+        public async Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId)
+        {
+            var lessons = await _lessonRepository.GetLessonsByLanguageIdAsync(languageId);
+            return lessons.Select(l => new LessonModel
+            {
+                Id = l.Id,
+                LanguageId = l.LanguageId,
+                Title = l.Title,
+                Theory = l.Theory,
+                ImageUrl = l.ImageUrl,
+                Modules = l.Modules.Select(m => new ModuleModel
+                {
+                    Id = m.Id,
+                    LessonId = m.LessonId,
+                    Title = m.Title,
+                    Type = m.Type,
+                }).ToList()
+            });
         }
 
         public async Task<LessonEntity> GetLessonAsync(int lessonId)

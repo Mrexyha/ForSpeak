@@ -1,4 +1,5 @@
 ﻿using DAL.Entities.Languages;
+using DAL.Entities.Modules;
 using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,6 +20,7 @@ namespace DAL
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<LanguageEntity> Languages { get; set; }
         public DbSet<UserLanguage> UserLanguages { get; set; }
+        public DbSet<ModuleEntity> ModuleEntities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BLL.Services.Lessons;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ForSpeak.Controllers
@@ -7,23 +8,18 @@ namespace ForSpeak.Controllers
     [ApiController]
     public class LessonsController : ControllerBase
     {
-        public LessonsController()
-        {
+        private readonly ILessonsService _lessonsService;
 
+        public LessonsController(ILessonsService lessonsService)
+        {
+            _lessonsService = lessonsService;
         }
 
-        [HttpGet("get-all-lessons")]
-        public IActionResult GetAllLessons()
+        [HttpGet("get-lessons-by-language-id/{languageId}")]
+        public async Task<IActionResult> GetLessonsByLanguage(int languageId)
         {
-            try
-            {
-                var _result = 0;
-                return Ok(_result);
-            }
-            catch (Exception ex) 
-            { 
-                return BadRequest(ex.Message);
-            }
+            var lessons = await _lessonsService.GetLessonsByLanguageIdAsync(languageId);
+            return Ok(lessons);
         }
     }
 }

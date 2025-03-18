@@ -10,20 +10,20 @@ namespace DAL.Repositories.Modules
 {
     public class ModuleRepository : BaseRepository<ModuleEntity>, IModuleRepository
     {
-        public ModuleRepository(IDbContextFactory<AppDbContext> contextFactory)
-            : base(contextFactory)
+        private readonly AppDbContext _context;
+
+        public ModuleRepository(AppDbContext context)
+            : base(context)
         {
+            _context = context;
         }
 
         public async Task<IEnumerable<ModuleEntity>> GetModulesByLessonIdAsync(int lessonId)
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<ModuleEntity>()
-                    .Where(m => m.LessonId == lessonId)
-                    .Include(m => m.Tasks) 
-                    .ToListAsync();
-            }
+            return await _context.Set<ModuleEntity>()
+                .Where(m => m.LessonId == lessonId)
+                .Include(m => m.Tasks)
+                .ToListAsync();
         }
     }
 }

@@ -8,37 +8,47 @@ using DAL.Entities.Lessons;
 
 namespace DAL.Repositories.Lessons
 {
-    public class LangTaskRepository : BaseRepository<LessonEntity>, ILessonRepository
+    public class LessonRepository : BaseRepository<LessonEntity>, ILessonRepository
     {
-        public LangTaskRepository(IDbContextFactory<AppDbContext> contextFactory)
-            : base(contextFactory) { }
+        private readonly AppDbContext _context;
+
+        public LessonRepository(AppDbContext context) : base(context)
+        {
+            _context = context;
+        }
 
         public override async Task<IEnumerable<LessonEntity>> GetAllAsync()
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<LessonEntity>().Include(l => l.Modules).ThenInclude(m => m.Tasks).ToListAsync();
-            }
+            return await _context.Set<LessonEntity>()
+                .Include(l => l.Modules)
+                .ThenInclude(m => m.Tasks)
+                .ToListAsync();
         }
 
         public override async Task<LessonEntity?> GetByIdAsync(int id)
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<LessonEntity>().Include(l => l.Modules).ThenInclude(m => m.Tasks).FirstOrDefaultAsync(x => x.Id == id);
-            }
+            return await _context.Set<LessonEntity>()
+                .Include(l => l.Modules)
+                .ThenInclude(m => m.Tasks)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<LessonEntity>> GetLessonsByLanguageIdAsync(int languageId)
+        {
+            return await _context.Set<LessonEntity>()
+                .Include(l => l.Modules)
+                .ThenInclude(m => m.Tasks)
+                .Where(l => l.LanguageId == languageId)
+                .ToListAsync();
         }
 
         public async Task<int> GetUserPointsAsync(int userId)
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<LessonEntity>()
-                    .Where(l => l.UsersToLessons.Any(utl => utl.UserId == userId))
-                    .SelectMany(l => l.Modules)
-                    .SelectMany(m => m.Tasks)
-                    .SumAsync(t => (int)t.TaskLevel);
-            }
+            return await _context.Set<LessonEntity>()
+                .Where(l => l.UsersToLessons.Any(utl => utl.UserId == userId))
+                .SelectMany(l => l.Modules)
+                .SelectMany(m => m.Tasks)
+                .SumAsync(t => (int)t.TaskLevel);
         }
     }
 }

@@ -8,6 +8,8 @@ using BLL.Services.Users.Auth;
 using BLL.Services.Users.JWT;
 using BLL.Mapping;
 using Microsoft.Extensions.Configuration;
+using BLL.Services.Lessons;
+using DAL.Repositories.Lessons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +31,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<ILessonsService, LessonsService>();
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
