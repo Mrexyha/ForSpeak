@@ -18,7 +18,7 @@ namespace DAL.Repositories.Modules
             _context = context;
         }
 
-        public async Task<IEnumerable<ModuleEntity>> GetModulesByLessonIdAsync(int lessonId)
+        public async Task<IEnumerable<ModuleEntity>> GetModulesByLessonAndLanguageIdsAsync(int lessonId)
         {
             return await _context.Set<ModuleEntity>()
                 .Where(m => m.LessonId == lessonId)

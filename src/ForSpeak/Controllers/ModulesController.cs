@@ -18,7 +18,7 @@ namespace ForSpeak.Controllers
         [HttpGet("get-by-lesson/{lessonId}")]
         public async Task<IActionResult> GetModulesByLessonId(int lessonId)
         {
-            var modules = await _moduleService.GetModulesByLessonIdAsync(lessonId);
+            var modules = await _moduleService.GetModulesByLessonAndLanguageIdsAsync(lessonId);
             return Ok(modules);
         }
     }

@@ -11,8 +11,8 @@ namespace BLL.Services.Lessons
     public interface ILessonsService
     {
         Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId);
-        public Task<IEnumerable<LessonEntity>> GetAllLessonsAsync();
-        public Task<LessonEntity> GetLessonAsync(int lessonId);
+        Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId);
+
         public Task<LessonEntity> AddLessonAsync(LessonEntity lesson);
         public Task<LessonEntity> UpdateLessonAsync(LessonEntity lesson);
         public Task<int> GetUserPoints(int userId);

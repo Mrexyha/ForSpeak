@@ -1,5 +1,7 @@
-﻿using BLL.Models.Modules;
+﻿using BLL.Models.Languages;
+using BLL.Models.Modules;
 using DAL.Entities.Enums;
+using DAL.Entities.Languages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +14,9 @@ namespace BLL.Models.Lessons
     {
         public int Id { get; set; }
         public int LanguageId { get; set; }
+        public string LanguageName { get; set; }
 
         public string Title { get; set; }
-
-        public string Theory { get; set; }
-
-        public string Description { get; set; }
-
         public string ImageUrl { get; set; }
 
         public LessonLevel Level { get; set; }

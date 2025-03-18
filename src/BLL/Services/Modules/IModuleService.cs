@@ -9,6 +9,6 @@ namespace BLL.Services.Modules
 {
     public interface IModuleService
     {
-        Task<IEnumerable<ModuleEntity>> GetModulesByLessonIdAsync(int lessonId);
+        Task<IEnumerable<ModuleEntity>> GetModulesByLessonAndLanguageIdsAsync(int lessonId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DAL.Entities.Enums;
 using DAL.Entities.Lessons;
+using DAL.Entities.Modules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,14 +12,11 @@ namespace DAL.Entities.Tasks
 {
     public class TaskLangEntity : BaseEntity
     {
-        [ForeignKey(nameof(Lesson))]
-        public int LessonId { get; set; }
-        public LessonEntity Lesson { get; set; }
+        public int ModuleId { get; set; }
+        public ModuleEntity Module { get; set; }
 
         public string ContentJson { get; set; }
-        public LessonLevel TaskLevel { get; set; }
-        public LessonType Type { get; set; }
 
-        
+        public TaskLangType Type { get; set; }
     }
 }

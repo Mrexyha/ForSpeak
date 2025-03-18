@@ -14,7 +14,7 @@ namespace BLL.Models.Modules
         public int LessonId { get; set; }
 
         public string Title { get; set; }
-        public LessonType Type { get; set; }
+        public TaskLangType Type { get; set; }
 
         public List<TaskLangModel> Tasks { get; set; } = new();
     }

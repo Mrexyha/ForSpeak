@@ -13,8 +13,9 @@ namespace BLL.Models.Tasks
         public int Id { get; set; }
         public int ModuleId { get; set; }
         public ModuleModel Module { get; set; }
+
         public string ContentJson { get; set; }
-        public LessonLevel TaskLevel { get; set; }
-        public LessonType TaskType { get; set; }
+
+        public TaskLangType TaskType { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318201123_AddLevelColumnToLesson")]
+    partial class AddLevelColumnToLesson
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +114,10 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -118,12 +125,12 @@ namespace DAL.Migrations
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
 
-                    b.Property<string>("LanguageName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Level")
                         .HasColumnType("int");
+
+                    b.Property<string>("Theory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -197,7 +204,13 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ModuleId")
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ModuleEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaskLevel")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -205,7 +218,9 @@ namespace DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId");
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("ModuleEntityId");
 
                     b.ToTable("TaskLangEntity");
                 });
@@ -331,13 +346,17 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Tasks.TaskLangEntity", b =>
                 {
-                    b.HasOne("DAL.Entities.Modules.ModuleEntity", "Module")
-                        .WithMany("Tasks")
-                        .HasForeignKey("ModuleId")
+                    b.HasOne("DAL.Entities.Lessons.LessonEntity", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Module");
+                    b.HasOne("DAL.Entities.Modules.ModuleEntity", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("ModuleEntityId");
+
+                    b.Navigation("Lesson");
                 });
 
             modelBuilder.Entity("LanguageEntityUserEntity", b =>

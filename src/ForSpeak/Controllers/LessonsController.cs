@@ -1,4 +1,9 @@
-﻿using BLL.Services.Lessons;
+﻿using BLL.Models.Lessons;
+using BLL.Services.Lessons;
+using DAL.Entities.Enums;
+using DAL.Entities.Lessons;
+using DAL.Entities.Modules;
+using DAL.Entities.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +25,51 @@ namespace ForSpeak.Controllers
         {
             var lessons = await _lessonsService.GetLessonsByLanguageIdAsync(languageId);
             return Ok(lessons);
+        }
+
+        [HttpGet("get-lesson-by-id/{languageId}/{id}")]
+        public async Task<IActionResult> GetLessonById(int languageId, int id)
+        {
+            var lesson = await _lessonsService.GetLessonByLanguageAndIdAsync(languageId, id);
+
+            if (lesson == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(lesson);
+        }
+
+        [HttpPost("add-lesson-by-language-id/{languageId}")]
+        public async Task<IActionResult> AddLesson(int languageId, [FromBody] LessonModel lessonModel)
+        {
+            if (lessonModel == null)
+            {
+                return BadRequest("Invalid lesson data.");
+            }
+
+            var lessonEntity = new LessonEntity
+            {
+                LanguageId = languageId,
+                LanguageName = lessonModel.LanguageName,
+                Title = lessonModel.Title,
+                ImageUrl = lessonModel.ImageUrl,
+                Level = lessonModel.Level,
+                Modules = lessonModel.Modules?.Select(m => new ModuleEntity
+                {
+                    Type = m.Type,
+                    Title = m.Title,
+                    Tasks = new List<TaskLangEntity>()
+                }).ToList() ?? new List<ModuleEntity>()
+            };
+
+            var createdLesson = await _lessonsService.AddLessonAsync(lessonEntity);
+
+            return CreatedAtAction(
+                nameof(GetLessonById),
+                new { languageId = languageId, id = createdLesson.Id },
+                createdLesson
+            );
         }
     }
 }

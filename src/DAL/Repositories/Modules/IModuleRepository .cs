@@ -9,6 +9,6 @@ namespace DAL.Repositories.Modules
 {
     public interface IModuleRepository
     {
-        Task<IEnumerable<ModuleEntity>> GetModulesByLessonIdAsync(int lessonId);
+        Task<IEnumerable<ModuleEntity>> GetModulesByLessonAndLanguageIdsAsync(int lessonId);
     }
 }

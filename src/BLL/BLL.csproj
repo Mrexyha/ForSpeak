@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\Tasks\" />
     <Folder Include="Services\Users\User\" />
   </ItemGroup>
 

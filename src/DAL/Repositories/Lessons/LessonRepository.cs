@@ -17,14 +17,6 @@ namespace DAL.Repositories.Lessons
             _context = context;
         }
 
-        public override async Task<IEnumerable<LessonEntity>> GetAllAsync()
-        {
-            return await _context.Set<LessonEntity>()
-                .Include(l => l.Modules)
-                .ThenInclude(m => m.Tasks)
-                .ToListAsync();
-        }
-
         public override async Task<LessonEntity?> GetByIdAsync(int id)
         {
             return await _context.Set<LessonEntity>()
@@ -42,13 +34,19 @@ namespace DAL.Repositories.Lessons
                 .ToListAsync();
         }
 
+        //public async Task<LessonEntity> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
+        //{
+        //    return await _context.Set<LessonEntity>()
+        //        .Include(l => l.Modules)
+        //        .ThenInclude(m => m.Tasks)
+        //        .Where(l => l.LanguageId == languageId)
+        //        .ToListAsync();
+        //}
+
         public async Task<int> GetUserPointsAsync(int userId)
         {
             return await _context.Set<LessonEntity>()
-                .Where(l => l.UsersToLessons.Any(utl => utl.UserId == userId))
-                .SelectMany(l => l.Modules)
-                .SelectMany(m => m.Tasks)
-                .SumAsync(t => (int)t.TaskLevel);
+                .Where(l => l.UsersToLessons.Any(utl => utl.UserId == userId)).SumAsync(t => (int)t.Level);
         }
     }
 }

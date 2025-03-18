@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities.Enums
 {
-    public enum LessonType
+    public enum TaskLangType
     {
         Quiz = 1,
         Reading = 2,

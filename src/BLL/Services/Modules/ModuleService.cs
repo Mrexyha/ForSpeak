@@ -17,9 +17,9 @@ namespace BLL.Services.Modules
             _moduleRepository = moduleRepository;
         }
 
-        public async Task<IEnumerable<ModuleEntity>> GetModulesByLessonIdAsync(int lessonId)
+        public async Task<IEnumerable<ModuleEntity>> GetModulesByLessonAndLanguageIdsAsync(int lessonId)
         {
-            return await _moduleRepository.GetModulesByLessonIdAsync(lessonId);
+            return await _moduleRepository.GetModulesByLessonAndLanguageIdsAsync(lessonId);
         }
     }
 }

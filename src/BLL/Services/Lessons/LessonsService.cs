@@ -26,13 +26,6 @@ namespace BLL.Services.Lessons
             return lesson;
         }
 
-        public async Task<IEnumerable<LessonEntity>> GetAllLessonsAsync()
-        {
-            var lessons = await _lessonRepository.GetAllAsync();
-
-            return lessons;
-        }
-
         public async Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId)
         {
             var lessons = await _lessonRepository.GetLessonsByLanguageIdAsync(languageId);
@@ -41,8 +34,8 @@ namespace BLL.Services.Lessons
                 Id = l.Id,
                 LanguageId = l.LanguageId,
                 Title = l.Title,
-                Theory = l.Theory,
                 ImageUrl = l.ImageUrl,
+                Level = l.Level,
                 Modules = l.Modules.Select(m => new ModuleModel
                 {
                     Id = m.Id,
@@ -53,11 +46,31 @@ namespace BLL.Services.Lessons
             });
         }
 
-        public async Task<LessonEntity> GetLessonAsync(int lessonId)
+        public async Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
         {
-            var lesson = await _lessonRepository.GetByIdAsync(lessonId);
+            var lessons = await _lessonRepository.GetAllAsync();
 
-            return lesson;
+            var lessonEntity = lessons.FirstOrDefault(l => l.LanguageId == languageId && l.Id == lessonId);
+
+            if (lessonEntity == null)
+            {
+                return null;
+            }
+
+            return new LessonModel
+            {
+                Id = lessonEntity.Id,
+                LanguageId = lessonEntity.LanguageId,
+                Title = lessonEntity.Title,
+                ImageUrl = lessonEntity.ImageUrl,
+                Level = lessonEntity.Level,
+                Modules = lessonEntity.Modules.Select(m => new ModuleModel
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Type = m.Type
+                }).ToList()
+            };
         }
 
         public async Task<int> GetUserPoints(int userId)

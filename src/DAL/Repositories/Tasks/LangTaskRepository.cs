@@ -16,35 +16,35 @@ namespace DAL.Repositories.Tasks
         public async Task<IEnumerable<TaskLangEntity>> GetQuizTasks()
         {
             return await _context.Set<TaskLangEntity>()
-                .Where(t => t.Type == LessonType.Quiz)
+                .Where(t => t.Type == TaskLangType.Quiz)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetListeningTasks()
         {
             return await _context.Set<TaskLangEntity>()
-                .Where(t => t.Type == LessonType.Listening)
+                .Where(t => t.Type == TaskLangType.Listening)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetReadingTasks()
         {
             return await _context.Set<TaskLangEntity>()
-                .Where(t => t.Type == LessonType.Reading)
+                .Where(t => t.Type == TaskLangType.Reading)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetTheory()
         {
             return await _context.Set<TaskLangEntity>()
-                .Where(t => t.Type == LessonType.Theory)
+                .Where(t => t.Type == TaskLangType.Theory)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetVocabularyTasks()
         {
             return await _context.Set<TaskLangEntity>()
-                .Where(t => t.Type == LessonType.Vocabulary)
+                .Where(t => t.Type == TaskLangType.Vocabulary)
                 .ToListAsync();
         }
     }
