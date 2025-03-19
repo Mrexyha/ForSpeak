@@ -10,6 +10,7 @@ import TheoryTaskView from '../views/TaskViews/TheoryTaskView.vue'
 import QuizTaskView from '../views/TaskViews/QuizTaskView.vue'
 import ReadingTaskView from '../views/TaskViews/ReadingTaskView.vue'
 import SpeakingTaskView from '../views/TaskViews/SpeakingTaskView.vue'
+import VocabularyTaskView from '../views/TaskViews/VocabularyTaskView.vue'
 
 const lessons = [
   {
@@ -46,37 +47,43 @@ const router = createRouter({
       component: MyLanguagesView,
     },
     {
-      path: '/education/english',
+      path: '/education/:languageId',
       name: 'education',
       component: EducationView,
       props: true,
     },
     {
-      path: '/education/english/1',
+      path: '/education/:languageId/:id',
       name: 'lesson',
       component: LessonView,
       props: true,
     },
     {
-      path: '/education/english/:id/theory',
+      path: '/education/:languageId/:id/theory',
       name: 'theory',
       component: TheoryTaskView,
       props: getLessonProps,
     },
     {
-      path: '/education/english/:id/quiz',
+      path: '/education/:languageId/:id/vocabulary',
+      name: 'vocabulary',
+      component: VocabularyTaskView,
+      props: getLessonProps,
+    },
+    {
+      path: '/education/:languageId/:id/quiz',
       name: 'quiz',
       component: QuizTaskView,
       props: getLessonProps,
     },
     {
-      path: '/education/english/:id/reading',
+      path: '/education/:languageId/:id/reading',
       name: 'reading',
       component: ReadingTaskView,
       props: getLessonProps,
     },
     {
-      path: '/education/english/:id/speaking',
+      path: '/education/:languageId/:id/speaking',
       name: 'speaking',
       component: SpeakingTaskView,
       props: getLessonProps,

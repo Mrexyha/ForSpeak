@@ -1,10 +1,23 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+const isFinished = ref(false)
+
+const languageId = computed(() => route.params.languageId || 1)
 
 const goToEducation = () => {
-  router.push('/education/english')
+  router.push(`/education/${languageId.value}`)
+}
+
+const finishLearning = () => {
+  isFinished.value = true
+}
+
+const restoreLearning = () => {
+  isFinished.value = false
 }
 </script>
 
@@ -19,8 +32,11 @@ const goToEducation = () => {
       </div>
     </div>
     <div class="btns-container">
-      <button class="continue-btn" @click="goToEducation">Продовжити</button>
-      <button class="finish-btn">Завершити</button>
+      <template v-if="!isFinished">
+        <button class="continue-btn" @click="goToEducation">Продовжити</button>
+        <button class="finish-btn" @click="finishLearning">Завершити</button>
+      </template>
+      <button v-else class="restore-btn" @click="restoreLearning">Відновити навчання</button>
     </div>
   </div>
 </template>
@@ -82,56 +98,45 @@ p {
 }
 
 button {
-  margin: 20px;
+  width: 200px;
+  height: 42px;
+  border-radius: 8px;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s ease-in-out;
+  border: none;
 }
 
 .continue-btn {
-  position: relative;
-  width: 200px;
-  height: 42px;
-  margin: 0 auto;
-  border-radius: 8px;
-
-  font-family: Inter, var(--default-font-family);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 14.523px;
-  text-align: left;
-
-  white-space: nowrap;
-  z-index: 1;
-  display: block;
-  color: #ffffff;
-  top: 0;
-  left: 0;
   background: #0077b6;
-  border-radius: 8px;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25) inset;
-  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+.continue-btn:hover {
+  background: #005b8f;
 }
 
 .finish-btn {
-  position: relative;
-  width: 200px;
-  height: 42px;
-  margin: 0 auto;
-  border-radius: 8px;
-
-  font-family: Inter, var(--default-font-family);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 14.523px;
-  text-align: left;
-
-  white-space: nowrap;
-  z-index: 1;
-  display: block;
-  color: #ffffff;
-  top: 0;
-  left: 0;
   background: #b60003;
-  border-radius: 8px;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25) inset;
-  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+.finish-btn:hover {
+  background: #920002;
+}
+
+.restore-btn {
+  background: #28a745;
+  color: white;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+.restore-btn:hover {
+  background: #218838;
 }
 </style>

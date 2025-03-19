@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace DAL.Repositories
 {
-    public interface IBaseRepository<LangTask>
+    public interface IBaseRepository<TEntity>
     {
-        Task<IEnumerable<LangTask>> GetAllAsync();
-        Task<LangTask?> GetByIdAsync(int id);
-        Task<LangTask> AddAsync(LangTask entity);
-        Task<LangTask> UpdateAsync(LangTask entity);
-        Task<bool> UpdateRangeAsync(IEnumerable<LangTask> list);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+
+        Task<TEntity?> GetByIdAsync(int id);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
+        Task<bool> UpdateRangeAsync(IEnumerable<TEntity> list);
         Task SaveChangesAsync();
     }
 }

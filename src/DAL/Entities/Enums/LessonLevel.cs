@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Repositories.MainPage
+namespace DAL.Entities.Enums
 {
-    public interface IMainPageRepository:IDisposable
+    public enum LessonLevel
     {
-
+        Easy = 5,
+        Medium = 10,
+        Hard = 15
     }
 }

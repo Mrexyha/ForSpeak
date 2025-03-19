@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities.Enums
 {
-    public enum TaskLevel
+    public enum TaskLangType
     {
-        Easy = 5,
-        Medium = 10,
-        Hard = 15
+        Quiz = 1,
+        Reading = 2,
+        Listening = 3,
+        Vocabulary = 4,
+        Theory = 5
     }
 }

@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 const route = useRoute()
 const isActive = (path: string) => route.path === path
+
+const languageId = computed(() => route.params.languageId || 1)
 
 const isHomePage = route.path === '/'
 </script>
@@ -16,8 +19,8 @@ const isHomePage = route.path === '/'
       </RouterLink>
       <RouterLink
         class="nav"
-        :class="{ active: isActive('/education/english') }"
-        to="/education/english"
+        :class="{ active: isActive(`/education/${languageId}`) }"
+        :to="`/education/${languageId}`"
       >
         Навчання
       </RouterLink>

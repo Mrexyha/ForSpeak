@@ -1,4 +1,4 @@
-﻿using BLL.Services.MainPage;
+﻿using BLL.Services.Languages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,29 +8,27 @@ namespace ForSpeak.Controllers
     [ApiController]
     public class LanguageController : ControllerBase
     {
-        private readonly IMainPageService _mainPageService;
+        private readonly ILanguageService _languageService;
 
-        public LanguageController(IMainPageService mainService)
+        public LanguageController(ILanguageService languageService)
         {
-            _mainPageService = mainService;
+            _languageService = languageService;
         }
 
-        [HttpGet]
+        [HttpGet("get-all-languages")]
         public async Task<IActionResult> GetLanguages()
         {
-            var languages = await _mainPageService.GetAvailableLanguagesAsync();
+            var languages = await _languageService.GetAvailableLanguagesAsync();
             return Ok(languages);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetLanguageById(int id)
         {
-            var language = await _mainPageService.GetLanguageByIdAsync(id);
+            var language = await _languageService.GetLanguageByIdAsync(id);
             if (language == null)
                 return NotFound();
             return Ok(language);
         }
-
-
     }
 }

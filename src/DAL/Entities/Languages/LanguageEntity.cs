@@ -11,9 +11,10 @@ namespace DAL.Entities.Languages
     public class LanguageEntity : BaseEntity
     {
         public string Name { get; set; }
-        public string FlagImage { get; set; } 
-        public string CountryImage { get; set; }
         public string Description { get; set; }
+
+        public string FlagImage { get; set; }
+        public string CountryImage { get; set; }
 
         public List<UserEntity> Users { get; set; }
     }

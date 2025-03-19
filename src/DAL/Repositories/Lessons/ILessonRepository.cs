@@ -9,6 +9,7 @@ namespace DAL.Repositories.Lessons
 {
     public interface ILessonRepository : IBaseRepository<LessonEntity>
     {
+        public Task<IEnumerable<LessonEntity>> GetLessonsByLanguageIdAsync(int languageId);
         public Task<int> GetUserPointsAsync(int userId);
     }
 }

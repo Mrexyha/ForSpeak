@@ -1,14 +1,68 @@
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { fetchLessons } from '../services/lessonsService'
+
 import PageLayout from '../layouts/PageLayout.vue'
 import LessonCard from '../components/LessonCard.vue'
 
-const lessons = [
-  { id: 1, title: "Сім'я / Family", difficulty: 'Elementary' },
-  { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate' },
-  { id: 3, title: 'Робота / Work', difficulty: 'Advanced' },
-  { id: 4, title: 'Урок 4', difficulty: 'Elementary' },
-  { id: 5, title: 'Урок 5', difficulty: 'Intermediate' },
-]
+interface Lesson {
+  id: number
+  title: string
+  difficulty: string
+  //date: string
+}
+
+const route = useRoute()
+const router = useRouter()
+const lessons = ref<Lesson[]>([])
+const searchQuery = ref('')
+const selectedDifficulty = ref('all')
+const selectedSort = ref('newest')
+
+// const lessons = ref([
+//   { id: 1, title: "Сім'я / Family", difficulty: 'Elementary', date: '2024-03-01' },
+//   { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate', date: '2024-02-25' },
+//   { id: 3, title: 'Робота / Work', difficulty: 'Advanced', date: '2024-02-20' },
+//   { id: 4, title: 'Подорожі / Travel', difficulty: 'Elementary', date: '2024-03-05' },
+//   { id: 5, title: 'Спорт / Sports', difficulty: 'Intermediate', date: '2024-02-28' },
+// ])
+
+const languageId = computed(() => {
+  const id = route.params.languageId
+  return Array.isArray(id) ? id[0] : id || 1
+})
+
+watch(
+  languageId,
+  async (newLanguageId) => {
+    lessons.value = await fetchLessons(newLanguageId)
+  },
+  { immediate: true },
+)
+
+const filteredLessons = computed(() => {
+  if (!Array.isArray(lessons.value)) return []
+
+  return lessons.value.filter((lesson) => {
+    const matchesSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+
+    const matchesDifficulty =
+      selectedDifficulty.value === 'all' ||
+      lesson.difficulty.toLowerCase() === selectedDifficulty.value
+
+    return matchesSearch && matchesDifficulty
+  })
+  // .sort((a, b) => {
+  //   return selectedSort.value === 'newest'
+  //     ? new Date(b.date).getTime() - new Date(a.date).getTime()
+  //     : new Date(a.date).getTime() - new Date(b.date).getTime()
+  // })
+})
+
+const goToMyLanguages = () => {
+  router.push(`/education/${languageId.value}/some-id`)
+}
 </script>
 
 <template>
@@ -19,18 +73,24 @@ const lessons = [
 
         <div class="search-filter-container">
           <div class="search-container">
-            <input type="text" class="search-input" placeholder="Уведіть тему..." />
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Уведіть тему..."
+              v-model="searchQuery"
+            />
             <span class="search-icon">🔍</span>
           </div>
 
           <div class="filter-container">
-            <select class="filter-select">
+            <select class="filter-select" v-model="selectedDifficulty">
               <option value="all">Всі рівні</option>
-              <option value="easy">Легкий</option>
-              <option value="medium">Середній</option>
-              <option value="hard">Важкий</option>
+              <option value="elementary">Легкий</option>
+              <option value="intermediate">Середній</option>
+              <option value="advanced">Важкий</option>
             </select>
-            <select class="filter-select">
+
+            <select class="filter-select" v-model="selectedSort">
               <option value="newest">Найновіші</option>
               <option value="oldest">Найстаріші</option>
             </select>
@@ -40,12 +100,15 @@ const lessons = [
 
       <div class="cards-container">
         <LessonCard
-          v-for="lesson in lessons"
+          @click="goToMyLanguages"
+          v-for="lesson in filteredLessons"
           :key="lesson.id"
           :title="lesson.title"
           :difficulty="lesson.difficulty"
         />
       </div>
+
+      <p v-if="filteredLessons.length === 0" class="no-results">Нічого не знайдено 😕</p>
     </div>
   </PageLayout>
 </template>
@@ -137,5 +200,12 @@ const lessons = [
   width: 500px;
   margin-left: 15%;
   margin-bottom: 64px;
+}
+
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #6c757d;
+  margin-top: 20px;
 }
 </style>

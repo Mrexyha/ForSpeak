@@ -1,58 +1,51 @@
 ﻿using DAL.Entities.Enums;
-using DAL.Entities.Lessons;
-using DAL.Repositories.Lessons;
+using DAL.Entities.Tasks;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Repositories.Tasks
 {
     public class LangTaskRepository : BaseRepository<TaskLangEntity>, ILangTaskRepository
     {
-        public LangTaskRepository(IDbContextFactory<AppDbContext> contextFactory)
-            : base(contextFactory) { }
+        public LangTaskRepository(AppDbContext context) : base(context)
+        {
+        }
 
         public async Task<IEnumerable<TaskLangEntity>> GetQuizTasks()
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Quiz).ToListAsync();
-            }
+            return await _context.Set<TaskLangEntity>()
+                .Where(t => t.Type == TaskLangType.Quiz)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetListeningTasks()
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Listening).ToListAsync();
-            }
+            return await _context.Set<TaskLangEntity>()
+                .Where(t => t.Type == TaskLangType.Listening)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetReadingTasks()
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Reading).ToListAsync();
-            }
+            return await _context.Set<TaskLangEntity>()
+                .Where(t => t.Type == TaskLangType.Reading)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetTheory()
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Theory).ToListAsync();
-            }
+            return await _context.Set<TaskLangEntity>()
+                .Where(t => t.Type == TaskLangType.Theory)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<TaskLangEntity>> GetVocabularyTasks()
         {
-            using (var context = _contextFactory.CreateDbContext())
-            {
-                return await context.Set<TaskLangEntity>().Where(t => t.Type == TaskType.Vocabulary).ToListAsync();
-            }
+            return await _context.Set<TaskLangEntity>()
+                .Where(t => t.Type == TaskLangType.Vocabulary)
+                .ToListAsync();
         }
     }
 }

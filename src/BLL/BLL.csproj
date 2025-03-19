@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\MainPage\" />
+    <Folder Include="Services\Tasks\" />
     <Folder Include="Services\Users\User\" />
   </ItemGroup>
 

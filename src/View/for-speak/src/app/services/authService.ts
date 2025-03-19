@@ -4,6 +4,7 @@ const API_URL = 'https://localhost:7058/api/Auth'
 
 export const registerUser = async (userData: {
   email: string
+  username: string
   password: string
   gender: string
   birthdate: string
@@ -15,6 +16,7 @@ export const registerUser = async (userData: {
     return response.data
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
+      console.log(error.response)
       throw new Error(error.response?.data?.message || 'Помилка реєстрації')
     } else if (error instanceof Error) {
       throw new Error(error.message || 'Помилка реєстрації')

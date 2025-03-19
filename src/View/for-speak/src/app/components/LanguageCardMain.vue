@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { defineProps, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps<{
   language: {
@@ -16,6 +19,10 @@ const containerClass = computed(() => ({
   'lang-container': true,
   reverse: props.reverse,
 }))
+
+const goToMyLanguages = () => {
+  router.push('/my-languages')
+}
 </script>
 
 <template>
@@ -25,10 +32,7 @@ const containerClass = computed(() => ({
       <h1 class="title">{{ language.name }}</h1>
       <div class="flag" :style="{ backgroundImage: `url(${language.flag})` }"></div>
       <p class="description">{{ language.description }}</p>
-      <div class="btn-container">
-        <span class="text">Почати вивчення</span>
-        <div class="group"></div>
-      </div>
+      <button class="lets-start-btn" @click="goToMyLanguages">Почати вивчення</button>
     </div>
   </div>
 </template>
@@ -85,36 +89,27 @@ const containerClass = computed(() => ({
   max-width: 50%;
 }
 
-.btn-container {
+.lets-start-btn {
   position: relative;
   width: 200px;
-  height: 32px;
-  font-size: 0;
+  height: 42px;
+  font-size: 16px;
   border-radius: 12px;
-}
-.text {
-  display: block;
-  position: relative;
-  height: 17px;
+
   margin: 12px 34px;
   color: #ffffff;
   font-family:
     Abhaya Libre,
     var(--default-font-family);
-  font-size: 16px;
   font-weight: 700;
   line-height: 16.516px;
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
-  z-index: 1;
-}
-.group {
-  position: absolute;
-  width: 200px;
-  height: 42px;
-  top: 0;
-  left: 0;
+
   background: #0096c7;
-  border-radius: 12px;
+}
+
+.lets-start-btn:hover {
+  background: #006598;
 }
 </style>
