@@ -1,44 +1,67 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { fetchLessons } from '../services/lessonsService'
 
 import PageLayout from '../layouts/PageLayout.vue'
 import LessonCard from '../components/LessonCard.vue'
 
+interface Lesson {
+  id: number
+  title: string
+  difficulty: string
+  //date: string
+}
+
+const route = useRoute()
 const router = useRouter()
-
-const lessons = ref([
-  { id: 1, title: "Сім'я / Family", difficulty: 'Elementary', date: '2024-03-01' },
-  { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate', date: '2024-02-25' },
-  { id: 3, title: 'Робота / Work', difficulty: 'Advanced', date: '2024-02-20' },
-  { id: 4, title: 'Подорожі / Travel', difficulty: 'Elementary', date: '2024-03-05' },
-  { id: 5, title: 'Спорт / Sports', difficulty: 'Intermediate', date: '2024-02-28' },
-])
-
+const lessons = ref<Lesson[]>([])
 const searchQuery = ref('')
 const selectedDifficulty = ref('all')
 const selectedSort = ref('newest')
 
+// const lessons = ref([
+//   { id: 1, title: "Сім'я / Family", difficulty: 'Elementary', date: '2024-03-01' },
+//   { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate', date: '2024-02-25' },
+//   { id: 3, title: 'Робота / Work', difficulty: 'Advanced', date: '2024-02-20' },
+//   { id: 4, title: 'Подорожі / Travel', difficulty: 'Elementary', date: '2024-03-05' },
+//   { id: 5, title: 'Спорт / Sports', difficulty: 'Intermediate', date: '2024-02-28' },
+// ])
+
+const languageId = computed(() => {
+  const id = route.params.languageId
+  return Array.isArray(id) ? id[0] : id || 1
+})
+
+watch(
+  languageId,
+  async (newLanguageId) => {
+    lessons.value = await fetchLessons(newLanguageId)
+  },
+  { immediate: true },
+)
+
 const filteredLessons = computed(() => {
-  return lessons.value
-    .filter((lesson) => {
-      const matchesSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  if (!Array.isArray(lessons.value)) return []
 
-      const matchesDifficulty =
-        selectedDifficulty.value === 'all' ||
-        lesson.difficulty.toLowerCase() === selectedDifficulty.value
+  return lessons.value.filter((lesson) => {
+    const matchesSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
 
-      return matchesSearch && matchesDifficulty
-    })
-    .sort((a, b) => {
-      return selectedSort.value === 'newest'
-        ? new Date(b.date).getTime() - new Date(a.date).getTime()
-        : new Date(a.date).getTime() - new Date(b.date).getTime()
-    })
+    const matchesDifficulty =
+      selectedDifficulty.value === 'all' ||
+      lesson.difficulty.toLowerCase() === selectedDifficulty.value
+
+    return matchesSearch && matchesDifficulty
+  })
+  // .sort((a, b) => {
+  //   return selectedSort.value === 'newest'
+  //     ? new Date(b.date).getTime() - new Date(a.date).getTime()
+  //     : new Date(a.date).getTime() - new Date(b.date).getTime()
+  // })
 })
 
 const goToMyLanguages = () => {
-  router.push('/education/english/1')
+  router.push(`/education/${languageId.value}/some-id`)
 }
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import PageLayout from '../layouts/PageLayout.vue'
 
@@ -10,6 +10,7 @@ interface Lesson {
 }
 
 const route = useRoute()
+const languageId = computed(() => route.params.languageId || 1)
 const lessonId = route.params.id as string
 
 const lessons = [
@@ -30,19 +31,19 @@ const lesson = ref<Lesson>(lessons.find((l) => l.id === parseInt(lessonId)) || l
       <p class="description">{{ lesson?.description || 'Опис відсутній' }}</p>
 
       <div v-if="lesson" class="task-buttons">
-        <router-link :to="`/education/english/${lesson.id}/theory`">
+        <router-link :to="`/education/${languageId}/${lesson.id}/theory`">
           <button class="task-button">📖 Теорія</button>
         </router-link>
-        <router-link :to="`/education/english/${lesson.id}/vocabulary`">
+        <router-link :to="`/education/${languageId}/${lesson.id}/vocabulary`">
           <button class="task-button">📔 Словник</button>
         </router-link>
-        <router-link :to="`/education/english/${lesson.id}/quiz`">
+        <router-link :to="`/education/${languageId}/${lesson.id}/quiz`">
           <button class="task-button">📝 Квіз</button>
         </router-link>
-        <router-link :to="`/education/english/${lesson.id}/reading`">
+        <router-link :to="`/education/${languageId}/${lesson.id}/reading`">
           <button class="task-button">📚 Читання</button>
         </router-link>
-        <router-link :to="`/education/english/${lesson.id}/speaking`">
+        <router-link :to="`/education/${languageId}/${lesson.id}/speaking`">
           <button class="task-button">🎤 Говоріння</button>
         </router-link>
       </div>

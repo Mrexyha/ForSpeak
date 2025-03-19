@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+
+const languageId = computed(() => route.params.languageId || 1)
 
 const goToLesson = (id: number) => {
-  router.push(`/education/english/${id}/`)
+  router.push(`/education/${languageId.value}/${id}/`)
 }
 </script>
 
