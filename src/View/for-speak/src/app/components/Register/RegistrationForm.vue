@@ -43,10 +43,12 @@ const submitForm = async (data: {
 }) => {
   formData.value = { ...formData.value, ...data }
 
-  try {
-    const response = await registerUser(formData.value)
-    console.log('Response:', response)
+  const { confirmPassword, ...payload } = formData.value
 
+  try {
+    console.log('confirmPassword ', confirmPassword)
+    const response = await registerUser(payload)
+    console.log('Response:', response)
     router.push('/')
   } catch (error) {
     console.log(error)

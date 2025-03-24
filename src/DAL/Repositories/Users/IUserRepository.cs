@@ -15,6 +15,11 @@ namespace DAL.Repositories.Users
         //void Update(User user);
         //void Delete(int id);
 
+        Task<List<UserEntity>> GetAllUsersAsync();
+        Task<UserEntity> GetUserByIdAsync(int userId);
+        Task<UserEntity> UpdateUserAsync(UserEntity user);
+        Task<bool> DeleteUserAsync(int userId);
+
         Task<UserEntity> GetUserByEmailAsync(string email);
         Task<UserEntity> CreateUserAsync(UserEntity user);
     }
