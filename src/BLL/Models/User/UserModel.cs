@@ -14,11 +14,11 @@ namespace BLL.Models.User
         public int Id { get; set; }
 
         [Required]
-        public string Username { get; set; }
-
-        [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        public string Username { get; set; }
 
         [Required]
         public string PasswordHash { get; set; }
@@ -32,10 +32,10 @@ namespace BLL.Models.User
         public string Gender { get; set; }
 
         [Required]
-        public string Country { get; set; } 
+        public DateTime Birthdate { get; set; }
 
         [Required]
-        public DateTime DateOfBirth { get; set; }
+        public string Country { get; set; }
 
         [Required]
         public List<string> SelectedLanguages { get; set; } 

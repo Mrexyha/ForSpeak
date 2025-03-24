@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { reactive, defineEmits } from 'vue'
+import { reactive, defineEmits, ref, onMounted } from 'vue'
+import { fetchLanguages } from '../../services/languageService'
 
+interface Language {
+  id: number
+  name: string
+  description: string
+  image: string
+  flag: string
+}
 const form = reactive({
   gender: '',
   birthdate: '',
@@ -9,7 +17,11 @@ const form = reactive({
 })
 
 const countries = ['Україна', 'США', 'Німеччина', 'Франція', 'Велика Британія']
-const languages = ['Англійська', 'Французька', 'Німецька']
+const languages = ref<Language[]>([])
+
+onMounted(async () => {
+  languages.value = await fetchLanguages()
+})
 
 const emit = defineEmits(['previous', 'submit'])
 
@@ -46,12 +58,12 @@ const toggleLanguageSelection = (language: string) => {
       <p>Мови для вивчення:</p>
       <div
         v-for="language in languages"
-        :key="language"
+        :key="language.id"
         class="language-item"
-        :class="{ selected: form.language.includes(language) }"
-        @click="toggleLanguageSelection(language)"
+        :class="{ selected: form.language.includes(language.name) }"
+        @click="toggleLanguageSelection(language.name)"
       >
-        {{ language }}
+        {{ language.name }}
       </div>
     </div>
 

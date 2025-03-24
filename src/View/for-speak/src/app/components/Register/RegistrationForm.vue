@@ -36,6 +36,10 @@ const previousStep = () => {
 }
 
 const submitForm = async (data: {
+  email: string
+  username: string
+  password: string
+  confirmPassword: string
   gender: string
   birthdate: string
   country: string
@@ -43,11 +47,8 @@ const submitForm = async (data: {
 }) => {
   formData.value = { ...formData.value, ...data }
 
-  const { confirmPassword, ...payload } = formData.value
-
   try {
-    console.log('confirmPassword ', confirmPassword)
-    const response = await registerUser(payload)
+    const response = await registerUser(formData.value)
     console.log('Response:', response)
     router.push('/')
   } catch (error) {
@@ -86,7 +87,7 @@ const submitForm = async (data: {
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 600px;
+  max-width: 680px;
   width: 100%;
 }
 

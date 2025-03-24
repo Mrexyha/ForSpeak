@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DAL.Entities.Languages;
+using Azure.Core;
 
 namespace BLL.Services.Users.Auth
 {
@@ -31,12 +32,10 @@ namespace BLL.Services.Users.Auth
             {
                 throw new Exception("User already exists");
             }
-
-            if (userModel.PasswordHash != userModel.ConfirmPassword)
+            if (!string.IsNullOrEmpty(userModel.ConfirmPassword) && userModel.PasswordHash != userModel.ConfirmPassword)
             {
                 throw new Exception("Passwords do not match");
             }
-
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(userModel.PasswordHash);
 
             var newUser = _mapper.Map<UserEntity>(userModel);

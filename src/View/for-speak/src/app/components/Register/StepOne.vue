@@ -11,6 +11,10 @@ const form = reactive({
 const emit = defineEmits(['next'])
 
 const nextStep = () => {
+  if (!form.email || !form.username || !form.password || !form.confirmPassword) {
+    alert('Заповніть всі поля!')
+    return
+  }
   if (form.password !== form.confirmPassword) {
     alert('Паролі не співпадають!')
     return
