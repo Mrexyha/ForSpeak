@@ -11,5 +11,6 @@ namespace BLL.Services.Languages
     {
         Task<List<LanguageEntity>> GetAvailableLanguagesAsync();
         Task<LanguageEntity> GetLanguageByIdAsync(int id);
+        Task UpdateLanguageAsync(LanguageEntity language);
     }
 }

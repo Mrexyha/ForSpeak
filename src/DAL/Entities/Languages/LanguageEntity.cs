@@ -1,4 +1,5 @@
-﻿using DAL.Entities.Users;
+﻿using DAL.Entities.Lessons;
+using DAL.Entities.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,5 +18,7 @@ namespace DAL.Entities.Languages
         public string CountryImage { get; set; }
 
         public List<UserEntity> Users { get; set; }
+
+        public List<LessonEntity> Lessons { get; set; } = new();
     }
 }

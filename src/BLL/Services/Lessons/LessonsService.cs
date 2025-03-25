@@ -19,13 +19,6 @@ namespace BLL.Services.Lessons
             _lessonRepository = lessonRepository;
         }
 
-        public async Task<LessonEntity> AddLessonAsync(LessonEntity lesson)
-        {
-            await _lessonRepository.AddAsync(lesson);
-
-            return lesson;
-        }
-
         public async Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId)
         {
             var lessons = await _lessonRepository.GetLessonsByLanguageIdAsync(languageId);
@@ -73,18 +66,40 @@ namespace BLL.Services.Lessons
             };
         }
 
+        public async Task<LessonEntity> AddLessonAsync(LessonEntity lesson)
+        {
+            await _lessonRepository.AddAsync(lesson);
+
+            return lesson;
+        }
+
+
+        public async Task<LessonEntity?> UpdateLessonAsync(int languageId, int lessonId, LessonModel lessonModel)
+        {
+            var lessonEntity = await _lessonRepository.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+
+            if (lessonEntity == null)
+                return null;
+
+            lessonEntity.Title = lessonModel.Title;
+            lessonEntity.ImageUrl = lessonModel.ImageUrl;
+            lessonEntity.Level = lessonModel.Level;
+
+            await _lessonRepository.UpdateAsync(lessonEntity);
+
+            return lessonEntity;
+        }
+
+        public async Task<bool> DeleteLessonAsync(int languageId, int lessonId)
+        {
+            return await _lessonRepository.DeleteLessonByLanguageAndIdAsync(languageId, lessonId);
+        }
+
         public async Task<int> GetUserPoints(int userId)
         {
             var points = await _lessonRepository.GetUserPointsAsync(userId);
 
             return points;
-        }
-
-        public async Task<LessonEntity> UpdateLessonAsync(LessonEntity lesson)
-        {
-            await _lessonRepository.UpdateAsync(lesson);
-
-            return lesson; throw new NotImplementedException();
         }
     }
 }

@@ -34,14 +34,25 @@ namespace DAL.Repositories.Lessons
                 .ToListAsync();
         }
 
-        //public async Task<LessonEntity> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
-        //{
-        //    return await _context.Set<LessonEntity>()
-        //        .Include(l => l.Modules)
-        //        .ThenInclude(m => m.Tasks)
-        //        .Where(l => l.LanguageId == languageId)
-        //        .ToListAsync();
-        //}
+        public async Task<LessonEntity?> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
+        {
+            return await _context.Set<LessonEntity>()
+                .Include(l => l.Modules)
+                .ThenInclude(m => m.Tasks)
+                .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.Id == lessonId);
+        }
+
+        public async Task<bool> DeleteLessonByLanguageAndIdAsync(int languageId, int lessonId)
+        {
+            var lesson = await _context.Set<LessonEntity>()
+                .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.Id == lessonId);
+
+            if (lesson == null) return false;
+
+            _context.Set<LessonEntity>().Remove(lesson);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<int> GetUserPointsAsync(int userId)
         {
