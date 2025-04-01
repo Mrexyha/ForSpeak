@@ -11,7 +11,7 @@ namespace BLL.Models.User
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public UserModel User { get; set; }
+        public RegisterModel User { get; set; }
 
         public int LanguageId { get; set; }
         public LanguageEntity Language { get; set; }

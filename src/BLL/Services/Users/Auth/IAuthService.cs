@@ -9,7 +9,7 @@ namespace BLL.Services.Users.Auth
 {
     public interface IAuthService
     {
-        Task<string> Register(UserModel user);
-        Task<string> Login(UserModel user);
+        Task<string> Register(RegisterModel user);
+        Task<string> Login(LoginModel user);
     }
 }

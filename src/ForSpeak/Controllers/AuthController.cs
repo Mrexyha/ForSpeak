@@ -18,7 +18,7 @@ namespace ForSpeak.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserModel request)
+        public async Task<IActionResult> Register([FromBody] RegisterModel request)
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +30,7 @@ namespace ForSpeak.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserModel request)
+        public async Task<IActionResult> Login([FromBody] LoginModel request)
         {
             var token = await _authService.Login(request);
             return Ok(new { Token = token });

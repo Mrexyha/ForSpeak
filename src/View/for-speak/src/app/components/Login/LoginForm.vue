@@ -1,14 +1,34 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { loginUser } from '../../services/authService'
 
 const router = useRouter()
 const formData = ref({
   email: '',
   password: '',
 })
+const errorMessage = ref('')
+const isLoading = ref(false)
 
-const submitLogin = () => {
+const submitLogin = async () => {
+  errorMessage.value = ''
+  isLoading.value = true
+
+  try {
+    const data = await loginUser(formData.value)
+
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data.user))
+
+    console.log('Sending request with data:', JSON.stringify(formData.value))
+
+    router.push('/')
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Невідома помилка'
+  } finally {
+    isLoading.value = false
+  }
   console.log('Logging in with:', formData.value)
 }
 </script>
@@ -20,8 +40,11 @@ const submitLogin = () => {
       <form @submit.prevent="submitLogin">
         <input type="email" v-model="formData.email" placeholder="Електронна пошта" required />
         <input type="password" v-model="formData.password" placeholder="Пароль" required />
-        <button type="submit">Увійти</button>
+        <button type="submit" :disabled="isLoading">
+          {{ isLoading ? 'Завантаження...' : 'Увійти' }}
+        </button>
       </form>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <p class="switch-form" @click="router.push('/register')">
         Ще не маєте акаунту? <span>Зареєструватися</span>
       </p>
@@ -79,5 +102,10 @@ button {
 .switch-form span {
   color: #007bff;
   text-decoration: underline;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
 }
 </style>

@@ -8,10 +8,10 @@ namespace DAL.Entities.Enums
 {
     public enum TaskLangType
     {
-        Quiz = 1,
-        Reading = 2,
-        Listening = 3,
-        Vocabulary = 4,
-        Theory = 5
+        Theory = 1,
+        Vocabulary = 2,
+        Quiz = 3,
+        Reading = 4,
+        Speaking = 5
     }
 }

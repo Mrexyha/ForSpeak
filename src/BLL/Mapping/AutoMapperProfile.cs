@@ -15,6 +15,9 @@ namespace BLL.Mapping
     {
         public AutoMapperProfile()
         {
+            CreateMap<UserEntity, RegisterModel>().ReverseMap();
+            CreateMap<UserEntity, LoginModel>().ReverseMap();
+
             CreateMap<UserModel, UserEntity>()
                 .ForMember(dest => dest.UserLanguages, opt => opt.Ignore());
 

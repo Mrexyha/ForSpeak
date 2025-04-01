@@ -25,18 +25,18 @@ namespace BLL.Services.Users.Auth
             _mapper = mapper;
         }
 
-        public async Task<string> Register(UserModel userModel)
+        public async Task<string> Register(RegisterModel userModel)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(userModel.Email);
             if (existingUser != null)
             {
                 throw new Exception("User already exists");
             }
-            if (!string.IsNullOrEmpty(userModel.ConfirmPassword) && userModel.PasswordHash != userModel.ConfirmPassword)
+            if (!string.IsNullOrEmpty(userModel.ConfirmPassword) && userModel.Password != userModel.ConfirmPassword)
             {
                 throw new Exception("Passwords do not match");
             }
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(userModel.PasswordHash);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(userModel.Password);
 
             var newUser = _mapper.Map<UserEntity>(userModel);
             newUser.PasswordHash = passwordHash;
@@ -45,21 +45,20 @@ namespace BLL.Services.Users.Auth
             return _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
         }
 
-        public async Task<string> Login(UserModel user)
+        public async Task<string> Login(LoginModel loginModel)
         {
-            var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
+            var existingUser = await _userRepository.GetUserByEmailAsync(loginModel.Email);
             if (existingUser == null)
             {
                 throw new UnauthorizedAccessException("User not found");
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(user.PasswordHash, existingUser.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(loginModel.Password, existingUser.PasswordHash))
             {
                 throw new UnauthorizedAccessException("Invalid password");
             }
 
-            var userModel = _mapper.Map<UserModel>(existingUser);
-            return _jwtService.GenerateToken(userModel);
+            return _jwtService.GenerateToken(_mapper.Map<UserModel>(existingUser));
         }
     }
 }

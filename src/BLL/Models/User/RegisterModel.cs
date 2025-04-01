@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BLL.Models.Languages;
+using DAL.Entities.Languages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.User
 {
-    public class UserModel : BaseModel
+    public class RegisterModel : BaseModel
     {
         [Required]
         [EmailAddress]
@@ -34,6 +36,6 @@ namespace BLL.Models.User
         public string Country { get; set; }
 
         [Required]
-        public List<string> SelectedLanguages { get; set; }
+        public List<string> SelectedLanguages { get; set; } 
     }
 }

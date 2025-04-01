@@ -38,7 +38,7 @@ namespace ForSpeak.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserModel userModel)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] RegisterModel userModel)
         {
             if (id != userModel.Id)
             {

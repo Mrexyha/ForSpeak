@@ -9,9 +9,9 @@ namespace BLL.Services.Users.User
 {
     public interface IUserService
     {
-        Task<List<UserModel>> GetAllUsersAsync();
-        Task<UserModel> GetUserByIdAsync(int userId);
-        Task<UserModel> UpdateUserAsync(UserModel userModel);
+        Task<List<RegisterModel>> GetAllUsersAsync();
+        Task<RegisterModel> GetUserByIdAsync(int userId);
+        Task<RegisterModel> UpdateUserAsync(RegisterModel userModel);
         Task<bool> DeleteUserAsync(int userId);
         //Task<UserModel> SignUp(UserModel user);
         //Task<UserSettingsModel> SignIn(UserModel user);

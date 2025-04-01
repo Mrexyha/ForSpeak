@@ -21,23 +21,23 @@ namespace BLL.Services.Users.User
             _mapper = mapper;
         }
 
-        public async Task<List<UserModel>> GetAllUsersAsync()
+        public async Task<List<RegisterModel>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();
-            return _mapper.Map<List<UserModel>>(users);
+            return _mapper.Map<List<RegisterModel>>(users);
         }
 
-        public async Task<UserModel> GetUserByIdAsync(int userId)
+        public async Task<RegisterModel> GetUserByIdAsync(int userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            return _mapper.Map<UserModel>(user);
+            return _mapper.Map<RegisterModel>(user);
         }
 
-        public async Task<UserModel> UpdateUserAsync(UserModel userModel)
+        public async Task<RegisterModel> UpdateUserAsync(RegisterModel userModel)
         {
             var userEntity = _mapper.Map<UserEntity>(userModel);
             var updatedUser = await _userRepository.UpdateUserAsync(userEntity);
-            return _mapper.Map<UserModel>(updatedUser);
+            return _mapper.Map<RegisterModel>(updatedUser);
         }
 
         public async Task<bool> DeleteUserAsync(int userId)

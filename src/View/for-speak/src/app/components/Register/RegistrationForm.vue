@@ -11,12 +11,12 @@ const step = ref(1)
 const formData = ref({
   email: '',
   username: '',
-  password: '',
+  passwordHash: '',
   confirmPassword: '',
   gender: '',
-  birthdate: '',
+  birthdate: Date.now(),
   country: '',
-  language: [] as string[],
+  selectedLanguages: [] as string[],
 })
 
 const steps = shallowRef([StepOne, StepTwo])
@@ -24,7 +24,7 @@ const steps = shallowRef([StepOne, StepTwo])
 const nextStep = (data: {
   email: string
   username: string
-  password: string
+  passwordHash: string
   confirmPassword: string
 }) => {
   formData.value = { ...formData.value, ...data }
@@ -38,17 +38,24 @@ const previousStep = () => {
 const submitForm = async (data: {
   email: string
   username: string
-  password: string
+  passwordHash: string
   confirmPassword: string
   gender: string
-  birthdate: string
+  birthdate: number
   country: string
-  language: string[]
+  selectedLanguages: string[]
 }) => {
-  formData.value = { ...formData.value, ...data }
+  const updatedData = {
+    ...data,
+    birthdate: new Date(data.birthdate),
+    selectedLanguages: formData.value.selectedLanguages || [],
+  }
+
+  console.log('email ', updatedData.email)
+  console.log('updatedData ', updatedData)
 
   try {
-    const response = await registerUser(formData.value)
+    const response = await registerUser(updatedData)
     console.log('Response:', response)
     router.push('/')
   } catch (error) {
