@@ -21,19 +21,17 @@ namespace ForSpeak.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-            var token = await _authService.Register(request);
-            return Ok(new { Token = token });
+            var authResult = await _authService.Register(request);
+            return Ok(new { authResult.Token, authResult.UserId });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel request)
         {
-            var token = await _authService.Login(request);
-            return Ok(new { Token = token });
+            var authResult = await _authService.Login(request);
+            return Ok(new { authResult.Token, authResult.UserId });
         }
     }
 }

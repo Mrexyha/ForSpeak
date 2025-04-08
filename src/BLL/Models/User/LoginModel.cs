@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.User
 {
-    public class LoginModel
+    public class LoginModel : BaseModel
     {
         [Required]
         [EmailAddress]

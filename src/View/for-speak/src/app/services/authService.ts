@@ -30,12 +30,23 @@ export const registerUser = async (userData: {
 export const loginUser = async (credentials: { email: string; password: string }) => {
   try {
     const response = await axios.post(`${API_URL}/login`, credentials)
+    console.log('Login response:', response.data)
+
+    const { token, userId } = response.data
+
+    if (!userId) {
+      throw new Error('userId не отримано при логіні!')
+    }
+
+    console.log('Login UserID:', userId)
+
+    localStorage.setItem('token', token)
+    localStorage.setItem('userId', userId)
+
     return response.data
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || 'Помилка входу')
-    } else if (error instanceof Error) {
-      throw new Error(error.message || 'Помилка входу')
     } else {
       throw new Error('Помилка входу')
     }

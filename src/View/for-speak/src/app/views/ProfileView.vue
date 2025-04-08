@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getUserProfile } from '../services/userService'
 import PageLayout from '../layouts/PageLayout.vue'
 import ChartPoints from '../components/ChartPoints.vue'
 import profileDefault from '../../assets/general/man-icon.png'
@@ -11,11 +12,11 @@ const isEditing = ref(false)
 const isEditingPassword = ref(false)
 
 const userInfo = ref({
-  name: 'Json Smith',
-  email: 'testuseremail@gmail.com',
-  age: 27,
-  country: 'Україна',
-  registered: '10/04/2024',
+  name: '',
+  email: '',
+  age: 0,
+  country: '',
+  registered: '',
 })
 
 const studyTime = ref({
@@ -55,7 +56,30 @@ const saveNewPassword = () => {
   passwordData.value = { currentPassword: '', newPassword: '', confirmNewPassword: '' }
   isEditingPassword.value = false
 }
+
+const fetchUserProfile = async () => {
+  try {
+    const data = await getUserProfile()
+    userInfo.value = {
+      name: data.username,
+      email: data.email,
+      age: data.age,
+      country: data.country,
+      registered: data.registeredDate,
+    }
+  } catch (error) {
+    console.error(error)
+    router.push('/login')
+  }
+}
+
+onMounted(() => {
+  fetchUserProfile()
+})
+
 const logout = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
   alert('Ви вийшли з профілю!')
   router.push('/')
 }

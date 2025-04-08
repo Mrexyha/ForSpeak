@@ -25,27 +25,35 @@ namespace BLL.Services.Users.Auth
             _mapper = mapper;
         }
 
-        public async Task<string> Register(RegisterModel userModel)
+        public async Task<AuthResult> Register(RegisterModel userModel)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(userModel.Email);
             if (existingUser != null)
             {
                 throw new Exception("User already exists");
             }
+
             if (!string.IsNullOrEmpty(userModel.ConfirmPassword) && userModel.Password != userModel.ConfirmPassword)
             {
                 throw new Exception("Passwords do not match");
             }
+
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(userModel.Password);
 
             var newUser = _mapper.Map<UserEntity>(userModel);
             newUser.PasswordHash = passwordHash;
 
             var createdUser = await _userRepository.CreateUserAsync(newUser);
-            return _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
+            var token = _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
+
+            return new AuthResult
+            {
+                Token = token,
+                UserId = createdUser.Id
+            };
         }
 
-        public async Task<string> Login(LoginModel loginModel)
+        public async Task<AuthResult> Login(LoginModel loginModel)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(loginModel.Email);
             if (existingUser == null)
@@ -58,7 +66,13 @@ namespace BLL.Services.Users.Auth
                 throw new UnauthorizedAccessException("Invalid password");
             }
 
-            return _jwtService.GenerateToken(_mapper.Map<UserModel>(existingUser));
+            var token = _jwtService.GenerateToken(_mapper.Map<UserModel>(existingUser));
+
+            return new AuthResult
+            {
+                Token = token,
+                UserId = existingUser.Id
+            };
         }
     }
 }
