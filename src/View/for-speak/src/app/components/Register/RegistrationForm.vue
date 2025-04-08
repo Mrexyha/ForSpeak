@@ -62,6 +62,22 @@ const submitForm = async (data: {
     console.log(error)
   }
 }
+
+const finalStep = (data: {
+  gender: string
+  birthdate: string
+  country: string
+  selectedLanguages: string[]
+}) => {
+  const mergedData = {
+    ...formData.value,
+    ...data,
+    selectedLanguages: data.selectedLanguages,
+    birthdate: new Date(data.birthdate).getTime(),
+  }
+
+  submitForm(mergedData)
+}
 </script>
 
 <template>
@@ -72,7 +88,7 @@ const submitForm = async (data: {
         :is="steps[step - 1]"
         @next="nextStep"
         @previous="previousStep"
-        @submit="submitForm"
+        @submit="finalStep"
       />
       <p class="switch-form" @click="router.push('/login')">Уже є акаунт? <span>Увійти</span></p>
     </div>
