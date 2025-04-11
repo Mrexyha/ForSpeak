@@ -3,7 +3,7 @@ import { ref, shallowRef } from 'vue'
 import { useRouter } from 'vue-router'
 import StepOne from './StepOne.vue'
 import StepTwo from './StepTwo.vue'
-import { registerUser } from '../../services/authService'
+import { loginUser, registerUser } from '../../services/authService'
 
 const router = useRouter()
 
@@ -11,6 +11,7 @@ const step = ref(1)
 const formData = ref({
   email: '',
   username: '',
+  password: '',
   passwordHash: '',
   confirmPassword: '',
   gender: '',
@@ -24,6 +25,7 @@ const steps = shallowRef([StepOne, StepTwo])
 const nextStep = (data: {
   email: string
   username: string
+  password: string
   passwordHash: string
   confirmPassword: string
 }) => {
@@ -38,6 +40,7 @@ const previousStep = () => {
 const submitForm = async (data: {
   email: string
   username: string
+  password: string
   passwordHash: string
   confirmPassword: string
   gender: string
@@ -57,6 +60,13 @@ const submitForm = async (data: {
   try {
     const response = await registerUser(updatedData)
     console.log('Response:', response)
+
+    const loginResponse = await loginUser({
+      email: updatedData.email,
+      password: updatedData.password,
+    })
+    localStorage.setItem('token', loginResponse.token)
+
     router.push('/')
   } catch (error) {
     console.log(error)

@@ -4,10 +4,11 @@ import { useRouter } from 'vue-router'
 import { getUserProfile } from '../services/userService'
 import PageLayout from '../layouts/PageLayout.vue'
 import ChartPoints from '../components/ChartPoints.vue'
-import profileDefault from '../../assets/general/man-icon.png'
+import profileMan from '../../assets/general/man-icon.png'
+import profileWoman from '../../assets/general/woman-icon.png'
 
 const router = useRouter()
-const profileImage = ref(profileDefault)
+const profileImage = ref()
 const isEditing = ref(false)
 const isEditingPassword = ref(false)
 
@@ -17,6 +18,7 @@ const userInfo = ref({
   age: 0,
   country: '',
   registered: '',
+  gender: '',
 })
 
 const studyTime = ref({
@@ -36,13 +38,6 @@ const passwordData = ref({
   confirmNewPassword: '',
 })
 
-const handleImageUpload = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) {
-    profileImage.value = URL.createObjectURL(file)
-  }
-}
-
 const saveChanges = () => {
   isEditing.value = false
 }
@@ -60,16 +55,31 @@ const saveNewPassword = () => {
 const fetchUserProfile = async () => {
   try {
     const data = await getUserProfile()
+
     userInfo.value = {
       name: data.username,
       email: data.email,
       age: data.age,
       country: data.country,
       registered: data.registeredDate,
+      gender: data.gender,
+    }
+
+    if (data.gender === 'male') {
+      profileImage.value = profileMan
+    } else if (data.gender === 'female') {
+      profileImage.value = profileWoman
     }
   } catch (error) {
     console.error(error)
     router.push('/login')
+  }
+}
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    profileImage.value = URL.createObjectURL(file)
   }
 }
 

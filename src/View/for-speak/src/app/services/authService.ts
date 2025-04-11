@@ -5,6 +5,7 @@ const API_URL = 'https://localhost:7058/api/Auth'
 export const registerUser = async (userData: {
   email: string
   username: string
+  password: string
   passwordHash: string
   confirmPassword: string
   gender: string
@@ -18,11 +19,11 @@ export const registerUser = async (userData: {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       console.log(error.response)
-      throw new Error(error.response?.data?.message || 'Помилка реєстрації')
+      throw new Error(error.response?.data?.message || 'Registration failed')
     } else if (error instanceof Error) {
-      throw new Error(error.message || 'Помилка реєстрації')
+      throw new Error(error.message || 'Registration failed')
     } else {
-      throw new Error('Помилка реєстрації')
+      throw new Error('Registration failed')
     }
   }
 }
@@ -35,7 +36,7 @@ export const loginUser = async (credentials: { email: string; password: string }
     const { token, userId } = response.data
 
     if (!userId) {
-      throw new Error('userId не отримано при логіні!')
+      throw new Error('userId not received during login!')
     }
 
     console.log('Login UserID:', userId)
@@ -46,9 +47,9 @@ export const loginUser = async (credentials: { email: string; password: string }
     return response.data
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'Помилка входу')
+      throw new Error(error.response?.data?.message || 'Login failed')
     } else {
-      throw new Error('Помилка входу')
+      throw new Error('Login failed')
     }
   }
 }

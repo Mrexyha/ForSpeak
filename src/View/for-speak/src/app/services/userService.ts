@@ -6,7 +6,7 @@ export const getUserProfile = async () => {
   const token = localStorage.getItem('token')
   const userId = localStorage.getItem('userId')
 
-  if (!token || !userId) throw new Error('Користувач не авторизований')
+  if (!token || !userId) throw new Error('User is not authorized!')
 
   try {
     const response = await axios.get(`${API_URL}/${userId}`, {
@@ -15,9 +15,9 @@ export const getUserProfile = async () => {
     return response.data
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || 'Не вдалося отримати профіль')
+      throw new Error(error.response?.data?.message || 'Failed to retrieve profile')
     } else {
-      throw new Error('Не вдалося отримати профіль')
+      throw new Error('Failed to retrieve profile')
     }
   }
 }

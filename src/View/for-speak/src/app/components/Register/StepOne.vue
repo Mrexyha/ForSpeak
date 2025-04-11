@@ -4,6 +4,7 @@ import { reactive, defineEmits } from 'vue'
 const form = reactive({
   email: '',
   username: '',
+  password: '',
   passwordHash: '',
   confirmPassword: '',
 })
@@ -11,11 +12,11 @@ const form = reactive({
 const emit = defineEmits(['next'])
 
 const nextStep = () => {
-  if (!form.email || !form.username || !form.passwordHash || !form.confirmPassword) {
+  if (!form.email || !form.username || !form.password || !form.confirmPassword) {
     alert('Заповніть всі поля!')
     return
   }
-  if (form.passwordHash !== form.confirmPassword) {
+  if (form.password !== form.confirmPassword) {
     alert('Паролі не співпадають!')
     return
   }
@@ -27,7 +28,7 @@ const nextStep = () => {
   <div class="step-one">
     <input type="email" v-model="form.email" placeholder="Електронна пошта" required />
     <input type="text" v-model="form.username" placeholder="Користувацьке ім'я" required />
-    <input type="password" v-model="form.passwordHash" placeholder="Пароль" required />
+    <input type="password" v-model="form.password" placeholder="Пароль" required />
     <input
       type="password"
       v-model="form.confirmPassword"
