@@ -51,7 +51,8 @@ const submitForm = async (data: {
   const updatedData = {
     ...data,
     birthdate: new Date(data.birthdate),
-    selectedLanguages: formData.value.selectedLanguages || [],
+    selectedLanguages:
+      formData.value.selectedLanguages.map((lang: string) => parseInt(lang, 10)) || [],
   }
 
   console.log('email ', updatedData.email)
@@ -77,16 +78,18 @@ const finalStep = (data: {
   gender: string
   birthdate: string
   country: string
-  selectedLanguages: string[]
+  language: string[]
 }) => {
-  const mergedData = {
+  console.log('selectedLanguages:', formData.value.selectedLanguages)
+
+  formData.value = {
     ...formData.value,
     ...data,
-    selectedLanguages: data.selectedLanguages,
+    selectedLanguages: data.language,
     birthdate: new Date(data.birthdate).getTime(),
   }
 
-  submitForm(mergedData)
+  submitForm(formData.value)
 }
 </script>
 

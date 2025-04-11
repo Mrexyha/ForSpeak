@@ -5,24 +5,25 @@
 namespace DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangeBirthDate : Migration
+    public partial class DropPrimitiveSelectedLanguages : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "DateOfBirth",
-                table: "Users",
-                newName: "Birthdate");
+            migrationBuilder.DropColumn(
+                name: "SelectedLanguages",
+                table: "Users");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Birthdate",
+            migrationBuilder.AddColumn<string>(
+                name: "SelectedLanguages",
                 table: "Users",
-                newName: "DateOfBirth");
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
     }
 }

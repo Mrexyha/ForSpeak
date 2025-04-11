@@ -1,21 +1,27 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { defineProps, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+interface Props {
+  languageId: number
+  name: string
+  description: string
+  flagImage: string
+  countryImage: string
+  progress: number
+  tasksCount: number
+}
+const props = defineProps<Props>()
 
 const router = useRouter()
-const route = useRoute()
 const isFinished = ref(false)
 
-const languageId = computed(() => route.params.languageId || 1)
-
 const goToEducation = () => {
-  router.push(`/education/${languageId.value}`)
+  router.push(`/education/${props.languageId}`)
 }
-
 const finishLearning = () => {
   isFinished.value = true
 }
-
 const restoreLearning = () => {
   isFinished.value = false
 }
@@ -24,12 +30,11 @@ const restoreLearning = () => {
 <template>
   <div class="my-lang-container">
     <div class="content-container">
-      <h1 class="title">Англійська мова</h1>
-      <div class="my-lang-content">
-        <p class="highlight">5 тем у вільному доступі</p>
-        <p>Вивчайте слова, граматику, розуміння тексту. Практикуйте вимову та написання.</p>
-        <p>Проходьте квізи та отримуйте бали.</p>
-      </div>
+      <h1 class="title">{{ props.name }}</h1>
+      <img :src="props.flagImage" alt="flag" class="flag" />
+      <p class="highlight">{{ props.tasksCount }} тем у вільному доступі</p>
+      <p>{{ props.description }}</p>
+      <p>Прогрес: {{ Math.round(props.progress * 100) }}%</p>
     </div>
     <div class="btns-container">
       <template v-if="!isFinished">

@@ -16,12 +16,6 @@ namespace BLL.Models.User
         [Required]
         public string Username { get; set; }
 
-        [Required]
-        public string Password { get; set; }
-
-        [Required]
-        public string ConfirmPassword { get; set; }
-
         public string Role { get; set; } = "User";
 
         [Required]
@@ -34,6 +28,8 @@ namespace BLL.Models.User
         public string Country { get; set; }
 
         [Required]
-        public List<string> SelectedLanguages { get; set; }
+        public List<UserLanguageModel> UserLanguages { get; set; } = new();
+
+        public List<int> SelectedLanguageIds { get; set; } = new();
     }
 }

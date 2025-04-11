@@ -11,7 +11,7 @@ export const registerUser = async (userData: {
   gender: string
   birthdate: Date
   country: string
-  selectedLanguages: string[]
+  selectedLanguages: number[]
 }) => {
   try {
     const response = await axios.post(`${API_URL}/register`, userData)

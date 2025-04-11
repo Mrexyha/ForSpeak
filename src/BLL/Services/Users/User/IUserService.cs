@@ -11,6 +11,7 @@ namespace BLL.Services.Users.User
     {
         Task<List<RegisterModel>> GetAllUsersAsync();
         Task<RegisterModel> GetUserByIdAsync(int userId);
+        Task<UserModel> GetUserWithLanguagesAsync(int userId);
         Task<RegisterModel> UpdateUserAsync(RegisterModel userModel);
         Task<bool> DeleteUserAsync(int userId);
         //Task<UserModel> SignUp(UserModel user);

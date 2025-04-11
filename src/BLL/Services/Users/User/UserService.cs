@@ -33,6 +33,13 @@ namespace BLL.Services.Users.User
             return _mapper.Map<RegisterModel>(user);
         }
 
+        public async Task<UserModel> GetUserWithLanguagesAsync(int userId)
+        {
+            var entity = await _userRepository.GetUserWithLanguagesAsync(userId);
+            if (entity == null) return null;
+            return _mapper.Map<UserModel>(entity);
+        }
+
         public async Task<RegisterModel> UpdateUserAsync(RegisterModel userModel)
         {
             var userEntity = _mapper.Map<UserEntity>(userModel);

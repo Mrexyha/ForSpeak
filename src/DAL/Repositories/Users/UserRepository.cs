@@ -1,4 +1,5 @@
-﻿using DAL.Entities.Users;
+﻿using DAL.Entities.Languages;
+using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,23 @@ namespace DAL.Repositories.Users
 
         public async Task<List<UserEntity>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Include(u => u.UserLanguages) 
+                .ToListAsync();
         }
 
         public async Task<UserEntity> GetUserByIdAsync(int userId)
         {
             return await _context.Users.FindAsync(userId);
+        }
+
+        public async Task<UserEntity> GetUserWithLanguagesAsync(int userId)
+        {
+            return await _context.Users
+                .Include(u => u.UserLanguages)
+                    .ThenInclude(ul => ul.Language)
+                        .ThenInclude(l => l.Lessons)       
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<UserEntity> UpdateUserAsync(UserEntity user)
@@ -51,6 +63,12 @@ namespace DAL.Repositories.Users
 
         public async Task<UserEntity> CreateUserAsync(UserEntity user)
         {
+
+            if (user.UserLanguages == null || !user.UserLanguages.Any())
+            {
+                user.UserLanguages = user.UserLanguages ?? new List<UserLanguage>();
+            }
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;

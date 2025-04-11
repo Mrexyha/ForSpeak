@@ -37,6 +37,26 @@ namespace ForSpeak.Controllers
             return Ok(user);
         }
 
+        [HttpGet("{id}/languages")]
+        public async Task<IActionResult> GetMyLanguages(int id)
+        {
+            var user = await _userService.GetUserWithLanguagesAsync(id);
+            if (user == null) return NotFound();
+
+            var result = user.UserLanguages
+                .Select(ul => new {
+                    languageId = ul.LanguageId,
+                    name = ul.Language.Name,
+                    description = ul.Language.Description,
+                    flagImage = ul.Language.FlagImage,
+                    countryImage = ul.Language.CountryImage
+                })
+                .OrderBy(x => x.languageId)
+                .ToList();
+
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] RegisterModel userModel)
         {

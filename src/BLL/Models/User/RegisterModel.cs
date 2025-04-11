@@ -36,6 +36,6 @@ namespace BLL.Models.User
         public string Country { get; set; }
 
         [Required]
-        public List<string> SelectedLanguages { get; set; } 
+        public List<int> SelectedLanguageIds { get; set; } = new();
     }
 }

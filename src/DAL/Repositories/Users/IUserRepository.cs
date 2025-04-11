@@ -17,6 +17,7 @@ namespace DAL.Repositories.Users
 
         Task<List<UserEntity>> GetAllUsersAsync();
         Task<UserEntity> GetUserByIdAsync(int userId);
+        Task<UserEntity> GetUserWithLanguagesAsync(int userId);
         Task<UserEntity> UpdateUserAsync(UserEntity user);
         Task<bool> DeleteUserAsync(int userId);
 

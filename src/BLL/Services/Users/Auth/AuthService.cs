@@ -44,13 +44,9 @@ namespace BLL.Services.Users.Auth
             newUser.PasswordHash = passwordHash;
 
             var createdUser = await _userRepository.CreateUserAsync(newUser);
-            var token = _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
 
-            return new AuthResult
-            {
-                Token = token,
-                UserId = createdUser.Id
-            };
+            var token = _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
+            return new AuthResult { Token = token, UserId = createdUser.Id };
         }
 
         public async Task<AuthResult> Login(LoginModel loginModel)

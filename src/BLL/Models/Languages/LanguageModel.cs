@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Languages
 {
-    public class LanguageModel
+    public class LanguageModel : BaseModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string FlagImage { get; set; }
         public string CountryImage { get; set; }
