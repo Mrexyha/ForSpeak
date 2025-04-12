@@ -13,7 +13,7 @@ const form = reactive({
   gender: '',
   birthdate: '',
   country: '',
-  language: [] as string[],
+  languageIds: [] as number[],
 })
 
 const countries = ['Україна', 'США', 'Німеччина', 'Франція', 'Велика Британія']
@@ -29,12 +29,12 @@ const submitForm = () => {
   emit('submit', form)
 }
 
-const toggleLanguageSelection = (language: string) => {
-  const index = form.language.indexOf(language)
-  if (index === -1) {
-    form.language.push(language)
+const toggleLanguageSelection = (lang: Language) => {
+  const idx = form.languageIds.indexOf(lang.id)
+  if (idx === -1) {
+    form.languageIds.push(lang.id)
   } else {
-    form.language.splice(index, 1)
+    form.languageIds.splice(idx, 1)
   }
 }
 </script>
@@ -59,9 +59,9 @@ const toggleLanguageSelection = (language: string) => {
       <div
         v-for="language in languages"
         :key="language.id"
+        @click="toggleLanguageSelection(language)"
         class="language-item"
-        :class="{ selected: form.language.includes(language.name) }"
-        @click="toggleLanguageSelection(language.name)"
+        :class="{ selected: form.languageIds.includes(language.id) }"
       >
         {{ language.name }}
       </div>

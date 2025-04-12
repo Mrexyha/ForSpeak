@@ -17,7 +17,7 @@ const formData = ref({
   gender: '',
   birthdate: Date.now(),
   country: '',
-  selectedLanguages: [] as string[],
+  selectedLanguageIds: [] as number[],
 })
 
 const steps = shallowRef([StepOne, StepTwo])
@@ -37,22 +37,44 @@ const previousStep = () => {
   if (step.value > 1) step.value--
 }
 
+const finalStep = (data: {
+  gender: string
+  birthdate: string
+  country: string
+  languageIds: number[]
+}) => {
+  console.log('languageIds:', formData.value.selectedLanguageIds)
+
+  formData.value = {
+    ...formData.value,
+    gender: data.gender,
+    birthdate: new Date(data.birthdate).getTime(),
+    country: data.country,
+    selectedLanguageIds: data.languageIds,
+  }
+
+  submitForm(formData.value)
+}
+
 const submitForm = async (data: {
   email: string
   username: string
   password: string
-  passwordHash: string
   confirmPassword: string
   gender: string
   birthdate: number
   country: string
-  selectedLanguages: string[]
+  selectedLanguageIds: number[]
 }) => {
   const updatedData = {
-    ...data,
+    email: data.email,
+    username: data.username,
+    password: data.password,
+    confirmPassword: data.confirmPassword,
+    gender: data.gender,
     birthdate: new Date(data.birthdate),
-    selectedLanguages:
-      formData.value.selectedLanguages.map((lang: string) => parseInt(lang, 10)) || [],
+    country: data.country,
+    selectedLanguageIds: data.selectedLanguageIds,
   }
 
   console.log('email ', updatedData.email)
@@ -72,24 +94,6 @@ const submitForm = async (data: {
   } catch (error) {
     console.log(error)
   }
-}
-
-const finalStep = (data: {
-  gender: string
-  birthdate: string
-  country: string
-  language: string[]
-}) => {
-  console.log('selectedLanguages:', formData.value.selectedLanguages)
-
-  formData.value = {
-    ...formData.value,
-    ...data,
-    selectedLanguages: data.language,
-    birthdate: new Date(data.birthdate).getTime(),
-  }
-
-  submitForm(formData.value)
 }
 </script>
 
