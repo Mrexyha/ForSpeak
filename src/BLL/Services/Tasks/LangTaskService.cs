@@ -7,26 +7,24 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace BLL.Services.Tasks
 {
     public class LangTaskService : ILangTaskService
     {
         private readonly ILangTaskRepository _langTaskRepository;
+        private readonly IMapper _mapper;
 
-        public LangTaskService(ILangTaskRepository langTaskRepository)
+        public LangTaskService(ILangTaskRepository langTaskRepository, IMapper mapper)
         {
             _langTaskRepository = langTaskRepository;
+            _mapper = mapper;
         }
 
         public async Task<TaskLangModel> CreateTaskAsync(TaskLangModel model)
         {
-            var entity = new TaskLangEntity
-            {
-                ModuleId = model.ModuleId,
-                ContentJson = model.ContentJson,
-                Type = model.TaskType
-            };
+            var entity = _mapper.Map<TaskLangEntity>(model);
 
             await _langTaskRepository.AddAsync(entity);
 
@@ -39,13 +37,20 @@ namespace BLL.Services.Tasks
             var entity = await _langTaskRepository.GetByIdAsync(id);
             if (entity == null) return null;
 
-            return new TaskLangModel
-            {
-                Id = entity.Id,
-                ModuleId = entity.ModuleId,
-                ContentJson = entity.ContentJson,
-                TaskType = entity.Type
-            };
+            return _mapper.Map<TaskLangModel>(entity);
+        }
+
+        public async Task<TaskLangModel?> UpdateTaskAsync(int id, TaskLangModel model)
+        {
+            var existingEntity = await _langTaskRepository.GetByIdAsync(id);
+            if (existingEntity == null)
+                return null;
+
+            _mapper.Map(model, existingEntity);
+
+            await _langTaskRepository.UpdateAsync(existingEntity);
+
+            return _mapper.Map<TaskLangModel>(existingEntity);
         }
 
         public async Task<dynamic> GetTaskContentAsync(int id)
@@ -54,21 +59,7 @@ namespace BLL.Services.Tasks
             if (entity == null)
                 return null;
 
-            switch (entity.Type)
-            {
-                case DAL.Entities.Enums.TaskLangType.Theory:
-                    return JsonConvert.DeserializeObject<dynamic>(entity.ContentJson);
-                case DAL.Entities.Enums.TaskLangType.Quiz:
-                    return JsonConvert.DeserializeObject<dynamic>(entity.ContentJson);
-                case DAL.Entities.Enums.TaskLangType.Vocabulary:
-                    return JsonConvert.DeserializeObject<dynamic>(entity.ContentJson);
-                case DAL.Entities.Enums.TaskLangType.Reading:
-                    return JsonConvert.DeserializeObject<dynamic>(entity.ContentJson);
-                case DAL.Entities.Enums.TaskLangType.Speaking:
-                    return JsonConvert.DeserializeObject<dynamic>(entity.ContentJson);
-                default:
-                    return null;
-            }
+            return JsonConvert.DeserializeObject<dynamic>(entity.ContentJson);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace BLL.Services.Tasks
     {
         Task<TaskLangModel> CreateTaskAsync(TaskLangModel model);
         Task<TaskLangModel> GetTaskByIdAsync(int id);
+        Task<TaskLangModel?> UpdateTaskAsync(int id, TaskLangModel model);
         Task<dynamic> GetTaskContentAsync(int id);
     }
 }

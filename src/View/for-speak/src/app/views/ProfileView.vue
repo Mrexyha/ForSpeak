@@ -57,12 +57,9 @@ const fetchUserProfile = async () => {
     const data = await getUserProfile()
 
     userInfo.value = {
+      ...data,
       name: data.username,
-      email: data.email,
-      age: data.age,
-      country: data.country,
       registered: data.registeredDate,
-      gender: data.gender,
     }
 
     if (data.gender === 'male') {

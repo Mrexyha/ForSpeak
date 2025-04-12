@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using BLL.Models.Languages;
+using BLL.Models.Lessons;
+using BLL.Models.Tasks;
 using BLL.Models.User;
 using DAL.Entities.Languages;
+using DAL.Entities.Lessons;
+using DAL.Entities.Tasks;
 using DAL.Entities.Users;
 using System;
 using System.Collections.Generic;
@@ -68,6 +72,15 @@ namespace BLL.Mapping
             // Reverse mapping (int to UserLanguageModel)
             CreateMap<int, UserLanguageModel>()
                 .ConvertUsing(src => new UserLanguageModel { LanguageId = src });
+
+            CreateMap<LessonModel, LessonEntity>()
+                .ForMember(dest => dest.Modules, opt => opt.Ignore());
+            CreateMap<LessonEntity, LessonModel>();
+
+            CreateMap<TaskLangModel, TaskLangEntity>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TaskType));
+            CreateMap<TaskLangEntity, TaskLangModel>()
+                .ForMember(dest => dest.TaskType, opt => opt.MapFrom(src => src.Type));
         }
     }
 }

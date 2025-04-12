@@ -1,4 +1,5 @@
-﻿using BLL.Models.Lessons;
+﻿using AutoMapper;
+using BLL.Models.Lessons;
 using BLL.Models.Modules;
 using DAL.Entities.Lessons;
 using DAL.Repositories.Lessons;
@@ -13,10 +14,12 @@ namespace BLL.Services.Lessons
     public class LessonsService : ILessonsService
     {
         private readonly ILessonRepository _lessonRepository;
+        private readonly IMapper _mapper;
 
-        public LessonsService(ILessonRepository lessonRepository)
+        public LessonsService(ILessonRepository lessonRepository, IMapper mapper)
         {
             _lessonRepository = lessonRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId)
@@ -81,9 +84,7 @@ namespace BLL.Services.Lessons
             if (lessonEntity == null)
                 return null;
 
-            lessonEntity.Title = lessonModel.Title;
-            lessonEntity.ImageUrl = lessonModel.ImageUrl;
-            lessonEntity.Level = lessonModel.Level;
+            _mapper.Map(lessonModel, lessonEntity); 
 
             await _lessonRepository.UpdateAsync(lessonEntity);
 
