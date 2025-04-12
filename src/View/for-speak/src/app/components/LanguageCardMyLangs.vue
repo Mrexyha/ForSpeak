@@ -6,8 +6,6 @@ interface Props {
   languageId: number
   name: string
   description: string
-  flagImage: string
-  countryImage: string
   progress: number
   tasksCount: number
 }
@@ -31,7 +29,6 @@ const restoreLearning = () => {
   <div class="my-lang-container">
     <div class="content-container">
       <h1 class="title">{{ props.name }}</h1>
-      <img :src="props.flagImage" alt="flag" class="flag" />
       <p class="highlight">{{ props.tasksCount }} тем у вільному доступі</p>
       <p>{{ props.description }}</p>
       <p>Прогрес: {{ Math.round(props.progress * 100) }}%</p>

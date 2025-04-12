@@ -51,7 +51,10 @@ namespace BLL.Mapping
                 ));
 
             // LanguageEntity to LanguageModel and reverse
-            CreateMap<LanguageEntity, LanguageModel>().ReverseMap();
+            CreateMap<LanguageEntity, LanguageModel>()
+                .ForMember(dest => dest.LessonsCount,
+                       opt => opt.MapFrom(src => src.Lessons.Count))
+                .ReverseMap();
 
             // UserLanguage to UserLanguageModel and reverse
             CreateMap<UserLanguage, UserLanguageModel>()

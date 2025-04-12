@@ -13,5 +13,6 @@ namespace BLL.Models.Languages
         public string CountryImage { get; set; }
         public string Description { get; set; }
 
+        public int LessonsCount { get; set; }
     }
 }

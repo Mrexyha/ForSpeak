@@ -49,7 +49,9 @@ namespace ForSpeak.Controllers
                     name = ul.Language.Name,
                     description = ul.Language.Description,
                     flagImage = ul.Language.FlagImage,
-                    countryImage = ul.Language.CountryImage
+                    countryImage = ul.Language.CountryImage,
+                    progress = ul.Progress,
+                    tasksCount = ul.Language.LessonsCount
                 })
                 .OrderBy(x => x.languageId)
                 .ToList();

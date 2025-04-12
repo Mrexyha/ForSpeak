@@ -24,7 +24,9 @@ onMounted(async () => {
     const userId = localStorage.getItem('userId')
     if (!token || !userId) throw new Error('Unauthorized')
 
-    const { data } = await axios.get<UserLanguage[]>(`/api/user/${userId}/languages`, {
+    const API_BASE = 'https://localhost:7058/api'
+
+    const { data } = await axios.get<UserLanguage[]>(`${API_BASE}/User/${userId}/languages`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     userLanguages.value = data
