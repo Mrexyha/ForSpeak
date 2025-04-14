@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getUserProfile } from '../services/userService'
 import PageLayout from '../layouts/PageLayout.vue'
 import ChartPoints from '../components/ChartPoints.vue'
-import profileDefault from '../../assets/general/man-icon.png'
+import profileMan from '../../../public/assets/general/man-icon.png'
+import profileWoman from '../../../public/assets/general/woman-icon.png'
 
 const router = useRouter()
-const profileImage = ref(profileDefault)
+const profileImage = ref()
 const isEditing = ref(false)
 const isEditingPassword = ref(false)
 
 const userInfo = ref({
-  name: 'Json Smith',
-  email: 'testuseremail@gmail.com',
-  age: 27,
-  country: 'Україна',
-  registered: '10/04/2024',
+  name: '',
+  email: '',
+  age: 0,
+  country: '',
+  registered: '',
+  gender: '',
 })
 
 const studyTime = ref({
@@ -35,13 +38,6 @@ const passwordData = ref({
   confirmNewPassword: '',
 })
 
-const handleImageUpload = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) {
-    profileImage.value = URL.createObjectURL(file)
-  }
-}
-
 const saveChanges = () => {
   isEditing.value = false
 }
@@ -55,7 +51,42 @@ const saveNewPassword = () => {
   passwordData.value = { currentPassword: '', newPassword: '', confirmNewPassword: '' }
   isEditingPassword.value = false
 }
+
+const fetchUserProfile = async () => {
+  try {
+    const data = await getUserProfile()
+
+    userInfo.value = {
+      ...data,
+      name: data.username,
+      registered: data.registeredDate,
+    }
+
+    if (data.gender === 'male') {
+      profileImage.value = profileMan
+    } else if (data.gender === 'female') {
+      profileImage.value = profileWoman
+    }
+  } catch (error) {
+    console.error(error)
+    router.push('/login')
+  }
+}
+
+const handleImageUpload = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    profileImage.value = URL.createObjectURL(file)
+  }
+}
+
+onMounted(() => {
+  fetchUserProfile()
+})
+
 const logout = () => {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
   alert('Ви вийшли з профілю!')
   router.push('/')
 }

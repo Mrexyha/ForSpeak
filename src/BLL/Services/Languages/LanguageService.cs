@@ -26,5 +26,10 @@ namespace BLL.Services.Languages
         {
             return await _languageRepository.GetByIdAsync(id);
         }
+
+        public async Task UpdateLanguageAsync(LanguageEntity language)
+        {
+            await _languageRepository.UpdateLanguageAsync(language);
+        }
     }
 }

@@ -1,6 +1,8 @@
-﻿using BLL.Models.Lessons;
+﻿using AutoMapper;
+using BLL.Models.Lessons;
 using BLL.Models.Modules;
 using DAL.Entities.Lessons;
+using DAL.Entities.Modules;
 using DAL.Repositories.Lessons;
 using System;
 using System.Collections.Generic;
@@ -13,17 +15,12 @@ namespace BLL.Services.Lessons
     public class LessonsService : ILessonsService
     {
         private readonly ILessonRepository _lessonRepository;
+        private readonly IMapper _mapper;
 
-        public LessonsService(ILessonRepository lessonRepository)
+        public LessonsService(ILessonRepository lessonRepository, IMapper mapper)
         {
             _lessonRepository = lessonRepository;
-        }
-
-        public async Task<LessonEntity> AddLessonAsync(LessonEntity lesson)
-        {
-            await _lessonRepository.AddAsync(lesson);
-
-            return lesson;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId)
@@ -73,18 +70,47 @@ namespace BLL.Services.Lessons
             };
         }
 
+        public async Task<LessonEntity> AddLessonAsync(LessonEntity lesson)
+        {
+            await _lessonRepository.AddAsync(lesson);
+
+            return lesson;
+        }
+
+
+        public async Task<LessonEntity?> UpdateLessonAsync(int languageId, int lessonId, LessonModel lessonModel)
+        {
+            var lessonEntity = await _lessonRepository.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+
+            if (lessonEntity == null)
+                return null;
+
+            _mapper.Map(lessonModel, lessonEntity);
+
+            lessonEntity.Modules.Clear();
+            lessonEntity.Modules = lessonModel.Modules.Select(m => new ModuleEntity
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Type = m.Type,
+                LessonId = lessonEntity.Id
+            }).ToList();
+
+            await _lessonRepository.UpdateAsync(lessonEntity);
+
+            return lessonEntity;
+        }
+
+        public async Task<bool> DeleteLessonAsync(int languageId, int lessonId)
+        {
+            return await _lessonRepository.DeleteLessonByLanguageAndIdAsync(languageId, lessonId);
+        }
+
         public async Task<int> GetUserPoints(int userId)
         {
             var points = await _lessonRepository.GetUserPointsAsync(userId);
 
             return points;
-        }
-
-        public async Task<LessonEntity> UpdateLessonAsync(LessonEntity lesson)
-        {
-            await _lessonRepository.UpdateAsync(lesson);
-
-            return lesson; throw new NotImplementedException();
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250318220131_LanguageNameToLessonEntity")]
-    partial class LanguageNameToLessonEntity
+    [Migration("20250414133130_UpdateLanguageImagePaths")]
+    partial class UpdateLanguageImagePaths
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,12 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserEntityId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Languages");
 
@@ -57,51 +62,46 @@ namespace DAL.Migrations
                         new
                         {
                             Id = 1,
-                            CountryImage = "..\\View\\for-speak\\src\\assets\\main\\UK-main.jpg",
-                            Description = "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
-                            FlagImage = "..\\View\\for-speak\\src\\assets\\main\\UK-flag.jpg",
+                            CountryImage = "../View/for-speak/src/assets/main/UK-main.jpg",
+                            Description = "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі...",
+                            FlagImage = "/assets/main/UK-flag.jpg",
                             Name = "Англійська мова"
                         },
                         new
                         {
                             Id = 2,
-                            CountryImage = "View\\for-speak\\src\\assets\\main\\France-main.jpg",
-                            Description = "Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.",
-                            FlagImage = "View\\for-speak\\src\\assets\\main\\France-flag.jpg",
+                            CountryImage = "../View/for-speak/src/assets/main/France-main.jpg",
+                            Description = "Французька мова є однією з основних мов міжнародної дипломатії...",
+                            FlagImage = "../View/for-speak/src/assets/main/France-flag.jpg",
                             Name = "Французька мова"
                         },
                         new
                         {
                             Id = 3,
-                            CountryImage = "View\\for-speak\\src\\assets\\main\\Germany-main.jpg",
-                            Description = "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
-                            FlagImage = "View\\for-speak\\src\\assets\\main\\Germany-flag.jpg",
+                            CountryImage = "../View/for-speak/src/assets/main/Germany-main.jpg",
+                            Description = "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі...",
+                            FlagImage = "../View/for-speak/src/assets/main/Germany-flag.jpg",
                             Name = "Німецька мова"
                         });
                 });
 
             modelBuilder.Entity("DAL.Entities.Languages.UserLanguage", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<double>("Progress")
                         .HasColumnType("float");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "LanguageId");
 
                     b.HasIndex("LanguageId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserLanguages");
                 });
@@ -221,12 +221,12 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("Birthdate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -244,10 +244,6 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SelectedLanguages")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -257,25 +253,17 @@ namespace DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("LanguageEntityUserEntity", b =>
+            modelBuilder.Entity("DAL.Entities.Languages.LanguageEntity", b =>
                 {
-                    b.Property<int>("LanguagesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("LanguagesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("LanguageEntityUserEntity");
+                    b.HasOne("DAL.Entities.Users.UserEntity", null)
+                        .WithMany("Languages")
+                        .HasForeignKey("UserEntityId");
                 });
 
             modelBuilder.Entity("DAL.Entities.Languages.UserLanguage", b =>
                 {
                     b.HasOne("DAL.Entities.Languages.LanguageEntity", "Language")
-                        .WithMany()
+                        .WithMany("UserLanguages")
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -294,7 +282,7 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Lessons.LessonEntity", b =>
                 {
                     b.HasOne("DAL.Entities.Languages.LanguageEntity", "Language")
-                        .WithMany()
+                        .WithMany("Lessons")
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -343,19 +331,11 @@ namespace DAL.Migrations
                     b.Navigation("Module");
                 });
 
-            modelBuilder.Entity("LanguageEntityUserEntity", b =>
+            modelBuilder.Entity("DAL.Entities.Languages.LanguageEntity", b =>
                 {
-                    b.HasOne("DAL.Entities.Languages.LanguageEntity", null)
-                        .WithMany()
-                        .HasForeignKey("LanguagesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Lessons");
 
-                    b.HasOne("DAL.Entities.Users.UserEntity", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("UserLanguages");
                 });
 
             modelBuilder.Entity("DAL.Entities.Lessons.LessonEntity", b =>
@@ -372,6 +352,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Users.UserEntity", b =>
                 {
+                    b.Navigation("Languages");
+
                     b.Navigation("UserLanguages");
 
                     b.Navigation("UsersToLessons")

@@ -13,8 +13,9 @@ namespace BLL.Services.Lessons
         Task<IEnumerable<LessonModel>> GetLessonsByLanguageIdAsync(int languageId);
         Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId);
 
-        public Task<LessonEntity> AddLessonAsync(LessonEntity lesson);
-        public Task<LessonEntity> UpdateLessonAsync(LessonEntity lesson);
-        public Task<int> GetUserPoints(int userId);
+        Task<LessonEntity> AddLessonAsync(LessonEntity lesson);
+        Task<LessonEntity?> UpdateLessonAsync(int languageId, int lessonId, LessonModel lessonModel);
+        Task<bool> DeleteLessonAsync(int languageId, int lessonId);
+        Task<int> GetUserPoints(int userId);
     }
 }

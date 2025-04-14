@@ -10,6 +10,7 @@ using BLL.Mapping;
 using Microsoft.Extensions.Configuration;
 using BLL.Services.Lessons;
 using DAL.Repositories.Lessons;
+using BLL.Services.Users.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,8 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<ILessonsService, LessonsService>();
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

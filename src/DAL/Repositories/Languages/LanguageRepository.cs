@@ -27,9 +27,9 @@ namespace DAL.Repositories
             return await _context.Languages.FindAsync(id);
         }
 
-        public async Task AddLanguageAsync(LanguageEntity language)
+        public async Task UpdateLanguageAsync(LanguageEntity language)
         {
-            _context.Languages.Add(language);
+            _context.Languages.Update(language);
             await _context.SaveChangesAsync();
         }
     }

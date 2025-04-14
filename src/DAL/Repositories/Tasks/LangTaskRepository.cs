@@ -20,10 +20,10 @@ namespace DAL.Repositories.Tasks
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<TaskLangEntity>> GetListeningTasks()
+        public async Task<IEnumerable<TaskLangEntity>> GetSpeakingTasks()
         {
             return await _context.Set<TaskLangEntity>()
-                .Where(t => t.Type == TaskLangType.Listening)
+                .Where(t => t.Type == TaskLangType.Speaking)
                 .ToListAsync();
         }
 

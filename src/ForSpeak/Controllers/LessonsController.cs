@@ -71,5 +71,30 @@ namespace ForSpeak.Controllers
                 createdLesson
             );
         }
+
+        [HttpPut("update-lesson/{languageId}/{lessonId}")]
+        public async Task<IActionResult> UpdateLesson(int languageId, int lessonId, [FromBody] LessonModel lessonModel)
+        {
+            if (lessonModel == null)
+                return BadRequest("Invalid lesson data.");
+
+            var updatedLesson = await _lessonsService.UpdateLessonAsync(languageId, lessonId, lessonModel);
+
+            if (updatedLesson == null)
+                return NotFound("Lesson not found.");
+
+            return Ok(updatedLesson);
+        }
+
+        [HttpDelete("delete-lesson/{languageId}/{lessonId}")]
+        public async Task<IActionResult> DeleteLesson(int languageId, int lessonId)
+        {
+            var isDeleted = await _lessonsService.DeleteLessonAsync(languageId, lessonId);
+
+            if (!isDeleted)
+                return NotFound("Lesson not found.");
+
+            return NoContent();
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace DAL.Repositories.Tasks
         public Task<IEnumerable<TaskLangEntity>> GetVocabularyTasks();
         public Task<IEnumerable<TaskLangEntity>> GetReadingTasks();
         public Task<IEnumerable<TaskLangEntity>> GetQuizTasks();
-        public Task<IEnumerable<TaskLangEntity>> GetListeningTasks();
+        public Task<IEnumerable<TaskLangEntity>> GetSpeakingTasks();
         public Task<IEnumerable<TaskLangEntity>> GetTheory();
     }
 }

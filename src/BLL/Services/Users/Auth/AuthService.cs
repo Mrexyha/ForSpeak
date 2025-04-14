@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DAL.Entities.Languages;
+using Azure.Core;
 
 namespace BLL.Services.Users.Auth
 {
@@ -24,7 +25,7 @@ namespace BLL.Services.Users.Auth
             _mapper = mapper;
         }
 
-        public async Task<string> Register(UserModel userModel)
+        public async Task<AuthResult> Register(RegisterModel userModel)
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(userModel.Email);
             if (existingUser != null)
@@ -32,35 +33,42 @@ namespace BLL.Services.Users.Auth
                 throw new Exception("User already exists");
             }
 
-            if (userModel.PasswordHash != userModel.ConfirmPassword)
+            if (!string.IsNullOrEmpty(userModel.ConfirmPassword) && userModel.Password != userModel.ConfirmPassword)
             {
                 throw new Exception("Passwords do not match");
             }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(userModel.PasswordHash);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(userModel.Password);
 
             var newUser = _mapper.Map<UserEntity>(userModel);
             newUser.PasswordHash = passwordHash;
 
             var createdUser = await _userRepository.CreateUserAsync(newUser);
-            return _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
+
+            var token = _jwtService.GenerateToken(_mapper.Map<UserModel>(createdUser));
+            return new AuthResult { Token = token, UserId = createdUser.Id };
         }
 
-        public async Task<string> Login(UserModel user)
+        public async Task<AuthResult> Login(LoginModel loginModel)
         {
-            var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
+            var existingUser = await _userRepository.GetUserByEmailAsync(loginModel.Email);
             if (existingUser == null)
             {
                 throw new UnauthorizedAccessException("User not found");
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(user.PasswordHash, existingUser.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(loginModel.Password, existingUser.PasswordHash))
             {
                 throw new UnauthorizedAccessException("Invalid password");
             }
 
-            var userModel = _mapper.Map<UserModel>(existingUser);
-            return _jwtService.GenerateToken(userModel);
+            var token = _jwtService.GenerateToken(_mapper.Map<UserModel>(existingUser));
+
+            return new AuthResult
+            {
+                Token = token,
+                UserId = existingUser.Id
+            };
         }
     }
 }

@@ -17,9 +17,8 @@ namespace DAL.Entities.Users
         public string Role { get; set; } = "User";
         public string Gender { get; set; }
         public string Country { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public List<string> SelectedLanguages { get; set; }
-        public List<UserLanguage> UserLanguages { get; set; }
+        public DateTime Birthdate { get; set; }
+        public List<UserLanguage> UserLanguages { get; set; } = new();
 
         public List<LanguageEntity> Languages { get; set; }
         public UsersToLessons UsersToLessons { get; set; }
