@@ -21,3 +21,24 @@ export const getUserProfile = async () => {
     }
   }
 }
+
+export const addLanguageToUser = async (languageId: number) => {
+  const userId = localStorage.getItem('userId')
+  const token = localStorage.getItem('token')
+
+  if (!userId || !token) throw new Error('User is not authorized!')
+
+  try {
+    await axios.post(`${API_URL}/${userId}/languages/${languageId}`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data || 'Не вдалося додати мову')
+    } else {
+      throw new Error('Помилка при додаванні мови')
+    }
+  }
+}

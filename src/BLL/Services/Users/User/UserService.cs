@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Models.User;
+using DAL.Entities.Languages;
 using DAL.Entities.Users;
 using DAL.Repositories.Users;
 using System;
@@ -47,31 +48,28 @@ namespace BLL.Services.Users.User
             return _mapper.Map<RegisterModel>(updatedUser);
         }
 
+        public async Task<bool> AddLanguageToUserAsync(int userId, int languageId)
+        {
+            var user = await _userRepository.GetUserWithLanguagesAsync(userId);
+            if (user == null) return false;
+
+            var alreadyExists = user.UserLanguages.Any(ul => ul.LanguageId == languageId);
+            if (alreadyExists) return false;
+
+            user.UserLanguages.Add(new UserLanguage
+            {
+                UserId = userId,
+                LanguageId = languageId,
+                Progress = 0
+            });
+
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+        }
+
         public async Task<bool> DeleteUserAsync(int userId)
         {
             return await _userRepository.DeleteUserAsync(userId);
         }
-
-        //public async Task<UserModel> SignUp(UserModel userModel)
-        //{
-        //    var existingUser = await _userRepository.GetUserByEmailAsync(userModel.Email);
-        //    if (existingUser != null)
-        //    {
-        //        throw new Exception("Користувач з такою електронною поштою вже існує.");
-        //    }
-
-        //    var userEntity = _mapper.Map<UserEntity>(userModel);
-
-        //    userEntity.PasswordHash = HashPassword(userModel.PasswordHash);
-
-        //    var createdUser = await _userRepository.CreateUserAsync(userEntity);
-
-        //    return _mapper.Map<UserModel>(createdUser);
-        //}
-
-        //private string HashPassword(string password)
-        //{
-        //    return BCrypt.Net.BCrypt.HashPassword(password);
-        //}
     }
 }

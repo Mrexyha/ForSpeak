@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { addLanguageToUser } from '../services/userService'
 
 const router = useRouter()
 
@@ -20,8 +21,20 @@ const containerClass = computed(() => ({
   reverse: !!props.reverse,
 }))
 
-const goToMyLanguages = () => {
-  router.push('/my-languages')
+const handleStartLearning = async (languageId: number) => {
+  try {
+    await addLanguageToUser(languageId)
+    alert('Мова додана до ваших мов!')
+    router.push('/my-languages')
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error)
+      alert('Помилка: ' + error.message)
+    } else {
+      console.error(error)
+      alert('Сталася невідома помилка')
+    }
+  }
 }
 </script>
 
@@ -32,7 +45,9 @@ const goToMyLanguages = () => {
       <h1 class="title">{{ language.name }}</h1>
       <div class="flag" :style="{ backgroundImage: `url(${language.flagImage})` }"></div>
       <p class="description">{{ language.description }}</p>
-      <button class="lets-start-btn" @click="goToMyLanguages">Почати вивчення</button>
+      <button class="lets-start-btn" @click="() => handleStartLearning(language.id)">
+        Почати вивчення
+      </button>
     </div>
   </div>
 </template>

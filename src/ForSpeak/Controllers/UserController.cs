@@ -59,6 +59,17 @@ namespace ForSpeak.Controllers
             return Ok(result);
         }
 
+        [HttpPost("{userId}/languages/{languageId}")]
+        public async Task<IActionResult> AddLanguageToUser(int userId, int languageId)
+        {
+            var success = await _userService.AddLanguageToUserAsync(userId, languageId);
+            if (!success)
+            {
+                return BadRequest("Language is already added or user is not found.");
+            }
+            return Ok("Language is successfully added.");
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] RegisterModel userModel)
         {
