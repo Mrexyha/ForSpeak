@@ -10,7 +10,11 @@ defineProps({
     <div class="points">+5</div>
     <div class="card">
       <h1 class="main-lesson-title">{{ title }}</h1>
-      <img src="../../assets/lessons/family.png" alt="family photo" class="main-lesson-photo" />
+      <img
+        src="../../../public/assets/lessons/family.png"
+        alt="family photo"
+        class="main-lesson-photo"
+      />
       <div class="difficulty">
         <div class="difficulty-color"></div>
         <div class="difficulty-label">{{ difficulty }}</div>

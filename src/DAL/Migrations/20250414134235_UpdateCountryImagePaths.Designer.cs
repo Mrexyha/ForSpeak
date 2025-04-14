@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414134235_UpdateCountryImagePaths")]
+    partial class UpdateCountryImagePaths
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +63,7 @@ namespace DAL.Migrations
                         {
                             Id = 1,
                             CountryImage = "/assets/main/UK-main.jpg",
-                            Description = "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
+                            Description = "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі...",
                             FlagImage = "/assets/main/UK-flag.jpg",
                             Name = "Англійська мова"
                         },
@@ -68,7 +71,7 @@ namespace DAL.Migrations
                         {
                             Id = 2,
                             CountryImage = "/assets/main/France-main.jpg",
-                            Description = "Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.",
+                            Description = "Французька мова є однією з основних мов міжнародної дипломатії...",
                             FlagImage = "/assets/main/France-flag.jpg",
                             Name = "Французька мова"
                         },
@@ -76,7 +79,7 @@ namespace DAL.Migrations
                         {
                             Id = 3,
                             CountryImage = "/assets/main/Germany-main.jpg",
-                            Description = "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
+                            Description = "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі...",
                             FlagImage = "/assets/main/Germany-flag.jpg",
                             Name = "Німецька мова"
                         });

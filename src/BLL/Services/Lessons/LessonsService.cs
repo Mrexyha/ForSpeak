@@ -2,6 +2,7 @@
 using BLL.Models.Lessons;
 using BLL.Models.Modules;
 using DAL.Entities.Lessons;
+using DAL.Entities.Modules;
 using DAL.Repositories.Lessons;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,16 @@ namespace BLL.Services.Lessons
             if (lessonEntity == null)
                 return null;
 
-            _mapper.Map(lessonModel, lessonEntity); 
+            _mapper.Map(lessonModel, lessonEntity);
+
+            lessonEntity.Modules.Clear();
+            lessonEntity.Modules = lessonModel.Modules.Select(m => new ModuleEntity
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Type = m.Type,
+                LessonId = lessonEntity.Id
+            }).ToList();
 
             await _lessonRepository.UpdateAsync(lessonEntity);
 

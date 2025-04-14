@@ -48,7 +48,7 @@ import { RouterLink } from 'vue-router'
   height: 31.978px;
   top: 0;
   left: 0;
-  background: url('../../assets/general/inst.png') no-repeat center;
+  background: url('../../../public/assets/general/inst.png') no-repeat center;
   background-size: cover;
   z-index: 2;
 }
@@ -58,7 +58,7 @@ import { RouterLink } from 'vue-router'
   height: 31.978px;
   top: 0;
   left: 49.965px;
-  background: url('../../assets/general/facebook.png') no-repeat center;
+  background: url('../../../public/assets/general/facebook.png') no-repeat center;
   background-size: cover;
   z-index: 3;
 }
@@ -68,7 +68,7 @@ import { RouterLink } from 'vue-router'
   height: 31.978px;
   top: 0;
   left: 99.931px;
-  background: url('../../assets/general/twitter.png') no-repeat center;
+  background: url('../../../public/assets/general/twitter.png') no-repeat center;
   background-size: cover;
   z-index: 4;
 }

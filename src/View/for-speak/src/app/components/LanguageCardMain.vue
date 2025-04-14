@@ -9,15 +9,15 @@ const props = defineProps<{
     id: number
     name: string
     description: string
-    image: string
-    flag: string
+    countryImage: string
+    flagImage: string
   }
   reverse?: boolean
 }>()
 
 const containerClass = computed(() => ({
   'lang-container': true,
-  reverse: props.reverse,
+  reverse: !!props.reverse,
 }))
 
 const goToMyLanguages = () => {
@@ -27,10 +27,10 @@ const goToMyLanguages = () => {
 
 <template>
   <div :class="containerClass">
-    <img class="lang-pic" :src="language.image" :alt="language.name" />
+    <img class="lang-pic" :src="language.countryImage" :alt="language.name" />
     <div class="lang-content">
       <h1 class="title">{{ language.name }}</h1>
-      <div class="flag" :style="{ backgroundImage: `url(${language.flag})` }"></div>
+      <div class="flag" :style="{ backgroundImage: `url(${language.flagImage})` }"></div>
       <p class="description">{{ language.description }}</p>
       <button class="lets-start-btn" @click="goToMyLanguages">Почати вивчення</button>
     </div>
@@ -40,7 +40,7 @@ const goToMyLanguages = () => {
 <style scoped>
 .lang-container {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   width: 100%;
   margin-bottom: 36px;
@@ -52,17 +52,18 @@ const goToMyLanguages = () => {
 
 .lang-pic {
   width: 50%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 
 .lang-content {
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-left: 20px;
+  padding: 0 20px;
   text-align: center;
-  max-width: 50%;
 }
 
 .title {

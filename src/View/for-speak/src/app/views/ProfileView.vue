@@ -4,8 +4,8 @@ import { useRouter } from 'vue-router'
 import { getUserProfile } from '../services/userService'
 import PageLayout from '../layouts/PageLayout.vue'
 import ChartPoints from '../components/ChartPoints.vue'
-import profileMan from '../../assets/general/man-icon.png'
-import profileWoman from '../../assets/general/woman-icon.png'
+import profileMan from '../../../public/assets/general/man-icon.png'
+import profileWoman from '../../../public/assets/general/woman-icon.png'
 
 const router = useRouter()
 const profileImage = ref()
