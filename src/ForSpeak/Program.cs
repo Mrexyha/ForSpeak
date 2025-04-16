@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using BLL.Services.Lessons;
 using DAL.Repositories.Lessons;
 using BLL.Services.Users.User;
+using BLL.Services.Tasks.Theory;
+using DAL.Repositories.Tasks.Theory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,9 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<ILessonsService, LessonsService>();
+
+builder.Services.AddScoped<ITheoryModuleRepository, TheoryModuleRepository>();
+builder.Services.AddScoped<ITheoryModuleService, TheoryModuleService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 

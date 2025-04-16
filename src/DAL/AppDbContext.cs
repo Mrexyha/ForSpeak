@@ -17,6 +17,7 @@ namespace DAL
         public DbSet<LanguageEntity> Languages { get; set; }
         public DbSet<UserLanguage> UserLanguages { get; set; }
         public DbSet<ModuleEntity> ModuleEntities { get; set; }
+        public DbSet<TheoryModuleEntity> TheoryModules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

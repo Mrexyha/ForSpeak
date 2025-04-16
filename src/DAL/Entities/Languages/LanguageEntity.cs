@@ -19,6 +19,6 @@ namespace DAL.Entities.Languages
 
         public List<UserLanguage> UserLanguages { get; set; } = new();
 
-        public List<LessonEntity> Lessons { get; set; } = new();
+        public ICollection<LessonEntity> Lessons { get; set; }
     }
 }

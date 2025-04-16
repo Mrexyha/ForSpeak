@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Lessons
 {
-    public class LessonModel
+    public class LessonModel : BaseModel
     {
-        public int Id { get; set; }
         public int LanguageId { get; set; }
         public string LanguageName { get; set; }
 
@@ -21,6 +20,12 @@ namespace BLL.Models.Lessons
 
         public LessonLevel Level { get; set; }
 
-        public List<ModuleModel> Modules { get; set; } = new();
+        public List<ModuleModel> Modules { get; set; } = new List<ModuleModel>();
+
+        public TheoryModuleModel Theory { get; set; }
+        public VocabularyModuleModel Vocabulary { get; set; }
+        public QuizModuleModel Quiz { get; set; }
+        public ReadingModuleModel Reading { get; set; }
+        public SpeakingModuleModel Speaking { get; set; }
     }
 }
