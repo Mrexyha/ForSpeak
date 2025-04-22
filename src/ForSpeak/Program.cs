@@ -42,8 +42,8 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<ILessonsService, LessonsService>();
 
-builder.Services.AddScoped<ITheoryModuleRepository, TheoryModuleRepository>();
 builder.Services.AddScoped<ITheoryModuleService, TheoryModuleService>();
+builder.Services.AddScoped<ITheoryModuleRepository, TheoryModuleRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 

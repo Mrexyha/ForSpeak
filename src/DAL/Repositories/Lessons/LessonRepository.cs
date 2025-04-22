@@ -20,16 +20,18 @@ namespace DAL.Repositories.Lessons
         public override async Task<LessonEntity?> GetByIdAsync(int id)
         {
             return await _context.Set<LessonEntity>()
-                .Include(l => l.Modules)
-                .ThenInclude(m => m.Tasks)
-                .FirstOrDefaultAsync(x => x.Id == id);
+        .Include(l => l.Modules)
+            .ThenInclude(m => m.Tasks)
+        .Include(l => l.Theory)        
+        .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<LessonEntity>> GetLessonsByLanguageIdAsync(int languageId)
         {
             return await _context.Set<LessonEntity>()
                 .Include(l => l.Modules)
-                .ThenInclude(m => m.Tasks)
+                    .ThenInclude(m => m.Tasks)
+                .Include(l => l.Theory)
                 .Where(l => l.LanguageId == languageId)
                 .ToListAsync();
         }
@@ -39,6 +41,7 @@ namespace DAL.Repositories.Lessons
             return await _context.Set<LessonEntity>()
                 .Include(l => l.Modules)
                 .ThenInclude(m => m.Tasks)
+                .Include(l => l.Theory)
                 .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.Id == lessonId);
         }
 

@@ -51,8 +51,8 @@ const filteredLessons = computed(() => {
   // })
 })
 
-const goToMyLanguages = () => {
-  router.push(`/education/${languageId.value}/some-id`)
+const goToLesson = (lessonId: number) => {
+  router.push(`/education/${languageId.value}/${lessonId}`)
 }
 </script>
 
@@ -89,14 +89,13 @@ const goToMyLanguages = () => {
         </div>
       </div>
 
-      <div class="cards-container">
-        <LessonCard
-          @click="goToMyLanguages"
-          v-for="lesson in filteredLessons"
-          :key="lesson.id"
-          :title="lesson.title"
-          :difficulty="lesson.difficulty"
-        />
+      <div
+        class="cards-container"
+        v-for="lesson in filteredLessons"
+        :key="lesson.id"
+        @click="goToLesson(lesson.id)"
+      >
+        <LessonCard :id="lesson.id" :title="lesson.title" :difficulty="lesson.difficulty" />
       </div>
 
       <p v-if="filteredLessons.length === 0" class="no-results">Нічого не знайдено 😕</p>

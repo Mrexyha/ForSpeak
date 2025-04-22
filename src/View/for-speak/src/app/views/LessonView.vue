@@ -28,9 +28,9 @@ watch(
   { immediate: true },
 )
 
-const lesson = ref<Lesson>(
-  lessons.value.find((l) => l.id === parseInt(lessonId)) || lessons.value[0],
-)
+const lesson = computed(() => {
+  return lessons.value.find((l) => l.id === parseInt(lessonId)) || null
+})
 </script>
 
 <template>

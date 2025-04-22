@@ -23,11 +23,12 @@ const lessons = [
 
 const getLessonProps = (route: RouteLocationNormalized) => {
   const lessonId = parseInt(route.params.id as string)
+  const lesson = lessons.find((l) => l.id === lessonId)
+
   return {
     lesson: lessons.find((l) => l.id === lessonId) || {
       id: 0,
       title: 'Невідомий урок',
-      description: 'Опис недоступний',
       theory: 'Теоретичний матеріал недоступний',
     },
   }

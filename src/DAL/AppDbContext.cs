@@ -1,5 +1,7 @@
 ﻿using DAL.Entities.Languages;
+using DAL.Entities.Lessons;
 using DAL.Entities.Modules;
+using DAL.Entities.Tasks;
 using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +16,26 @@ namespace DAL
         { }
 
         public DbSet<UserEntity> Users { get; set; }
-        public DbSet<LanguageEntity> Languages { get; set; }
         public DbSet<UserLanguage> UserLanguages { get; set; }
-        public DbSet<ModuleEntity> ModuleEntities { get; set; }
+        public DbSet<LanguageEntity> Languages { get; set; }
+        public DbSet<LessonEntity> Lessons { get; set; }
+        public DbSet<ModuleEntity> Modules { get; set; }
+        public DbSet<TaskLangEntity> TaskLangs { get; set; }
         public DbSet<TheoryModuleEntity> TheoryModules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TheoryModuleEntity>()
+            .ToTable("TheoryModules")
+            .HasKey(t => t.Id);
+
+            modelBuilder.Entity<TheoryModuleEntity>()
+                .HasOne(t => t.Lesson)
+                .WithOne(l => l.Theory)
+                .HasForeignKey<TheoryModuleEntity>(t => t.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserLanguage>()
                 .HasKey(ul => new { ul.UserId, ul.LanguageId });

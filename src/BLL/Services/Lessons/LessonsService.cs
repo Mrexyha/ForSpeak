@@ -45,29 +45,32 @@ namespace BLL.Services.Lessons
 
         public async Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
         {
-            var lessons = await _lessonRepository.GetAllAsync();
-
-            var lessonEntity = lessons.FirstOrDefault(l => l.LanguageId == languageId && l.Id == lessonId);
-
-            if (lessonEntity == null)
-            {
-                return null;
-            }
+            var lessonEntity = await _lessonRepository.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (lessonEntity == null) return null;
 
             return new LessonModel
             {
                 Id = lessonEntity.Id,
                 LanguageId = lessonEntity.LanguageId,
+                LanguageName = lessonEntity.LanguageName,
                 Title = lessonEntity.Title,
                 ImageUrl = lessonEntity.ImageUrl,
                 Level = lessonEntity.Level,
-                Modules = lessonEntity.Modules.Select(m => new ModuleModel
-                {
-                    Id = m.Id,
-                    Title = m.Title,
-                    Type = m.Type
-                }).ToList()
+
+                Modules = lessonEntity.Modules
+                    .Select(m => new ModuleModel
+                    {
+                        Id = m.Id,
+                        Title = m.Title,
+                        Type = m.Type
+                    })
+                    .ToList(),
+
+                Theory = lessonEntity.Theory == null
+                    ? null
+                    : new TheoryModuleModel { Text = lessonEntity.Theory.Text },
             };
+
         }
 
         public async Task<LessonEntity> AddLessonAsync(LessonEntity lesson)
