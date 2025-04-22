@@ -1,35 +1,42 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import PageLayout from '../layouts/PageLayout.vue'
+import { fetchLessons } from '../services/lessonsService'
 
 interface Lesson {
   id: number
   title: string
-  description: string
+  difficulty: string
 }
 
 const route = useRoute()
-const languageId = computed(() => route.params.languageId || 1)
+const languageId = computed(() => {
+  const id = route.params.languageId
+  if (Array.isArray(id)) return id[0] || 1
+  return id || 1
+})
+const lessons = ref<Lesson[]>([])
 const lessonId = route.params.id as string
 
-const lessons = [
-  {
-    id: 1,
-    title: 'Вивчення Vue.js',
-    description: 'Основи фреймворку Vue.js для розробки інтерфейсів.',
+watch(
+  languageId,
+  async (newLanguageId) => {
+    const id = typeof newLanguageId === 'string' ? parseInt(newLanguageId) : Number(newLanguageId)
+    lessons.value = await fetchLessons(id)
   },
-]
+  { immediate: true },
+)
 
-const lesson = ref<Lesson>(lessons.find((l) => l.id === parseInt(lessonId)) || lessons[0])
+const lesson = ref<Lesson>(
+  lessons.value.find((l) => l.id === parseInt(lessonId)) || lessons.value[0],
+)
 </script>
 
 <template>
   <PageLayout>
     <div class="lesson-page">
       <h1>{{ lesson?.title || '❌ Урок не знайдено' }}</h1>
-      <p class="description">{{ lesson?.description || 'Опис відсутній' }}</p>
-
       <div v-if="lesson" class="task-buttons">
         <router-link :to="`/education/${languageId}/${lesson.id}/theory`">
           <button class="task-button">📖 Теорія</button>
@@ -74,12 +81,6 @@ h1 {
   font-size: 26px;
   color: #1e3a8a;
   margin-bottom: 10px;
-}
-
-.description {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 20px;
 }
 
 .task-buttons {

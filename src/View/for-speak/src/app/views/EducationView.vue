@@ -10,7 +10,6 @@ interface Lesson {
   id: number
   title: string
   difficulty: string
-  //date: string
 }
 
 const route = useRoute()
@@ -19,14 +18,6 @@ const lessons = ref<Lesson[]>([])
 const searchQuery = ref('')
 const selectedDifficulty = ref('all')
 const selectedSort = ref('newest')
-
-// const lessons = ref([
-//   { id: 1, title: "Сім'я / Family", difficulty: 'Elementary', date: '2024-03-01' },
-//   { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate', date: '2024-02-25' },
-//   { id: 3, title: 'Робота / Work', difficulty: 'Advanced', date: '2024-02-20' },
-//   { id: 4, title: 'Подорожі / Travel', difficulty: 'Elementary', date: '2024-03-05' },
-//   { id: 5, title: 'Спорт / Sports', difficulty: 'Intermediate', date: '2024-02-28' },
-// ])
 
 const languageId = computed(() => {
   const id = route.params.languageId
