@@ -13,7 +13,5 @@ namespace DAL.Repositories.Lessons
         Task<LessonEntity?> GetLessonByLanguageAndIdAsync(int languageId, int lessonId);
         Task<bool> DeleteLessonByLanguageAndIdAsync(int languageId, int lessonId);
         Task<int> GetUserPointsAsync(int userId);
-
-
     }
 }

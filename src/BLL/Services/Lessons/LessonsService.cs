@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Models.Lessons;
 using BLL.Models.Modules;
+using BLL.Models.Tasks;
 using DAL.Entities.Lessons;
 using DAL.Entities.Modules;
 using DAL.Repositories.Lessons;
@@ -69,8 +70,22 @@ namespace BLL.Services.Lessons
                 Theory = lessonEntity.Theory == null
                     ? null
                     : new TheoryModuleModel { Text = lessonEntity.Theory.Text },
-            };
 
+                Vocabulary = lessonEntity.Vocabulary == null
+                    ? null
+                    : new VocabularyModuleModel
+                    {
+                        Words = lessonEntity.Vocabulary.Words
+                            .Select(w => new WordModel
+                            {
+                                Id = w.Id,
+                                Word = w.Word,
+                                Transcription = w.Transcription,
+                                Translation = w.Translation
+                            })
+                            .ToList()
+                    },
+            };
         }
 
         public async Task<LessonEntity> AddLessonAsync(LessonEntity lesson)

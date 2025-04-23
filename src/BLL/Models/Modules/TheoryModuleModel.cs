@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Modules
 {
-    public class TheoryModuleModel
+    public class TheoryModuleModel : BaseModel
     {
         public string Text { get; set; }
     }

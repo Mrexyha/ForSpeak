@@ -13,6 +13,8 @@ using DAL.Repositories.Lessons;
 using BLL.Services.Users.User;
 using BLL.Services.Tasks.Theory;
 using DAL.Repositories.Tasks.Theory;
+using BLL.Services.Tasks.Vocabulary;
+using DAL.Repositories.Tasks.Vocabulary;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,9 @@ builder.Services.AddScoped<ILessonsService, LessonsService>();
 
 builder.Services.AddScoped<ITheoryModuleService, TheoryModuleService>();
 builder.Services.AddScoped<ITheoryModuleRepository, TheoryModuleRepository>();
+
+builder.Services.AddScoped<IVocabularyModuleRepository, VocabularyModuleRepository>();
+builder.Services.AddScoped<IVocabularyModuleService, VocabularyModuleService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 

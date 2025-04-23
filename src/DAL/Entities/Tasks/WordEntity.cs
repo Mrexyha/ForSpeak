@@ -12,7 +12,6 @@ namespace DAL.Entities.Tasks
         public string Word { get; set; }
         public string Transcription { get; set; }
         public string Translation { get; set; }
-        public string AudioUrl { get; set; }
 
         public int VocabularyModuleId { get; set; }
         public VocabularyModuleEntity VocabularyModule { get; set; }

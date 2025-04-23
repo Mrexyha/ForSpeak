@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Modules
 {
-    public class VocabularyModuleModel
+    public class VocabularyModuleModel : BaseModel
     {
         public List<WordModel> Words { get; set; }
     }

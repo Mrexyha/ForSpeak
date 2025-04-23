@@ -17,11 +17,17 @@ namespace DAL
 
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<UserLanguage> UserLanguages { get; set; }
+
         public DbSet<LanguageEntity> Languages { get; set; }
+
         public DbSet<LessonEntity> Lessons { get; set; }
+
         public DbSet<ModuleEntity> Modules { get; set; }
         public DbSet<TaskLangEntity> TaskLangs { get; set; }
+
         public DbSet<TheoryModuleEntity> TheoryModules { get; set; }
+        public DbSet<VocabularyModuleEntity> VocabularyModules { get; set; }
+        public DbSet<WordEntity> Words { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
