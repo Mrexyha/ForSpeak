@@ -85,6 +85,29 @@ namespace BLL.Services.Lessons
                             })
                             .ToList()
                     },
+
+                    Quiz = lessonEntity.Quiz == null
+                        ? null
+                        : new QuizModuleModel
+                        {
+                            Questions = lessonEntity.Quiz.Questions.Select(q => new QuizQuestionModel
+                            {
+                                Question = q.Question,
+                                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
+                                CorrectOptionIndex = q.CorrectOptionIndex
+                            }).ToList()
+                        },
+                Reading = lessonEntity.Reading == null
+        ? null
+        : new ReadingModuleModel
+        {
+            Text = lessonEntity.Reading.Text,
+            Tasks = lessonEntity.Reading.Tasks.Select(t => new FillInTheBlankTaskModel
+            {
+                Sentence = t.Sentence,
+                CorrectWord = t.CorrectWord
+            }).ToList()
+        }
             };
         }
 

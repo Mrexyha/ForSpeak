@@ -23,6 +23,8 @@ namespace DAL.Repositories.Lessons
                 .Include(l => l.Modules).ThenInclude(m => m.Tasks)
                 .Include(l => l.Theory)
                 .Include(l => l.Vocabulary).ThenInclude(v => v.Words)
+                .Include(l => l.Quiz).ThenInclude(q => q.Questions)
+                .Include(l => l.Reading).ThenInclude(r => r.Tasks)
                 .Where(l => l.LanguageId == languageId)
                 .ToListAsync();
         }
@@ -33,6 +35,8 @@ namespace DAL.Repositories.Lessons
                 .Include(l => l.Modules).ThenInclude(m => m.Tasks)
                 .Include(l => l.Theory)
                 .Include(l => l.Vocabulary).ThenInclude(v => v.Words)
+                .Include(l => l.Quiz).ThenInclude(q => q.Questions)
+                .Include(l => l.Reading).ThenInclude(r => r.Tasks)
                 .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.Id == lessonId);
         }
 

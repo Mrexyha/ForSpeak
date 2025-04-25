@@ -45,7 +45,7 @@ const lesson = computed(() => {
           <button class="task-button">📔 Словник</button>
         </router-link>
         <router-link :to="`/education/${languageId}/${lesson.id}/quiz`">
-          <button class="task-button">📝 Квіз</button>
+          <button class="task-button">📝 Тестування</button>
         </router-link>
         <router-link :to="`/education/${languageId}/${lesson.id}/reading`">
           <button class="task-button">📚 Читання</button>

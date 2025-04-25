@@ -28,6 +28,8 @@ namespace DAL
         public DbSet<TheoryModuleEntity> TheoryModules { get; set; }
         public DbSet<VocabularyModuleEntity> VocabularyModules { get; set; }
         public DbSet<WordEntity> Words { get; set; }
+        public DbSet<ReadingModuleEntity> ReadingModules { get; set; }
+        public DbSet<FillInTheBlankTaskEntity> FillInTheBlankTasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,6 +43,32 @@ namespace DAL
                 .HasOne(t => t.Lesson)
                 .WithOne(l => l.Theory)
                 .HasForeignKey<TheoryModuleEntity>(t => t.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReadingModuleEntity>()
+        .ToTable("ReadingModules")               
+        .HasKey(rm => rm.Id);
+
+            modelBuilder.Entity<ReadingModuleEntity>()
+        .HasOne(rm => rm.Lesson)
+        .WithOne(l => l.Reading)
+        .HasForeignKey<ReadingModuleEntity>(rm => rm.LessonId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReadingModuleEntity>()
+                .HasOne(rm => rm.Lesson)
+                .WithOne(l => l.Reading)
+                .HasForeignKey<ReadingModuleEntity>(rm => rm.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FillInTheBlankTaskEntity>()
+        .ToTable("FillInTheBlankTasks")          
+        .HasKey(tb => tb.Id);
+
+            modelBuilder.Entity<FillInTheBlankTaskEntity>()
+                .HasOne(tb => tb.ReadingModule)
+                .WithMany(rm => rm.Tasks)
+                .HasForeignKey(tb => tb.ReadingModuleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserLanguage>()

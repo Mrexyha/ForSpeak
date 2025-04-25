@@ -41,7 +41,7 @@ onMounted(loadVocabulary)
 
 <template>
   <div class="vocabulary">
-    <h2>📔 Vocabulary</h2>
+    <h2>📔 Словник</h2>
     <div v-if="loading">Завантаження даних...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else class="table-container">
@@ -86,7 +86,6 @@ h2 {
   font-size: 28px;
   color: #1e3a8a;
   margin-bottom: 20px;
-  text-transform: uppercase;
   letter-spacing: 1px;
 }
 
