@@ -1,110 +1,245 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
-const speakingTask = ref('Hello, how are you?')
-const spokenText = ref('')
-const speechFeedback = ref<string | null>(null)
+const phrases = [
+  'Hello, how are you?',
+  'I would like a cup of coffee, please.',
+  'What time is the meeting today?',
+  'Can you help me find the nearest station?',
+  'What is your favorite book?',
+]
 
-function startSpeechRecognition() {
-  if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-    recognition.lang = 'en-US'
+const currentIndex = ref(0)
+const currentPhrase = ref(phrases[currentIndex.value])
 
-    // recognition.onresult = (event: SpeechRecognitionEvent) => {
-    //   spokenText.value = event.results[0][0].transcript
-    //   speechFeedback.value =
-    //     spokenText.value.toLowerCase() === speakingTask.value.toLowerCase()
-    //       ? '✅ Вимова правильна!'
-    //       : '❌ Спробуйте ще раз.'
-    // }
+const isPlaying = ref(false)
+const isRecording = ref(false)
+const spokenPhrase = ref('')
+const similarity = ref<number | null>(null)
 
-    recognition.start()
-  } else {
-    speechFeedback.value = '❌ Ваш браузер не підтримує розпізнавання мови.'
+let recognition: SpeechRecognition | null = null
+const synth = window.speechSynthesis
+
+onMounted(() => {
+  const ctor = window.SpeechRecognition || window.webkitSpeechRecognition
+  if (!ctor) return
+  recognition = new ctor()
+  recognition.lang = 'en-US'
+  recognition.continuous = false
+  recognition.interimResults = false
+
+  recognition.onresult = (event: any) => {
+    const transcript = event.results[0][0].transcript as string
+    spokenPhrase.value = transcript
+    calculateSimilarity(transcript)
+  }
+  recognition.onend = () => {
+    isRecording.value = false
+  }
+})
+
+onUnmounted(() => {
+  if (recognition) recognition.stop()
+  synth.cancel()
+})
+
+const playPhrase = () => {
+  isPlaying.value = true
+  const utt = new SpeechSynthesisUtterance(currentPhrase.value)
+  utt.lang = 'en-US'
+  utt.onend = () => {
+    isPlaying.value = false
+  }
+  synth.speak(utt)
+}
+
+const startRecording = () => {
+  if (!recognition) return
+  spokenPhrase.value = ''
+  similarity.value = null
+  isRecording.value = true
+  recognition.start()
+}
+
+const stopRecording = () => {
+  if (!recognition) return
+  recognition.stop()
+  isRecording.value = false
+}
+
+const calculateSimilarity = (spokenText: string) => {
+  const a = currentPhrase.value.toLowerCase()
+  const b = spokenText.toLowerCase()
+  const dist = (() => {
+    const dp: number[][] = Array(b.length + 1)
+      .fill(0)
+      .map(() => [])
+    for (let i = 0; i <= b.length; i++) dp[i][0] = i
+    for (let j = 0; j <= a.length; j++) dp[0][j] = j
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        dp[i][j] =
+          b[i - 1] === a[j - 1]
+            ? dp[i - 1][j - 1]
+            : Math.min(dp[i - 1][j - 1] + 1, dp[i][j - 1] + 1, dp[i - 1][j] + 1)
+      }
+    }
+    return dp[b.length][a.length]
+  })()
+  const maxLen = Math.max(a.length, b.length)
+  similarity.value = Math.round(((maxLen - dist) / maxLen) * 100)
+}
+
+const nextPhrase = () => {
+  if (currentIndex.value + 1 < phrases.length) {
+    currentIndex.value++
+    currentPhrase.value = phrases[currentIndex.value]
+    spokenPhrase.value = ''
+    similarity.value = null
   }
 }
 </script>
 
 <template>
-  <div class="task">
-    <h2>🎤 Завдання на вимову</h2>
-    <p class="instruction">Скажіть фразу: "{{ speakingTask }}"</p>
-    <button @click="startSpeechRecognition" class="start-button">🎙️ Запис голосу</button>
-    <p v-if="spokenText" class="spoken-text">Ви сказали: "{{ spokenText }}"</p>
-    <p
-      v-if="speechFeedback"
-      :class="{
-        correct: speechFeedback.includes('правильна'),
-        incorrect: speechFeedback.includes('Спробуйте'),
-      }"
-    >
-      {{ speechFeedback }}
-    </p>
+  <div class="speaking-exercise">
+    <div class="all-phrases">
+      <h4>Усі фрази:</h4>
+      <ul>
+        <li
+          v-for="(p, i) in phrases"
+          :key="i"
+          :class="{ active: i === currentIndex }"
+          @click="((currentIndex = i), (currentPhrase = phrases[i]))"
+        >
+          {{ p }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="phrase-container">
+      <h3>Фраза для повторення:</h3>
+      <p class="current">{{ currentPhrase }}</p>
+    </div>
+
+    <div class="controls">
+      <button @click="playPhrase" :disabled="isPlaying || isRecording">
+        {{ isPlaying ? '▶️ Відтворюємо...' : '▶️ Прослухати' }}
+      </button>
+      <button @click="startRecording" :disabled="isRecording || isPlaying">
+        {{ isRecording ? '🎙️ Говоріть...' : '🎙️ Повторити' }}
+      </button>
+      <button @click="stopRecording" :disabled="!isRecording">🛑 Зупинити</button>
+    </div>
+
+    <div v-if="similarity !== null" class="result">
+      <h4>Результат:</h4>
+      <p>
+        Схожість: <strong>{{ similarity }}%</strong>
+      </p>
+      <p>Ваша відповіль: “{{ spokenPhrase }}”</p>
+      <button v-if="currentIndex + 1 < phrases.length" @click="nextPhrase" class="next-btn">
+        ➡️ Наступна фраза
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.task {
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  margin: 20px auto;
-  text-align: center;
+.speaking-exercise {
+  max-width: 700px;
+  margin: 50px auto;
   margin-top: 100px;
+  padding: 30px;
+  background: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
 }
 
-h2 {
-  font-size: 26px;
-  color: #4caf50;
+.all-phrases {
   margin-bottom: 20px;
 }
-
-.instruction {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #333;
+.all-phrases ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
 }
-
-.start-button {
-  padding: 12px 25px;
-  background-color: #ff5722;
+.all-phrases li {
+  padding: 6px 12px;
+  background: #e0e0e0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.all-phrases li:hover {
+  background: #d5d5d5;
+}
+.all-phrases li.active {
+  background: #4caf50;
   color: white;
-  font-size: 18px;
+}
+
+.phrase-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.phrase-container .current {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 8px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.controls button {
+  padding: 10px 18px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
+  background: #4caf50;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
   transition:
-    background-color 0.3s,
-    transform 0.2s;
+    background 0.2s,
+    transform 0.1s;
+}
+.controls button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+.controls button:not(:disabled):hover {
+  background: #45a047;
+  transform: translateY(-2px);
 }
 
-.start-button:hover {
-  background-color: #e64a19;
+.result {
+  background: #fff;
+  border: 2px solid #4caf50;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
 }
-
-.start-button:active {
-  transform: scale(0.98);
+.result h4 {
+  margin-bottom: 10px;
+  color: #4caf50;
 }
-
-.spoken-text {
+.result p {
+  margin: 6px 0;
   font-size: 16px;
-  margin-top: 15px;
-  color: #555;
 }
-
-p {
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 20px;
+.next-btn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #2196f3;
 }
-
-.correct {
-  color: #28a745;
-}
-
-.incorrect {
-  color: #dc3545;
+.next-btn:hover {
+  background: #1976d2;
 }
 </style>
