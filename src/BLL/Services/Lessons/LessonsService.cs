@@ -31,16 +31,78 @@ namespace BLL.Services.Lessons
             {
                 Id = l.Id,
                 LanguageId = l.LanguageId,
+                LanguageName = l.LanguageName,
                 Title = l.Title,
                 ImageUrl = l.ImageUrl,
                 Level = l.Level,
+
                 Modules = l.Modules.Select(m => new ModuleModel
                 {
                     Id = m.Id,
                     LessonId = m.LessonId,
                     Title = m.Title,
-                    Type = m.Type,
-                }).ToList()
+                    Type = m.Type
+                }).ToList(),
+
+                Theory = l.Theory == null
+                    ? null
+                    : new TheoryModuleModel { Text = l.Theory.Text },
+
+                Vocabulary = l.Vocabulary == null
+                    ? null
+                    : new VocabularyModuleModel
+                    {
+                        Words = l.Vocabulary.Words
+                            .Select(w => new WordModel
+                            {
+                                Id = w.Id,
+                                Word = w.Word,
+                                Transcription = w.Transcription,
+                                Translation = w.Translation
+                            })
+                            .ToList()
+                    },
+
+                Quiz = l.Quiz == null
+                    ? null
+                    : new QuizModuleModel
+                    {
+                        Questions = l.Quiz.Questions
+                            .Select(q => new QuizQuestionModel
+                            {
+                                Question = q.Question,
+                                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
+                                CorrectOptionIndex = q.CorrectOptionIndex
+                            })
+                            .ToList()
+                    },
+
+                Reading = l.Reading == null
+                    ? null
+                    : new ReadingModuleModel
+                    {
+                        Text = l.Reading.Text,
+                        Tasks = l.Reading.Tasks
+                            .Select(t => new FillInTheBlankTaskModel
+                            {
+                                Sentence = t.Sentence,
+                                CorrectWord = t.CorrectWord
+                            })
+                            .ToList()
+                    },
+
+                Speaking = l.Speaking == null
+                    ? null
+                    : new SpeakingModuleModel
+                    {
+                        Phrases = l.Speaking.Phrases
+                            .Select(p => new SpeakingPhraseModel
+                            {
+                                Text = p.Text,
+                                AudioUrl = p.AudioUrl
+                            })
+                            .ToList()
+                    },
             });
         }
 

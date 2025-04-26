@@ -20,13 +20,14 @@ namespace DAL.Repositories.Lessons
         public async Task<IEnumerable<LessonEntity>> GetLessonsByLanguageIdAsync(int languageId)
         {
             return await _context.Set<LessonEntity>()
-                .Include(l => l.Modules).ThenInclude(m => m.Tasks)
-                .Include(l => l.Theory)
-                .Include(l => l.Vocabulary).ThenInclude(v => v.Words)
-                .Include(l => l.Quiz).ThenInclude(q => q.Questions)
-                .Include(l => l.Reading).ThenInclude(r => r.Tasks)
-                .Where(l => l.LanguageId == languageId)
-                .ToListAsync();
+         .Include(l => l.Modules).ThenInclude(m => m.Tasks)
+         .Include(l => l.Theory)
+         .Include(l => l.Vocabulary).ThenInclude(v => v.Words)
+         .Include(l => l.Quiz).ThenInclude(q => q.Questions)
+         .Include(l => l.Reading).ThenInclude(r => r.Tasks)
+         .Include(l => l.Speaking).ThenInclude(s => s.Phrases)
+         .Where(l => l.LanguageId == languageId)
+         .ToListAsync();
         }
 
         public async Task<LessonEntity?> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
