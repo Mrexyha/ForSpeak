@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Tasks
 {
-    public class FillInTheBlankTaskModel
+    public class FillInTheBlankTaskModel : BaseModel
     {
         public string Sentence { get; set; }
         public string CorrectWord { get; set; }

@@ -99,7 +99,6 @@ namespace BLL.Services.Lessons
                             .Select(p => new SpeakingPhraseModel
                             {
                                 Text = p.Text,
-                                AudioUrl = p.AudioUrl
                             })
                             .ToList()
                     },

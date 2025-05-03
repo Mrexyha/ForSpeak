@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Tasks
 {
-    public class QuizQuestionModel
+    public class QuizQuestionModel : BaseModel
     {
         public string Question { get; set; }
         public List<string> Options { get; set; }

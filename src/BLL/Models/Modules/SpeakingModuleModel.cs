@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Modules
 {
-    public class SpeakingModuleModel
+    public class SpeakingModuleModel : BaseModel
     {
         public List<SpeakingPhraseModel> Phrases { get; set; }
+
+        public double AverageAccuracy { get; set; }
+
     }
 }

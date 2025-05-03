@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Modules
 {
-    public class ReadingModuleModel
+    public class ReadingModuleModel : BaseModel
     {
         public string Text { get; set; }
         public List<FillInTheBlankTaskModel> Tasks { get; set; }

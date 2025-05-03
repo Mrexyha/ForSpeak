@@ -128,9 +128,7 @@ namespace BLL.Services.Languages
                                 Phrases = (le.Speaking.Phrases ?? Enumerable.Empty<SpeakingPhraseEntity>())
                                     .Select(p => new SpeakingPhraseModel
                                     {
-                                        Text = p.Text,
-                                        AudioUrl = p.AudioUrl
-                                    })
+                                        Text = p.Text                                    })
                                     .ToList()
                             }
                     })

@@ -19,6 +19,8 @@ using DAL.Repositories.Tasks.Quiz;
 using BLL.Services.Tasks.Quiz;
 using DAL.Repositories.Tasks.Reading;
 using BLL.Services.Tasks.Reading;
+using DAL.Repositories.Tasks.Speaking;
+using BLL.Services.Tasks.Speaking;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,9 @@ builder.Services.AddScoped<IQuizModuleService, QuizModuleService>();
 
 builder.Services.AddScoped<IReadingModuleRepository, ReadingModuleRepository>();
 builder.Services.AddScoped<IReadingModuleService, ReadingModuleService>();
+
+builder.Services.AddScoped<ISpeakingModuleRepository, SpeakingModuleRepository>();
+builder.Services.AddScoped<ISpeakingModuleService, SpeakingModuleService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 

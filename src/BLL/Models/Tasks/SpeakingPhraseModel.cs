@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BLL.Models.Tasks
 {
-    public class SpeakingPhraseModel
+    public class SpeakingPhraseModel : BaseModel
     {
         public string Text { get; set; }
-        public string AudioUrl { get; set; }
     }
 }

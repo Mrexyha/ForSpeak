@@ -4,6 +4,7 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426211531_ddspeakingoduleata")]
+    partial class ddspeakingoduleata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,7 +225,7 @@ namespace DAL.Migrations
                     b.HasIndex("LessonId")
                         .IsUnique();
 
-                    b.ToTable("SpeakingModules", (string)null);
+                    b.ToTable("SpeakingModules");
                 });
 
             modelBuilder.Entity("DAL.Entities.Modules.TheoryModuleEntity", b =>
@@ -373,7 +376,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("SpeakingModuleId");
 
-                    b.ToTable("SpeakingPhrases", (string)null);
+                    b.ToTable("SpeakingPhrases");
                 });
 
             modelBuilder.Entity("DAL.Entities.Tasks.TaskLangEntity", b =>

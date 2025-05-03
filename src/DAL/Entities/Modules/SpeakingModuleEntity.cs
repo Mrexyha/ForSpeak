@@ -14,5 +14,7 @@ namespace DAL.Entities.Modules
         public LessonEntity Lesson { get; set; }
 
         public ICollection<SpeakingPhraseEntity> Phrases { get; set; }
+
+        public double AverageAccuracy { get; set; }
     }
 }

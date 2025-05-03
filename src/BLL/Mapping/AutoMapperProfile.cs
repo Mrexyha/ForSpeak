@@ -90,8 +90,10 @@ namespace BLL.Mapping
             CreateMap<FillInTheBlankTaskEntity, FillInTheBlankTaskModel>().ReverseMap();
 
             // ========== SPEAKING MODULE ==========
-            CreateMap<SpeakingModuleEntity, SpeakingModuleModel>().ReverseMap();
-            CreateMap<SpeakingPhraseEntity, SpeakingPhraseModel>().ReverseMap();
+            CreateMap<SpeakingModuleEntity, SpeakingModuleModel>()
+                .ForMember(dest => dest.Phrases, opt => opt.MapFrom(src => src.Phrases))
+                .ForMember(dest => dest.AverageAccuracy, opt => opt.MapFrom(src => src.AverageAccuracy));
+            CreateMap<SpeakingPhraseEntity, SpeakingPhraseModel>();
 
             // ========== TASKS ==========
             CreateMap<TaskLangModel, TaskLangEntity>()

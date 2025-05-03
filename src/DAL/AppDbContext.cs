@@ -26,10 +26,15 @@ namespace DAL
         public DbSet<TaskLangEntity> TaskLangs { get; set; }
 
         public DbSet<TheoryModuleEntity> TheoryModules { get; set; }
+
         public DbSet<VocabularyModuleEntity> VocabularyModules { get; set; }
         public DbSet<WordEntity> Words { get; set; }
+
         public DbSet<ReadingModuleEntity> ReadingModules { get; set; }
         public DbSet<FillInTheBlankTaskEntity> FillInTheBlankTasks { get; set; }
+
+        public DbSet<SpeakingModuleEntity> SpeakingModules { get; set; }
+        public DbSet<SpeakingPhraseEntity> SpeakingPhrases { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +74,26 @@ namespace DAL
                 .HasOne(tb => tb.ReadingModule)
                 .WithMany(rm => rm.Tasks)
                 .HasForeignKey(tb => tb.ReadingModuleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SpeakingModuleEntity>()
+       .ToTable("SpeakingModules")
+       .HasKey(sm => sm.Id);
+
+            modelBuilder.Entity<SpeakingModuleEntity>()
+                .HasOne(sm => sm.Lesson)
+                .WithOne(l => l.Speaking)
+                .HasForeignKey<SpeakingModuleEntity>(sm => sm.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SpeakingPhraseEntity>()
+       .ToTable("SpeakingPhrases")
+       .HasKey(sp => sp.Id);
+
+            modelBuilder.Entity<SpeakingPhraseEntity>()
+                .HasOne(sp => sp.SpeakingModule)
+                .WithMany(sm => sm.Phrases)
+                .HasForeignKey(sp => sp.SpeakingModuleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserLanguage>()
