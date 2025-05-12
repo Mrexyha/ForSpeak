@@ -11,6 +11,7 @@ import QuizTaskView from '../views/TaskViews/QuizTaskView.vue'
 import ReadingTaskView from '../views/TaskViews/ReadingTaskView.vue'
 import SpeakingTaskView from '../views/TaskViews/SpeakingTaskView.vue'
 import VocabularyTaskView from '../views/TaskViews/VocabularyTaskView.vue'
+import AdminView from '../views/AdminView.vue'
 
 const lessons = [
   {
@@ -103,6 +104,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/admin/modules/create',
+      name: 'admin-create-module',
+      component: AdminView,
+      meta: { requiresAuth: true, roles: ['admin'] },
     },
   ],
 })

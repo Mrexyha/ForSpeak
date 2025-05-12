@@ -18,5 +18,13 @@ namespace DAL.Entities.Relations
         [ForeignKey(nameof(Lesson))]
         public int LessonId { get; set; }
         public LessonEntity Lesson { get; set; }
+
+        public bool QuizCompleted { get; set; } = false;
+        public bool ReadingCompleted { get; set; } = false;
+        public bool SpeakingCompleted { get; set; } = false;
+
+        public bool PointsAwarded { get; set; } = false;
+
+        public int AwardedPoints { get; set; } = 0;
     }
 }

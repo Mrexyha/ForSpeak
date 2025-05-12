@@ -21,6 +21,7 @@ using DAL.Repositories.Tasks.Reading;
 using BLL.Services.Tasks.Reading;
 using DAL.Repositories.Tasks.Speaking;
 using BLL.Services.Tasks.Speaking;
+using BLL.Services.Progress;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,9 @@ builder.Services.AddScoped<IReadingModuleService, ReadingModuleService>();
 
 builder.Services.AddScoped<ISpeakingModuleRepository, SpeakingModuleRepository>();
 builder.Services.AddScoped<ISpeakingModuleService, SpeakingModuleService>();
+
+builder.Services.AddScoped<IUserLessonProgressService, UserLessonProgressService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 

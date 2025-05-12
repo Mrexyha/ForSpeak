@@ -1,6 +1,7 @@
 ﻿using DAL.Entities.Languages;
 using DAL.Entities.Lessons;
 using DAL.Entities.Modules;
+using DAL.Entities.Relations;
 using DAL.Entities.Tasks;
 using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,9 @@ namespace DAL
 
         public DbSet<SpeakingModuleEntity> SpeakingModules { get; set; }
         public DbSet<SpeakingPhraseEntity> SpeakingPhrases { get; set; }
+
+        public DbSet<UsersToLessons> UsersToLessons { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -12,6 +12,8 @@ import {
   PointElement,
   type TooltipItem,
 } from 'chart.js'
+import { fetchLanguages, type Language } from '../services/languageService'
+import { getLanguagePoints, getTotalPointsHistory } from '../services/progressService'
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement)
 
@@ -19,80 +21,62 @@ interface ChartData {
   labels: string[]
   datasets: {
     label: string
-    borderColor: string
-    backgroundColor: string
     data: number[]
     fill: boolean
     tension: number
     pointRadius: number
-    pointBackgroundColor: string
   }[]
 }
 
-const englishScores = [620, 580, 540, 500, 300, 245]
-const frenchScores = [200, 220, 240, 180, 150, 120]
-
 const chartData = ref<ChartData | null>(null)
-
-const chartOptions = ref({
+const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     tooltip: {
       callbacks: {
-        label: (tooltipItem: TooltipItem<'line'>) => {
-          const datasetLabel = tooltipItem.dataset.label || ''
-          const value = tooltipItem.raw as number
-          return `${datasetLabel}: ${value} балів`
+        label: (ctx: TooltipItem<'line'>) => {
+          return `${ctx.dataset.label}: ${ctx.parsed.y} балів`
         },
       },
     },
-    legend: {
-      labels: {
-        color: 'black',
-      },
-    },
+    legend: { position: 'bottom' as const },
+    title: { display: true, text: 'Прогрес у балах' },
   },
   scales: {
-    x: {
-      ticks: {
-        color: 'black',
-      },
-    },
-    y: {
-      ticks: {
-        color: 'black',
-      },
-    },
+    x: { title: { display: true, text: 'Місяць' } },
+    y: { title: { display: true, text: 'Бали' } },
   },
-})
+}
 
-onMounted(() => {
-  chartData.value = {
-    labels: ['Вер 2023', 'Жов 2023', 'Лис 2023', 'Гру 2023', 'Січ 2024', 'Лют 2024'],
-    datasets: [
-      {
-        label: 'Англійська мова',
-        borderColor: 'red',
-        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-        data: englishScores,
-        fill: true,
+onMounted(async () => {
+  const langs: Language[] = await fetchLanguages()
+
+  const labels = ['Вер 2024', 'Жов 2024', 'Лис 2024', 'Гру 2024', 'Січ 2025', 'Лют 2025']
+
+  const datasets = await Promise.all(
+    langs.map(async (lang: Language) => {
+      const data: number[] = await getLanguagePoints(lang.id)
+      return {
+        label: lang.name,
+        data,
+        fill: false,
         tension: 0.3,
-        pointRadius: 5,
-        pointBackgroundColor: 'red',
-      },
-      {
-        label: 'Французька мова',
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-        data: frenchScores,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 5,
-        pointBackgroundColor: 'blue',
-      },
-    ],
-  }
+        pointRadius: 4,
+      }
+    }),
+  )
+
+  const total: number[] = await getTotalPointsHistory()
+  datasets.push({
+    label: 'Усі мови (загалом)',
+    data: total,
+    fill: false,
+    tension: 0.3,
+    pointRadius: 4,
+  })
+
+  chartData.value = { labels, datasets }
 })
 </script>
 
@@ -106,7 +90,7 @@ onMounted(() => {
 .chart-container {
   width: 100%;
   max-width: 700px;
-  height: 400px;
+  height: 350px;
   margin: 0 auto;
   padding: 20px;
   background: white;

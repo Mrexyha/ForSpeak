@@ -8,8 +8,8 @@ namespace DAL.Entities.Enums
 {
     public enum LessonLevel
     {
-        Easy = 5,
-        Medium = 10,
-        Hard = 15
+        Easy = 10,
+        Medium = 20,
+        Hard = 30
     }
 }

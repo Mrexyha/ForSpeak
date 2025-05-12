@@ -1,5 +1,13 @@
 import axios from 'axios'
 
+export interface Language {
+  id: number
+  name: string
+  description: string
+  countryImage: string
+  flagImage: string
+}
+
 const API_URL = 'https://localhost:7058/api/Language/get-all-languages'
 
 export async function fetchLanguages() {

@@ -24,6 +24,13 @@ const isHomePage = route.path === '/'
       >
         Навчання
       </RouterLink>
+      <RouterLink
+        class="nav"
+        :class="{ active: isActive('/admin/modules/create') }"
+        :to="'/admin/modules/create'"
+      >
+        Створити модуль
+      </RouterLink>
       <div :class="['pic', { 'right-corner': !isHomePage }]">
         <RouterLink class="nav profile" to="/profile"></RouterLink>
       </div>
