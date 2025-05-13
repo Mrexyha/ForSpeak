@@ -26,5 +26,7 @@ namespace DAL.Entities.Relations
         public bool PointsAwarded { get; set; } = false;
 
         public int AwardedPoints { get; set; } = 0;
+
+        public DateTime DateCompleted { get; set; }
     }
 }

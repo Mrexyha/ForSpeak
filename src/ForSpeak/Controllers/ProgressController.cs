@@ -39,5 +39,19 @@ namespace ForSpeak.Controllers
             var pts = await _progressService.GetTotalPoints(userId);
             return Ok(pts);
         }
+
+        [HttpGet("language/{languageId}/history")]
+        public async Task<IActionResult> GetLanguageHistory(int languageId)
+        {
+            var history = await _progressService.GetMonthlyPointsForLanguage(GetCurrentUserId(), languageId);
+            return Ok(history);
+        }
+
+        [HttpGet("total-points/history")]
+        public async Task<IActionResult> GetTotalHistory()
+        {
+            var history = await _progressService.GetMonthlyTotalPoints(GetCurrentUserId());
+            return Ok(history);
+        }
     }
 }

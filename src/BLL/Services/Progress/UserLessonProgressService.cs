@@ -26,11 +26,7 @@ namespace BLL.Services.Progress
         {
             var prog = await _context.UsersToLessons
                 .FirstOrDefaultAsync(u => u.UserId == userId && u.LessonId == lessonId)
-                ?? new UsersToLessons
-                {
-                    UserId = userId,
-                    LessonId = lessonId
-                };
+                ?? new UsersToLessons { UserId = userId, LessonId = lessonId };
 
             switch (moduleType)
             {
@@ -40,15 +36,14 @@ namespace BLL.Services.Progress
             }
 
             if (!prog.PointsAwarded
-                && prog.QuizCompleted
-                && prog.ReadingCompleted
-                && prog.SpeakingCompleted)
+            && prog.QuizCompleted
+            && prog.ReadingCompleted
+            && prog.SpeakingCompleted)
             {
                 var lesson = await _context.Lessons.FindAsync(lessonId);
-                int points = (int)lesson.Level;
-
-                prog.AwardedPoints = points;
+                prog.AwardedPoints = (int)lesson.Level;
                 prog.PointsAwarded = true;
+                prog.DateCompleted = DateTime.UtcNow;   
             }
 
             if (prog.Id == 0)
@@ -65,6 +60,60 @@ namespace BLL.Services.Progress
         public Task<int> GetTotalPoints(int userId)
         {
             return _userRepo.GetUserTotalPointsAsync(userId);
+        }
+
+
+        public async Task<List<int>> GetMonthlyPointsForLanguage(int userId, int languageId, int monthsBack = 6)
+        {
+            var cutoff = DateTime.UtcNow.AddMonths(-monthsBack);
+            // Припускаємо, що у UsersToLessons є поле DateCompleted
+            var data = await _context.UsersToLessons
+                .Where(u => u.UserId == userId
+                         && u.Lesson.LanguageId == languageId
+                         && u.DateCompleted >= cutoff
+                         && u.PointsAwarded)
+                .GroupBy(u => new { u.DateCompleted.Year, u.DateCompleted.Month })
+                .Select(g => new {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Points = g.Sum(x => x.AwardedPoints)
+                })
+                .ToListAsync();
+
+            // Формуємо список за останні monthsBack місяців
+            var result = new List<int>();
+            for (int i = monthsBack - 1; i >= 0; i--)
+            {
+                var dt = DateTime.UtcNow.AddMonths(-i);
+                var bucket = data.FirstOrDefault(d => d.Year == dt.Year && d.Month == dt.Month);
+                result.Add(bucket?.Points ?? 0);
+            }
+            return result;
+        }
+
+        public async Task<List<int>> GetMonthlyTotalPoints(int userId, int monthsBack = 6)
+        {
+            var cutoff = DateTime.UtcNow.AddMonths(-monthsBack);
+            var data = await _context.UsersToLessons
+                .Where(u => u.UserId == userId
+                         && u.DateCompleted >= cutoff
+                         && u.PointsAwarded)
+                .GroupBy(u => new { u.DateCompleted.Year, u.DateCompleted.Month })
+                .Select(g => new {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Points = g.Sum(x => x.AwardedPoints)
+                })
+                .ToListAsync();
+
+            var result = new List<int>();
+            for (int i = monthsBack - 1; i >= 0; i--)
+            {
+                var dt = DateTime.UtcNow.AddMonths(-i);
+                var bucket = data.FirstOrDefault(d => d.Year == dt.Year && d.Month == dt.Month);
+                result.Add(bucket?.Points ?? 0);
+            }
+            return result;
         }
     }
 }
