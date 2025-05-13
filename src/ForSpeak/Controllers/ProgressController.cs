@@ -1,4 +1,5 @@
 ﻿using BLL.Services.Progress;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ namespace ForSpeak.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProgressController : ControllerBase
     {
         private readonly IUserLessonProgressService _progressService;
