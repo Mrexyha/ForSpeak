@@ -9,23 +9,15 @@ const vocabulary = ref([{ word: '', transcription: '', pronunciationUrl: '', tra
 const readingTask = ref({ text: '', questions: [{ sentenceWithGap: '', correctWord: '' }] })
 const speakingPhrases = ref([''])
 
-function addQuizQuestion() {
+const addQuizQuestion = () =>
   quizQuestions.value.push({ question: '', options: ['', '', ''], correctOptionIndex: 0 })
-}
-
-function addVocabularyWord() {
+const addVocabularyWord = () =>
   vocabulary.value.push({ word: '', transcription: '', pronunciationUrl: '', translation: '' })
-}
-
-function addReadingQuestion() {
+const addReadingQuestion = () =>
   readingTask.value.questions.push({ sentenceWithGap: '', correctWord: '' })
-}
+const addSpeakingPhrase = () => speakingPhrases.value.push('')
 
-function addSpeakingPhrase() {
-  speakingPhrases.value.push('')
-}
-
-function submitModule() {
+const submitModule = () => {
   const moduleData = {
     languageId: selectedLanguageId.value,
     title: moduleTitle.value,
@@ -35,115 +27,191 @@ function submitModule() {
     reading: readingTask.value,
     speaking: speakingPhrases.value,
   }
-
   console.log('Відправка модуля:', moduleData)
 }
 </script>
 
 <template>
   <div class="admin-module-creator">
-    <h2>🛠️ Створити модуль</h2>
+    <h2 class="title">🛠️ Створити новий модуль</h2>
 
-    <label>
-      Мова:
-      <select v-model="selectedLanguageId">
-        <option disabled value="">Оберіть мову</option>
-        <option :value="1">Англійська</option>
-        <option :value="2">Німецька</option>
-        <!-- інші мови -->
-      </select>
-    </label>
-
-    <label>
-      Назва модуля:
-      <input v-model="moduleTitle" type="text" />
-    </label>
-
-    <label>
-      Теорія:
-      <textarea v-model="theory" rows="5" />
-    </label>
-
-    <hr />
-
-    <h3>🧠 Тести</h3>
-    <div v-for="(q, index) in quizQuestions" :key="index">
-      <input v-model="q.question" placeholder="Питання" />
-      <div v-for="(opt, i) in q.options" :key="i">
-        <input v-model="q.options[i]" placeholder="Варіант відповіді" />
-      </div>
-      <label>
-        Правильний індекс:
-        <input type="number" v-model="q.correctOptionIndex" min="0" max="2" />
+    <div class="section">
+      <label class="field">
+        <span>Мова</span>
+        <select v-model="selectedLanguageId" class="input">
+          <option disabled value="">Оберіть мову</option>
+          <option :value="1">Англійська</option>
+          <option :value="2">Німецька</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Назва модуля</span>
+        <input v-model="moduleTitle" type="text" class="input" />
+      </label>
+      <label class="field">
+        <span>Теорія</span>
+        <textarea v-model="theory" rows="4" class="input" />
       </label>
     </div>
-    <button @click="addQuizQuestion">Додати питання</button>
 
-    <hr />
+    <details class="section" open>
+      <summary class="section-title">🧠 Тести</summary>
+      <div v-for="(q, idx) in quizQuestions" :key="idx" class="card small-card">
+        <input v-model="q.question" placeholder="Питання" class="input mb" />
+        <div class="grid options-grid mb">
+          <input
+            v-for="(opt, i) in q.options"
+            :key="i"
+            v-model="q.options[i]"
+            placeholder="Варіант"
+            class="input"
+          />
+        </div>
+        <label class="field-inline">
+          <span>Правильний індекс</span>
+          <input type="number" v-model="q.correctOptionIndex" min="0" max="2" class="input-small" />
+        </label>
+      </div>
+      <button class="btn" @click="addQuizQuestion">➕ Додати питання</button>
+    </details>
 
-    <h3>📚 Словник</h3>
-    <div v-for="(w, index) in vocabulary" :key="index">
-      <input v-model="w.word" placeholder="Слово" />
-      <input v-model="w.transcription" placeholder="Транскрипція" />
-      <input v-model="w.pronunciationUrl" placeholder="URL до вимови" />
-      <input v-model="w.translation" placeholder="Переклад" />
-    </div>
-    <button @click="addVocabularyWord">Додати слово</button>
+    <details class="section">
+      <summary class="section-title">📚 Словник</summary>
+      <div class="grid vocab-grid">
+        <div v-for="(w, idx) in vocabulary" :key="idx" class="card small-card">
+          <input v-model="w.word" placeholder="Слово" class="input mb" />
+          <input v-model="w.transcription" placeholder="Транскрипція" class="input mb" />
+          <input v-model="w.pronunciationUrl" placeholder="URL до вимови" class="input mb" />
+          <input v-model="w.translation" placeholder="Переклад" class="input" />
+        </div>
+      </div>
+      <button class="btn" @click="addVocabularyWord">➕ Додати слово</button>
+    </details>
 
-    <hr />
+    <details class="section">
+      <summary class="section-title">📖 Читання</summary>
+      <textarea
+        v-model="readingTask.text"
+        rows="3"
+        placeholder="Текст для читання"
+        class="input mb"
+      />
+      <div v-for="(q, idx) in readingTask.questions" :key="idx" class="card small-card">
+        <input v-model="q.sentenceWithGap" placeholder="Речення з пропуском" class="input mb" />
+        <input v-model="q.correctWord" placeholder="Правильне слово" class="input" />
+      </div>
+      <button class="btn" @click="addReadingQuestion">➕ Додати питання</button>
+    </details>
 
-    <h3>📖 Читання</h3>
-    <textarea v-model="readingTask.text" placeholder="Текст для читання" rows="5" />
-    <div v-for="(q, index) in readingTask.questions" :key="index">
-      <input v-model="q.sentenceWithGap" placeholder="Речення з пропуском" />
-      <input v-model="q.correctWord" placeholder="Правильне слово" />
-    </div>
-    <button @click="addReadingQuestion">Додати питання до читання</button>
+    <details class="section">
+      <summary class="section-title">🗣️ Говоріння</summary>
+      <div class="space-y">
+        <input
+          v-for="(p, idx) in speakingPhrases"
+          :key="idx"
+          v-model="speakingPhrases[idx]"
+          placeholder="Фраза для повторення"
+          class="input"
+        />
+      </div>
+      <button class="btn" @click="addSpeakingPhrase">➕ Додати фразу</button>
+    </details>
 
-    <hr />
-
-    <h3>🗣️ Говоріння</h3>
-    <div v-for="(p, index) in speakingPhrases" :key="index">
-      <input v-model="speakingPhrases[index]" placeholder="Фраза для повторення" />
-    </div>
-    <button @click="addSpeakingPhrase">Додати фразу</button>
-
-    <hr />
-    <button @click="submitModule">📤 Надіслати модуль</button>
+    <button class="btn submit-btn" @click="submitModule">📤 Надіслати модуль</button>
   </div>
 </template>
 
 <style scoped>
 .admin-module-creator {
-  max-width: 800px;
-  margin: 40px auto;
-  background: #f7fafc;
-  padding: 20px;
-  border-radius: 12px;
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-input,
-textarea,
-select {
-  display: block;
-  width: 100%;
-  margin-bottom: 12px;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #cbd5e0;
+.title {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: #1a202c;
 }
-button {
-  margin-top: 10px;
-  background: #4a90e2;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+.section {
+  margin-bottom: 1.5rem;
+}
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
   cursor: pointer;
+  margin-bottom: 1rem;
 }
-button:hover {
-  background: #1e3a8a;
+.field {
+  margin-bottom: 1rem;
 }
-hr {
-  margin: 24px 0;
+.field span {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  color: #2d3748;
+}
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  color: #2d3748;
+}
+.input-small {
+  width: 4rem;
+  padding: 0.4rem;
+}
+.mb {
+  margin-bottom: 0.75rem;
+}
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+.options-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+.vocab-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.card {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 0.75rem;
+}
+.small-card {
+  margin-bottom: 1rem;
+}
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #4338ca;
+}
+.submit-btn {
+  width: 100%;
+  margin-top: 2rem;
+  justify-content: center;
+}
+.space-y > * + * {
+  margin-top: 0.75rem;
 }
 </style>

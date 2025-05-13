@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AdminModuleCreator from '../components/AdminModuleCreator.vue'
+import PageLayout from '../layouts/PageLayout.vue'
 </script>
 
 <template>
@@ -10,4 +11,8 @@ import AdminModuleCreator from '../components/AdminModuleCreator.vue'
   </PageLayout>
 </template>
 
-<style scoped></style>
+<style scoped>
+.admin-page {
+  margin-top: 100px;
+}
+</style>
