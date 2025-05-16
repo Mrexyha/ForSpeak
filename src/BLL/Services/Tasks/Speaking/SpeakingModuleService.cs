@@ -1,7 +1,9 @@
 ﻿using BLL.Models.Modules;
 using BLL.Models.Tasks;
+using DAL;
 using DAL.Entities.Tasks;
 using DAL.Repositories.Tasks.Speaking;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,13 +11,16 @@ namespace BLL.Services.Tasks.Speaking
 {
     public class SpeakingModuleService : ISpeakingModuleService
     {
+        private readonly AppDbContext _context;
         private readonly ISpeakingModuleRepository _repo;
         public SpeakingModuleService(ISpeakingModuleRepository repo) => _repo = repo;
 
         public async Task<SpeakingModuleModel> GetByLessonIdAsync(int lessonId)
         {
             var entity = await _repo.GetByLessonIdAsync(lessonId)
-                         ?? throw new KeyNotFoundException();
+               ?? throw new KeyNotFoundException(
+                    $"Speaking module not found for lessonId = {lessonId}");
+
             return new SpeakingModuleModel
             {
                 Phrases = entity.Phrases
@@ -35,7 +40,8 @@ namespace BLL.Services.Tasks.Speaking
         public async Task UpdateAverageAsync(int lessonId, double newAverage)
         {
             var module = await _repo.GetByLessonIdAsync(lessonId)
-                         ?? throw new KeyNotFoundException();
+             ?? throw new KeyNotFoundException(
+                  $"Cannot update average: speaking module for lessonId = {lessonId} not found");
             module.AverageAccuracy = newAverage;
             await _repo.UpdateAsync(module);
         }
@@ -44,5 +50,21 @@ namespace BLL.Services.Tasks.Speaking
         {
             await _repo.DeletePhraseAsync(phraseId);
         }
+
+        public async Task<double> RecalculateAverageAccuracyAsync(int lessonId)
+        {
+            var avg = await _context.SpeakingPhraseAttempts
+                .Where(a => a.Phrase.SpeakingModule.LessonId == lessonId)
+                .AverageAsync(a => a.Accuracy);
+
+            var module = await _repo.GetByLessonIdAsync(lessonId)
+                         ?? throw new KeyNotFoundException($"Module {lessonId} not found");
+
+            module.AverageAccuracy = avg;
+            await _repo.UpdateAsync(module);
+
+            return avg;
+        }
+
     }
 }

@@ -31,6 +31,9 @@ namespace DAL
         public DbSet<VocabularyModuleEntity> VocabularyModules { get; set; }
         public DbSet<WordEntity> Words { get; set; }
 
+        public DbSet<QuizModuleEntity> QuizModules { get; set; }
+        public DbSet<QuizQuestionEntity> QuizQuestions { get; set; }
+
         public DbSet<ReadingModuleEntity> ReadingModules { get; set; }
         public DbSet<FillInTheBlankTaskEntity> FillInTheBlankTasks { get; set; }
 
@@ -38,6 +41,8 @@ namespace DAL
         public DbSet<SpeakingPhraseEntity> SpeakingPhrases { get; set; }
 
         public DbSet<UsersToLessons> UsersToLessons { get; set; }
+
+        public DbSet<SpeakingPhraseAttemptEntity> SpeakingPhraseAttempts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -99,6 +104,12 @@ namespace DAL
                 .WithMany(sm => sm.Phrases)
                 .HasForeignKey(sp => sp.SpeakingModuleId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SpeakingPhraseAttemptEntity>()
+     .HasOne(a => a.Phrase)
+     .WithMany(p => p.Attempts)
+     .HasForeignKey(a => a.SpeakingPhraseId)
+     .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserLanguage>()
                 .HasKey(ul => new { ul.UserId, ul.LanguageId });

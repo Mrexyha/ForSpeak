@@ -26,6 +26,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using DAL.Repositories.Modules;
+using BLL.Services.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,6 +115,9 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<ILessonsService, LessonsService>();
+
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
 
 builder.Services.AddScoped<ITheoryModuleService, TheoryModuleService>();
 builder.Services.AddScoped<ITheoryModuleRepository, TheoryModuleRepository>();

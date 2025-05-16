@@ -16,5 +16,7 @@ namespace BLL.Services.Tasks.Speaking
         Task<SpeakingPhraseModel> AddPhraseAsync(int lessonId, SpeakingPhraseModel newPhrase);
         Task UpdateAverageAsync(int lessonId, double newAverage);
         Task DeletePhraseAsync(int phraseId);
+
+        Task<double> RecalculateAverageAccuracyAsync(int lessonId);
     }
 }

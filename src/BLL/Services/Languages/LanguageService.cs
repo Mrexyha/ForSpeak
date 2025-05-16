@@ -78,12 +78,8 @@ namespace BLL.Services.Languages
                                 Type = m.Type
                             })
                             .ToList(),
-                        Theory = le.Theory == null
-                            ? null
-                            : new TheoryModuleModel { Text = le.Theory.Text },
-                        Vocabulary = le.Vocabulary == null
-                            ? null
-                            : new VocabularyModuleModel
+                        Theory = new TheoryModuleModel { Text = le.Theory.Text },
+                        Vocabulary = new VocabularyModuleModel
                             {
                                 Words = (le.Vocabulary.Words ?? Enumerable.Empty<WordEntity>())
                                     .Select(w => new WordModel
@@ -95,9 +91,7 @@ namespace BLL.Services.Languages
                                     })
                                     .ToList()
                             },
-                        Quiz = le.Quiz == null
-                            ? null
-                            : new QuizModuleModel
+                        Quiz = new QuizModuleModel
                             {
                                 Questions = (le.Quiz.Questions ?? Enumerable.Empty<QuizQuestionEntity>())
                                     .Select(q => new QuizQuestionModel
@@ -108,9 +102,7 @@ namespace BLL.Services.Languages
                                     })
                                     .ToList()
                             },
-                        Reading = le.Reading == null
-                            ? null
-                            : new ReadingModuleModel
+                        Reading = new ReadingModuleModel
                             {
                                 Text = le.Reading.Text,
                                 Tasks = (le.Reading.Tasks ?? Enumerable.Empty<FillInTheBlankTaskEntity>())
@@ -121,9 +113,7 @@ namespace BLL.Services.Languages
                                     })
                                     .ToList()
                             },
-                        Speaking = le.Speaking == null
-                            ? null
-                            : new SpeakingModuleModel
+                        Speaking = new SpeakingModuleModel
                             {
                                 Phrases = (le.Speaking.Phrases ?? Enumerable.Empty<SpeakingPhraseEntity>())
                                     .Select(p => new SpeakingPhraseModel

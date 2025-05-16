@@ -44,13 +44,9 @@ namespace BLL.Services.Lessons
                     Type = m.Type
                 }).ToList(),
 
-                Theory = l.Theory == null
-                    ? null
-                    : new TheoryModuleModel { Text = l.Theory.Text },
+                Theory = new TheoryModuleModel { Text = l.Theory.Text },
 
-                Vocabulary = l.Vocabulary == null
-                    ? null
-                    : new VocabularyModuleModel
+                Vocabulary =  new VocabularyModuleModel
                     {
                         Words = l.Vocabulary.Words
                             .Select(w => new WordModel
@@ -63,9 +59,7 @@ namespace BLL.Services.Lessons
                             .ToList()
                     },
 
-                Quiz = l.Quiz == null
-                    ? null
-                    : new QuizModuleModel
+                Quiz = new QuizModuleModel
                     {
                         Questions = l.Quiz.Questions
                             .Select(q => new QuizQuestionModel
@@ -77,9 +71,7 @@ namespace BLL.Services.Lessons
                             .ToList()
                     },
 
-                Reading = l.Reading == null
-                    ? null
-                    : new ReadingModuleModel
+                Reading =  new ReadingModuleModel
                     {
                         Text = l.Reading.Text,
                         Tasks = l.Reading.Tasks
@@ -91,9 +83,7 @@ namespace BLL.Services.Lessons
                             .ToList()
                     },
 
-                Speaking = l.Speaking == null
-                    ? null
-                    : new SpeakingModuleModel
+                Speaking = new SpeakingModuleModel
                     {
                         Phrases = l.Speaking.Phrases
                             .Select(p => new SpeakingPhraseModel
@@ -128,13 +118,9 @@ namespace BLL.Services.Lessons
                     })
                     .ToList(),
 
-                Theory = lessonEntity.Theory == null
-                    ? null
-                    : new TheoryModuleModel { Text = lessonEntity.Theory.Text },
+                Theory = new TheoryModuleModel { Text = lessonEntity.Theory.Text },
 
-                Vocabulary = lessonEntity.Vocabulary == null
-                    ? null
-                    : new VocabularyModuleModel
+                Vocabulary = new VocabularyModuleModel
                     {
                         Words = lessonEntity.Vocabulary.Words
                             .Select(w => new WordModel
@@ -147,9 +133,7 @@ namespace BLL.Services.Lessons
                             .ToList()
                     },
 
-                    Quiz = lessonEntity.Quiz == null
-                        ? null
-                        : new QuizModuleModel
+                    Quiz = new QuizModuleModel
                         {
                             Questions = lessonEntity.Quiz.Questions.Select(q => new QuizQuestionModel
                             {
@@ -158,9 +142,7 @@ namespace BLL.Services.Lessons
                                 CorrectOptionIndex = q.CorrectOptionIndex
                             }).ToList()
                         },
-                Reading = lessonEntity.Reading == null
-        ? null
-        : new ReadingModuleModel
+                Reading = new ReadingModuleModel
         {
             Text = lessonEntity.Reading.Text,
             Tasks = lessonEntity.Reading.Tasks.Select(t => new FillInTheBlankTaskModel

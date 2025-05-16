@@ -49,18 +49,8 @@ namespace ForSpeak.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(int languageId, int lessonId, [FromBody] SpeakingModuleModel model)
         {
-            var lesson = await _lessonService.GetLessonByLanguageAndIdAsync(languageId, lessonId);
-            if (lesson == null) return NotFound();
-
-            try
-            {
-                await _speakingService.UpdateAverageAsync(lessonId, model.AverageAccuracy);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            return NoContent();
+            var newAvg = await _speakingService.RecalculateAverageAccuracyAsync(lessonId);
+            return Ok(new { AverageAccuracy = newAvg });
         }
 
         [HttpDelete("phrases/{phraseId}")]
