@@ -1,20 +1,34 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { computed, defineProps } from 'vue'
+import MarkdownIt from 'markdown-it'
+
+const md = new MarkdownIt()
+
+interface TheoryModule {
+  text: string
+}
 
 interface Lesson {
   id: number
   title: string
-  description: string
-  theory: string
+  theory: TheoryModule | null
 }
 
 const props = defineProps<{ lesson: Lesson }>()
+
+const theoryHtml = computed(() => {
+  const markdownText = props.lesson.theory?.text || ''
+  return md.render(markdownText)
+})
 </script>
 
 <template>
   <div class="task">
     <h2>📖 Теоретичний матеріал</h2>
-    <p>{{ props.lesson?.theory || 'Матеріал відсутній' }}</p>
+    <div v-if="props.lesson.theory">
+      <div v-html="theoryHtml"></div>
+    </div>
+    <p v-else>❌ Теоретичний матеріал відсутній</p>
   </div>
 </template>
 

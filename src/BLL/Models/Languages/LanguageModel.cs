@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BLL.Models.Lessons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ namespace BLL.Models.Languages
         public string FlagImage { get; set; }
         public string CountryImage { get; set; }
         public string Description { get; set; }
+
+        public List<LessonModel> Lessons { get; set; }
 
         public int LessonsCount { get; set; }
     }

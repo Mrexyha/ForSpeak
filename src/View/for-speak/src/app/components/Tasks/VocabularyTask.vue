@@ -1,25 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { fetchVocabulary, type Word } from '../../services/vocabularyService'
 
-interface Word {
-  id: number
-  word: string
-  transcription: string
-  translation: string
-}
+const route = useRoute()
+const languageId = Number(route.params.languageId)
+const lessonId = Number(route.params.id)
 
-const words = ref<Word[]>([
-  { id: 1, word: 'apple', transcription: '[ˈæp.l̩]', translation: 'яблуко' },
-  { id: 2, word: 'book', transcription: '[bʊk]', translation: 'книга' },
-  { id: 3, word: 'computer', transcription: '[kəmˈpjuː.tər]', translation: 'комп’ютер' },
-  { id: 4, word: 'dog', transcription: '[dɒɡ]', translation: 'собака' },
-  { id: 5, word: 'sun', transcription: '[sʌn]', translation: 'сонце' },
-  { id: 6, word: 'tree', transcription: '[triː]', translation: 'дерево' },
-  { id: 7, word: 'car', transcription: '[kɑːr]', translation: 'автомобіль' },
-  { id: 8, word: 'water', transcription: '[ˈwɔː.tər]', translation: 'вода' },
-  { id: 9, word: 'school', transcription: '[skuːl]', translation: 'школа' },
-  { id: 10, word: 'friend', transcription: '[frɛnd]', translation: 'друг' },
-])
+const words = ref<Word[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 const speak = (text: string) => {
   if ('speechSynthesis' in window) {
@@ -30,12 +20,31 @@ const speak = (text: string) => {
     alert('Ваш браузер не підтримує синтез мовлення 😢')
   }
 }
+
+async function loadVocabulary() {
+  loading.value = true
+  error.value = null
+
+  try {
+    const data = await fetchVocabulary(languageId, lessonId)
+    words.value = data.words
+  } catch (e) {
+    console.error(e)
+    error.value = 'Failed to load vocabulary'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(loadVocabulary)
 </script>
 
 <template>
   <div class="vocabulary">
     <h2>📔 Словник</h2>
-    <div class="table-container">
+    <div v-if="loading">Завантаження даних...</div>
+    <div v-else-if="error" class="error">{{ error }}</div>
+    <div v-else class="table-container">
       <table>
         <thead>
           <tr>
@@ -77,7 +86,6 @@ h2 {
   font-size: 28px;
   color: #1e3a8a;
   margin-bottom: 20px;
-  text-transform: uppercase;
   letter-spacing: 1px;
 }
 

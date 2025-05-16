@@ -88,7 +88,7 @@ const submitForm = async (data: {
       email: updatedData.email,
       password: updatedData.password,
     })
-    localStorage.setItem('token', loginResponse.token)
+    localStorage.setItem('jwt', loginResponse.token)
 
     router.push('/')
   } catch (error) {

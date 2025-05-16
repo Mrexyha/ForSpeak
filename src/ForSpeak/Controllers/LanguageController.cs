@@ -1,4 +1,5 @@
-﻿using BLL.Services.Languages;
+﻿using BLL.Models.Languages;
+using BLL.Services.Languages;
 using DAL.Entities.Languages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,44 +11,36 @@ namespace ForSpeak.Controllers
     public class LanguageController : ControllerBase
     {
         private readonly ILanguageService _languageService;
-
         public LanguageController(ILanguageService languageService)
-        {
-            _languageService = languageService;
-        }
+            => _languageService = languageService;
 
         [HttpGet("get-all-languages")]
         public async Task<IActionResult> GetLanguages()
         {
-            var languages = await _languageService.GetAvailableLanguagesAsync();
-            return Ok(languages);
+            var langs = await _languageService.GetAvailableLanguagesAsync();
+            return Ok(langs);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetLanguageById(int id)
+        public async Task<IActionResult> GetLanguage(int id)
         {
-            var language = await _languageService.GetLanguageByIdAsync(id);
-            if (language == null)
-                return NotFound();
-            return Ok(language);
+            var lang = await _languageService.GetLanguageByIdAsync(id);
+            if (lang == null) return NotFound();
+            return Ok(lang);
         }
 
         [HttpPut("update-language/{id}")]
-        public async Task<IActionResult> UpdateLanguage(int id, [FromBody] LanguageEntity updatedLanguage)
+        public async Task<IActionResult> UpdateLanguage(int id, [FromBody] LanguageModel model)
         {
-            var existingLanguage = await _languageService.GetLanguageByIdAsync(id);
-            if (existingLanguage == null)
+            if (id != model.Id) return BadRequest();
+            try
+            {
+                await _languageService.UpdateLanguageAsync(model);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            existingLanguage.Name = updatedLanguage.Name;
-            existingLanguage.Description = updatedLanguage.Description;
-            existingLanguage.FlagImage = updatedLanguage.FlagImage;
-            existingLanguage.CountryImage = updatedLanguage.CountryImage;
-
-            await _languageService.UpdateLanguageAsync(existingLanguage);
-
             return NoContent();
         }
     }

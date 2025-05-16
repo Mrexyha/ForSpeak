@@ -10,7 +10,6 @@ interface Lesson {
   id: number
   title: string
   difficulty: string
-  //date: string
 }
 
 const route = useRoute()
@@ -19,14 +18,6 @@ const lessons = ref<Lesson[]>([])
 const searchQuery = ref('')
 const selectedDifficulty = ref('all')
 const selectedSort = ref('newest')
-
-// const lessons = ref([
-//   { id: 1, title: "Сім'я / Family", difficulty: 'Elementary', date: '2024-03-01' },
-//   { id: 2, title: 'Друзі / Friends', difficulty: 'Intermediate', date: '2024-02-25' },
-//   { id: 3, title: 'Робота / Work', difficulty: 'Advanced', date: '2024-02-20' },
-//   { id: 4, title: 'Подорожі / Travel', difficulty: 'Elementary', date: '2024-03-05' },
-//   { id: 5, title: 'Спорт / Sports', difficulty: 'Intermediate', date: '2024-02-28' },
-// ])
 
 const languageId = computed(() => {
   const id = route.params.languageId
@@ -60,8 +51,8 @@ const filteredLessons = computed(() => {
   // })
 })
 
-const goToMyLanguages = () => {
-  router.push(`/education/${languageId.value}/some-id`)
+const goToLesson = (lessonId: number) => {
+  router.push(`/education/${languageId.value}/${lessonId}`)
 }
 </script>
 
@@ -98,14 +89,13 @@ const goToMyLanguages = () => {
         </div>
       </div>
 
-      <div class="cards-container">
-        <LessonCard
-          @click="goToMyLanguages"
-          v-for="lesson in filteredLessons"
-          :key="lesson.id"
-          :title="lesson.title"
-          :difficulty="lesson.difficulty"
-        />
+      <div
+        class="cards-container"
+        v-for="lesson in filteredLessons"
+        :key="lesson.id"
+        @click="goToLesson(lesson.id)"
+      >
+        <LessonCard :id="lesson.id" :title="lesson.title" :difficulty="lesson.difficulty" />
       </div>
 
       <p v-if="filteredLessons.length === 0" class="no-results">Нічого не знайдено 😕</p>

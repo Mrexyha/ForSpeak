@@ -1,5 +1,8 @@
 ﻿using DAL.Entities.Languages;
+using DAL.Entities.Lessons;
 using DAL.Entities.Modules;
+using DAL.Entities.Relations;
+using DAL.Entities.Tasks;
 using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,13 +17,99 @@ namespace DAL
         { }
 
         public DbSet<UserEntity> Users { get; set; }
-        public DbSet<LanguageEntity> Languages { get; set; }
         public DbSet<UserLanguage> UserLanguages { get; set; }
-        public DbSet<ModuleEntity> ModuleEntities { get; set; }
+
+        public DbSet<LanguageEntity> Languages { get; set; }
+
+        public DbSet<LessonEntity> Lessons { get; set; }
+
+        public DbSet<ModuleEntity> Modules { get; set; }
+        public DbSet<TaskLangEntity> TaskLangs { get; set; }
+
+        public DbSet<TheoryModuleEntity> TheoryModules { get; set; }
+
+        public DbSet<VocabularyModuleEntity> VocabularyModules { get; set; }
+        public DbSet<WordEntity> Words { get; set; }
+
+        public DbSet<QuizModuleEntity> QuizModules { get; set; }
+        public DbSet<QuizQuestionEntity> QuizQuestions { get; set; }
+
+        public DbSet<ReadingModuleEntity> ReadingModules { get; set; }
+        public DbSet<FillInTheBlankTaskEntity> FillInTheBlankTasks { get; set; }
+
+        public DbSet<SpeakingModuleEntity> SpeakingModules { get; set; }
+        public DbSet<SpeakingPhraseEntity> SpeakingPhrases { get; set; }
+
+        public DbSet<UsersToLessons> UsersToLessons { get; set; }
+
+        public DbSet<SpeakingPhraseAttemptEntity> SpeakingPhraseAttempts { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TheoryModuleEntity>()
+            .ToTable("TheoryModules")
+            .HasKey(t => t.Id);
+
+            modelBuilder.Entity<TheoryModuleEntity>()
+                .HasOne(t => t.Lesson)
+                .WithOne(l => l.Theory)
+                .HasForeignKey<TheoryModuleEntity>(t => t.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReadingModuleEntity>()
+        .ToTable("ReadingModules")               
+        .HasKey(rm => rm.Id);
+
+            modelBuilder.Entity<ReadingModuleEntity>()
+        .HasOne(rm => rm.Lesson)
+        .WithOne(l => l.Reading)
+        .HasForeignKey<ReadingModuleEntity>(rm => rm.LessonId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReadingModuleEntity>()
+                .HasOne(rm => rm.Lesson)
+                .WithOne(l => l.Reading)
+                .HasForeignKey<ReadingModuleEntity>(rm => rm.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FillInTheBlankTaskEntity>()
+        .ToTable("FillInTheBlankTasks")          
+        .HasKey(tb => tb.Id);
+
+            modelBuilder.Entity<FillInTheBlankTaskEntity>()
+                .HasOne(tb => tb.ReadingModule)
+                .WithMany(rm => rm.Tasks)
+                .HasForeignKey(tb => tb.ReadingModuleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SpeakingModuleEntity>()
+       .ToTable("SpeakingModules")
+       .HasKey(sm => sm.Id);
+
+            modelBuilder.Entity<SpeakingModuleEntity>()
+                .HasOne(sm => sm.Lesson)
+                .WithOne(l => l.Speaking)
+                .HasForeignKey<SpeakingModuleEntity>(sm => sm.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SpeakingPhraseEntity>()
+       .ToTable("SpeakingPhrases")
+       .HasKey(sp => sp.Id);
+
+            modelBuilder.Entity<SpeakingPhraseEntity>()
+                .HasOne(sp => sp.SpeakingModule)
+                .WithMany(sm => sm.Phrases)
+                .HasForeignKey(sp => sp.SpeakingModuleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SpeakingPhraseAttemptEntity>()
+     .HasOne(a => a.Phrase)
+     .WithMany(p => p.Attempts)
+     .HasForeignKey(a => a.SpeakingPhraseId)
+     .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserLanguage>()
                 .HasKey(ul => new { ul.UserId, ul.LanguageId });

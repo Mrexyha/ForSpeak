@@ -40,7 +40,7 @@ export const loginUser = async (credentials: { email: string; password: string }
 
     console.log('Login UserID:', userId)
 
-    localStorage.setItem('token', token)
+    localStorage.setItem('jwt', token)
     localStorage.setItem('userId', userId)
 
     return response.data

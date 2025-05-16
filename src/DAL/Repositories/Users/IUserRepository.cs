@@ -23,5 +23,8 @@ namespace DAL.Repositories.Users
 
         Task<UserEntity> GetUserByEmailAsync(string email);
         Task<UserEntity> CreateUserAsync(UserEntity user);
+
+        Task<int> GetUserPointsForLanguageAsync(int userId, int languageId);
+        Task<int> GetUserTotalPointsAsync(int userId);
     }
 }

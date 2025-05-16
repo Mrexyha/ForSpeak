@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Models.Lessons;
 using BLL.Models.Modules;
+using BLL.Models.Tasks;
 using DAL.Entities.Lessons;
 using DAL.Entities.Modules;
 using DAL.Repositories.Lessons;
@@ -30,43 +31,126 @@ namespace BLL.Services.Lessons
             {
                 Id = l.Id,
                 LanguageId = l.LanguageId,
+                LanguageName = l.LanguageName,
                 Title = l.Title,
                 ImageUrl = l.ImageUrl,
                 Level = l.Level,
+
                 Modules = l.Modules.Select(m => new ModuleModel
                 {
                     Id = m.Id,
                     LessonId = m.LessonId,
                     Title = m.Title,
-                    Type = m.Type,
-                }).ToList()
+                    Type = m.Type
+                }).ToList(),
+
+                Theory = new TheoryModuleModel { Text = l.Theory.Text },
+
+                Vocabulary =  new VocabularyModuleModel
+                    {
+                        Words = l.Vocabulary.Words
+                            .Select(w => new WordModel
+                            {
+                                Id = w.Id,
+                                Word = w.Word,
+                                Transcription = w.Transcription,
+                                Translation = w.Translation
+                            })
+                            .ToList()
+                    },
+
+                Quiz = new QuizModuleModel
+                    {
+                        Questions = l.Quiz.Questions
+                            .Select(q => new QuizQuestionModel
+                            {
+                                Question = q.Question,
+                                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
+                                CorrectOptionIndex = q.CorrectOptionIndex
+                            })
+                            .ToList()
+                    },
+
+                Reading =  new ReadingModuleModel
+                    {
+                        Text = l.Reading.Text,
+                        Tasks = l.Reading.Tasks
+                            .Select(t => new FillInTheBlankTaskModel
+                            {
+                                Sentence = t.Sentence,
+                                CorrectWord = t.CorrectWord
+                            })
+                            .ToList()
+                    },
+
+                Speaking = new SpeakingModuleModel
+                    {
+                        Phrases = l.Speaking.Phrases
+                            .Select(p => new SpeakingPhraseModel
+                            {
+                                Text = p.Text,
+                            })
+                            .ToList()
+                    },
             });
         }
 
         public async Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
         {
-            var lessons = await _lessonRepository.GetAllAsync();
-
-            var lessonEntity = lessons.FirstOrDefault(l => l.LanguageId == languageId && l.Id == lessonId);
-
-            if (lessonEntity == null)
-            {
-                return null;
-            }
+            var lessonEntity = await _lessonRepository.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (lessonEntity == null) return null;
 
             return new LessonModel
             {
                 Id = lessonEntity.Id,
                 LanguageId = lessonEntity.LanguageId,
+                LanguageName = lessonEntity.LanguageName,
                 Title = lessonEntity.Title,
                 ImageUrl = lessonEntity.ImageUrl,
                 Level = lessonEntity.Level,
-                Modules = lessonEntity.Modules.Select(m => new ModuleModel
-                {
-                    Id = m.Id,
-                    Title = m.Title,
-                    Type = m.Type
-                }).ToList()
+
+                Modules = lessonEntity.Modules
+                    .Select(m => new ModuleModel
+                    {
+                        Id = m.Id,
+                        Title = m.Title,
+                        Type = m.Type
+                    })
+                    .ToList(),
+
+                Theory = new TheoryModuleModel { Text = lessonEntity.Theory.Text },
+
+                Vocabulary = new VocabularyModuleModel
+                    {
+                        Words = lessonEntity.Vocabulary.Words
+                            .Select(w => new WordModel
+                            {
+                                Id = w.Id,
+                                Word = w.Word,
+                                Transcription = w.Transcription,
+                                Translation = w.Translation
+                            })
+                            .ToList()
+                    },
+
+                    Quiz = new QuizModuleModel
+                        {
+                            Questions = lessonEntity.Quiz.Questions.Select(q => new QuizQuestionModel
+                            {
+                                Question = q.Question,
+                                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
+                                CorrectOptionIndex = q.CorrectOptionIndex
+                            }).ToList()
+                        },
+                Reading = new ReadingModuleModel
+        {
+            Text = lessonEntity.Reading.Text,
+            Tasks = lessonEntity.Reading.Tasks.Select(t => new FillInTheBlankTaskModel
+            {
+                Sentence = t.Sentence,
+                CorrectWord = t.CorrectWord
+            }).ToList()
+        }
             };
         }
 

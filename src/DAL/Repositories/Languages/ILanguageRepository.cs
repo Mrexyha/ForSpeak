@@ -10,7 +10,7 @@ namespace DAL.Repositories.Languages
     public interface ILanguageRepository
     {
         Task<List<LanguageEntity>> GetAllLanguagesAsync();
-        Task<LanguageEntity> GetByIdAsync(int id);
+        Task<LanguageEntity?> GetByIdAsync(int id);
         Task UpdateLanguageAsync(LanguageEntity language);
     }
 }

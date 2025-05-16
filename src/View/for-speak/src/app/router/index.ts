@@ -11,6 +11,7 @@ import QuizTaskView from '../views/TaskViews/QuizTaskView.vue'
 import ReadingTaskView from '../views/TaskViews/ReadingTaskView.vue'
 import SpeakingTaskView from '../views/TaskViews/SpeakingTaskView.vue'
 import VocabularyTaskView from '../views/TaskViews/VocabularyTaskView.vue'
+import AdminView from '../views/AdminView.vue'
 
 const lessons = [
   {
@@ -23,11 +24,12 @@ const lessons = [
 
 const getLessonProps = (route: RouteLocationNormalized) => {
   const lessonId = parseInt(route.params.id as string)
+  const lesson = lessons.find((l) => l.id === lessonId)
+
   return {
     lesson: lessons.find((l) => l.id === lessonId) || {
       id: 0,
       title: 'Невідомий урок',
-      description: 'Опис недоступний',
       theory: 'Теоретичний матеріал недоступний',
     },
   }
@@ -102,6 +104,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+    },
+    {
+      path: '/admin/modules/create',
+      name: 'admin-create-module',
+      component: AdminView,
+      meta: { requiresAuth: true, roles: ['admin'] },
     },
   ],
 })

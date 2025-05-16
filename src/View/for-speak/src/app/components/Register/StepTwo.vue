@@ -9,6 +9,7 @@ interface Language {
   image: string
   flag: string
 }
+
 const form = reactive({
   gender: '',
   birthdate: '',

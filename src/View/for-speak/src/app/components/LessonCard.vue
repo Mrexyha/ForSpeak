@@ -1,12 +1,24 @@
 <script setup lang="ts">
-defineProps({
-  title: String,
-  difficulty: String,
-})
+import { defineEmits, defineProps } from 'vue'
+
+const { id, title, difficulty } = defineProps<{
+  id: number
+  title: string
+  difficulty: string
+  onClick?: (id: number) => void
+}>()
+
+const emit = defineEmits<{
+  (e: 'click', id: number): void
+}>()
+
+const handleClick = () => {
+  emit('click', id)
+}
 </script>
 
 <template>
-  <div class="main-lesson-container">
+  <div class="main-lesson-container" @click="handleClick">
     <div class="points">+5</div>
     <div class="card">
       <h1 class="main-lesson-title">{{ title }}</h1>

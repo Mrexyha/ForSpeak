@@ -73,5 +73,19 @@ namespace DAL.Repositories.Users
             await _context.SaveChangesAsync();
             return user;
         }
+
+        public async Task<int> GetUserPointsForLanguageAsync(int userId, int languageId)
+        {
+            return await _context.UsersToLessons
+                .Where(ul => ul.UserId == userId && ul.Lesson.LanguageId == languageId)
+                .SumAsync(ul => ul.AwardedPoints);
+        }
+
+        public async Task<int> GetUserTotalPointsAsync(int userId)
+        {
+            return await _context.UsersToLessons
+                .Where(ul => ul.UserId == userId)
+                .SumAsync(ul => ul.AwardedPoints);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DAL.Entities.Languages;
+﻿using BLL.Models.Languages;
+using DAL.Entities.Languages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace BLL.Services.Languages
 {
     public interface ILanguageService
     {
-        Task<List<LanguageEntity>> GetAvailableLanguagesAsync();
-        Task<LanguageEntity> GetLanguageByIdAsync(int id);
-        Task UpdateLanguageAsync(LanguageEntity language);
+        Task<List<LanguageModel>> GetAvailableLanguagesAsync();
+        Task<LanguageModel?> GetLanguageByIdAsync(int id);
+        Task UpdateLanguageAsync(LanguageModel languageModel);
     }
 }
