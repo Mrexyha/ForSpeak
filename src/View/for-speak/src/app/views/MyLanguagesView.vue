@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 import PageLayout from '../layouts/PageLayout.vue'
 import LanguageCardMyLangs from '../components/LanguageCardMyLangs.vue'
+import { deleteLanguageFromUser, getUserLanguages } from '../services/userService'
 
 interface UserLanguage {
   languageId: number
@@ -12,34 +12,37 @@ interface UserLanguage {
   countryImage: string
   progress: number
   tasksCount: number
+  isFinished: boolean
 }
 
 const userLanguages = ref<UserLanguage[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-onMounted(async () => {
+const fetchMyLangs = async () => {
+  loading.value = true
   try {
-    const token = localStorage.getItem('token')
-    const userId = localStorage.getItem('userId')
-    if (!token || !userId) throw new Error('Unauthorized')
-
-    const API_BASE = 'https://localhost:7058/api'
-
-    const { data } = await axios.get<UserLanguage[]>(`${API_BASE}/User/${userId}/languages`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    userLanguages.value = data
+    userLanguages.value = await getUserLanguages()
+    error.value = null
   } catch (e: unknown) {
-    if (e instanceof Error) {
-      error.value = e.message || 'Помилка при завантаженні'
-    } else {
-      error.value = 'Помилка при завантаженні'
-    }
+    error.value = e instanceof Error ? e.message : 'Помилка при завантаженні'
   } finally {
     loading.value = false
   }
-})
+}
+
+const onLanguageDeleted = async (languageId: number) => {
+  try {
+    await deleteLanguageFromUser(languageId)
+    userLanguages.value = userLanguages.value.filter((lang) => lang.languageId !== languageId)
+    alert('Мову успішно видалено!')
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Помилка при видаленні мови'
+    alert(message)
+  }
+}
+
+onMounted(fetchMyLangs)
 </script>
 
 <template>
@@ -51,6 +54,7 @@ onMounted(async () => {
         <LanguageCardMyLangs
           v-for="lang in userLanguages"
           :key="lang.languageId"
+          v-bind="lang"
           :languageId="lang.languageId"
           :name="lang.name"
           :description="lang.description"
@@ -58,6 +62,8 @@ onMounted(async () => {
           :countryImage="lang.countryImage"
           :progress="lang.progress"
           :tasksCount="lang.tasksCount"
+          :isFinished="lang.isFinished"
+          @deleted="onLanguageDeleted"
         />
       </template>
     </div>

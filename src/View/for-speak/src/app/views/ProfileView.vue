@@ -6,11 +6,12 @@ import PageLayout from '../layouts/PageLayout.vue'
 import ChartPoints from '../components/ChartPoints.vue'
 import profileMan from '../../../public/assets/general/man-icon.png'
 import profileWoman from '../../../public/assets/general/woman-icon.png'
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
+const auth = useAuthStore()
 const profileImage = ref()
 const isEditing = ref(false)
-const isEditingPassword = ref(false)
 
 const userInfo = ref({
   name: '',
@@ -21,35 +22,8 @@ const userInfo = ref({
   gender: '',
 })
 
-const studyTime = ref({
-  english: 12,
-  french: 8,
-})
-
-const recentActivities = ref([
-  { id: 1, text: 'Пройдено тест з англійської – 85%' },
-  { id: 2, text: 'Вивчено 10 нових слів у французькій' },
-  { id: 3, text: '30 хвилин навчання сьогодні' },
-])
-
-const passwordData = ref({
-  currentPassword: '',
-  newPassword: '',
-  confirmNewPassword: '',
-})
-
 const saveChanges = () => {
   isEditing.value = false
-}
-
-const saveNewPassword = () => {
-  if (passwordData.value.newPassword !== passwordData.value.confirmNewPassword) {
-    alert('Новий пароль і підтвердження не співпадають!')
-    return
-  }
-  alert('Пароль успішно змінено!')
-  passwordData.value = { currentPassword: '', newPassword: '', confirmNewPassword: '' }
-  isEditingPassword.value = false
 }
 
 const fetchUserProfile = async () => {
@@ -69,7 +43,12 @@ const fetchUserProfile = async () => {
     }
   } catch (error) {
     console.error(error)
-    router.push('/login')
+
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    localStorage.removeItem('userId')
+
+    router.push({ name: 'login', query: { redirect: '/profile' } })
   }
 }
 
@@ -87,6 +66,9 @@ onMounted(() => {
 const logout = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('user')
+  localStorage.removeItem('userId')
+  auth.clearUser()
+
   alert('Ви вийшли з профілю!')
   router.push('/')
 }
@@ -131,47 +113,6 @@ const logout = () => {
         <ChartPoints />
       </div>
 
-      <div class="study-time">
-        <h2>Час навчання</h2>
-        <ul>
-          <li>
-            Англійська: <span class="time">{{ studyTime.english }} год.</span>
-          </li>
-          <li>
-            Французька: <span class="time">{{ studyTime.french }} год.</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="recent-activities">
-        <h2>Останні активності</h2>
-        <ul>
-          <li v-for="activity in recentActivities" :key="activity.id">
-            {{ activity.text }}
-          </li>
-        </ul>
-      </div>
-
-      <div class="password-section">
-        <h2>Зміна пароля</h2>
-        <button v-if="!isEditingPassword" @click="isEditingPassword = true" class="edit-btn">
-          Змінити пароль
-        </button>
-        <div v-if="isEditingPassword" class="password-form">
-          <input
-            v-model="passwordData.currentPassword"
-            type="password"
-            placeholder="Поточний пароль"
-          />
-          <input v-model="passwordData.newPassword" type="password" placeholder="Новий пароль" />
-          <input
-            v-model="passwordData.confirmNewPassword"
-            type="password"
-            placeholder="Підтвердження пароля"
-          />
-          <button @click="saveNewPassword" class="save-btn">Зберегти</button>
-        </div>
-      </div>
       <button @click="logout" class="logout-btn">Вийти з профілю</button>
     </div>
   </PageLayout>
@@ -253,60 +194,9 @@ const logout = () => {
   color: #6c757d;
 }
 
-.study-time {
-  margin-top: 30px;
-  padding: 20px;
-  background: #e3f2fd;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.study-time h2 {
-  font-size: 22px;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.study-time ul {
-  list-style: none;
-  padding: 0;
-}
-
-.study-time li {
-  font-size: 18px;
-  margin: 5px 0;
-}
-
 .time {
   font-weight: bold;
   color: #007bff;
-}
-
-.recent-activities {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.recent-activities h2 {
-  font-size: 22px;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.recent-activities ul {
-  list-style: none;
-  padding: 0;
-}
-
-.recent-activities li {
-  font-size: 16px;
-  margin: 5px 0;
-  color: #555;
 }
 
 .edit-input {
@@ -330,22 +220,6 @@ const logout = () => {
 
 .save-btn {
   background: #28a745;
-}
-
-.password-section {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.password-form input {
-  width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
 }
 
 .logout-btn {

@@ -84,16 +84,15 @@ namespace BLL.Services.Lessons
                     },
 
                 Speaking = new SpeakingModuleModel
-                    {
-                        Phrases = l.Speaking.Phrases
-                            .Select(p => new SpeakingPhraseModel
-                            {
-                                Text = p.Text,
-                            })
-                            .ToList()
-                    },
-            });
-        }
+                {
+                    Phrases = l.Speaking?
+                    .Phrases
+                .Select(p => new SpeakingPhraseModel { Text = p.Text })
+                .ToList()
+                ?? new List<SpeakingPhraseModel>()
+                        },
+                    });
+                }
 
         public async Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
         {
@@ -150,7 +149,14 @@ namespace BLL.Services.Lessons
                 Sentence = t.Sentence,
                 CorrectWord = t.CorrectWord
             }).ToList()
-        }
+        },
+                Speaking = new SpeakingModuleModel
+                {
+                    Phrases = lessonEntity.Speaking?.Phrases
+                 .Select(p => new SpeakingPhraseModel { Text = p.Text })
+                 .ToList()
+               ?? new List<SpeakingPhraseModel>()
+                }
             };
         }
 

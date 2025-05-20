@@ -2,8 +2,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { loginUser } from '../../services/authService'
+import { useAuthStore } from '@/app/stores/auth'
 
 const router = useRouter()
+const auth = useAuthStore()
+
 const formData = ref({
   email: '',
   password: '',
@@ -16,10 +19,13 @@ const submitLogin = async () => {
   isLoading.value = true
 
   try {
-    const data = await loginUser(formData.value)
+    const { token, user } = await loginUser(formData.value)
 
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data.user))
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('userId', String(user.id))
+
+    auth.setUser(user)
 
     console.log('Sending request with data:', JSON.stringify(formData.value))
 

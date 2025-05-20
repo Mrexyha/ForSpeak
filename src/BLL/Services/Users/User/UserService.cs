@@ -3,6 +3,7 @@ using BLL.Models.User;
 using DAL.Entities.Languages;
 using DAL.Entities.Users;
 using DAL.Repositories.Users;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,11 @@ namespace BLL.Services.Users.User
         public async Task<bool> DeleteUserAsync(int userId)
         {
             return await _userRepository.DeleteUserAsync(userId);
+        }
+
+        public async Task<bool> RemoveLanguageFromUserAsync(int userId, int languageId)
+        {
+            return await _userRepository.RemoveLanguageFromUserAsync(userId, languageId);
         }
     }
 }

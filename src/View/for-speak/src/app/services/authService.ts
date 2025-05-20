@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const API_URL = 'https://localhost:7058/api/Auth'
+const API_URL_USERS = 'https://localhost:7058/api/User'
 
 export const registerUser = async (userData: {
   email: string
@@ -30,20 +31,17 @@ export const registerUser = async (userData: {
 export const loginUser = async (credentials: { email: string; password: string }) => {
   try {
     const response = await axios.post(`${API_URL}/login`, credentials)
-    console.log('Login response:', response.data)
-
     const { token, userId } = response.data
+
+    const { data: user } = await axios.get(`${API_URL_USERS}/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
     if (!userId) {
       throw new Error('userId not received during login!')
     }
 
-    console.log('Login UserID:', userId)
-
-    localStorage.setItem('jwt', token)
-    localStorage.setItem('userId', userId)
-
-    return response.data
+    return { token, user }
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || 'Login failed')
