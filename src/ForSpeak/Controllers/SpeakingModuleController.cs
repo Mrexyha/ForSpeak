@@ -1,4 +1,5 @@
 ﻿using BLL.Models.Modules;
+using BLL.Models.Results;
 using BLL.Models.Tasks;
 using BLL.Services.Lessons;
 using BLL.Services.Tasks.Speaking;
@@ -35,8 +36,8 @@ namespace ForSpeak.Controllers
 
         [HttpPost("phrases")]
         public async Task<IActionResult> AddPhrase(
-        int languageId, int lessonId,
-        [FromBody] SpeakingPhraseModel model)
+            int languageId, int lessonId,
+            [FromBody] SpeakingPhraseModel model)
         {
             var added = await _speakingService.AddPhraseAsync(lessonId, model);
             return CreatedAtAction(
@@ -58,6 +59,20 @@ namespace ForSpeak.Controllers
         {
             await _speakingService.DeletePhraseAsync(phraseId);
             return NoContent();
+        }
+
+        [HttpPost("results")]
+        public async Task<IActionResult> SaveResult(
+            int languageId,
+            int lessonId,
+            [FromBody] SpeakingResultModel result)
+        {
+            var lesson = await _lessonService.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (lesson == null) return NotFound($"Lesson {lessonId} in language {languageId} not found.");
+
+            await _speakingService.UpdateAverageAsync(lessonId, result.AverageAccuracy);
+
+            return Ok(new { AverageAccuracy = result.AverageAccuracy });
         }
     }
 }

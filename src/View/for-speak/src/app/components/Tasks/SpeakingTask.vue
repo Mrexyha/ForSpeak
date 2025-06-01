@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { fetchSpeaking, type SpeakingPhrase } from '../../services/speakingService'
+import {
+  fetchSpeaking,
+  saveSpeakingResult,
+  type SpeakingPhrase,
+} from '../../services/speakingService'
 
 const route = useRoute()
 
 const languageId = Number(route.params.languageId)
-const lessonId = Number(route.params.id)
+const lessonId = Number(route.params.lessonId || route.params.id)
 
 const phrases = ref<SpeakingPhrase[]>([])
 const currentIndex = ref(0)
@@ -16,6 +20,10 @@ const isPlaying = ref(false)
 const isRecording = ref(false)
 const spokenPhrase = ref('')
 const similarity = ref<number | null>(null)
+
+const attempts = ref<number[]>([])
+
+const averageResult = ref<number | null>(null)
 
 let recognition: SpeechRecognition | null = null
 const synth = window.speechSynthesis
@@ -85,32 +93,57 @@ const stopRecording = () => {
 const calculateSimilarity = (spokenText: string) => {
   const a = currentPhrase.value.toLowerCase()
   const b = spokenText.toLowerCase()
-  const dist = (() => {
-    const dp: number[][] = Array(b.length + 1)
-      .fill(0)
-      .map(() => [])
-    for (let i = 0; i <= b.length; i++) dp[i][0] = i
-    for (let j = 0; j <= a.length; j++) dp[0][j] = j
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        dp[i][j] =
-          b[i - 1] === a[j - 1]
-            ? dp[i - 1][j - 1]
-            : Math.min(dp[i - 1][j - 1] + 1, dp[i][j - 1] + 1, dp[i - 1][j] + 1)
-      }
+
+  const dp: number[][] = Array(b.length + 1)
+    .fill(0)
+    .map(() => Array(a.length + 1).fill(0))
+
+  for (let i = 0; i <= b.length; i++) dp[i][0] = i
+  for (let j = 0; j <= a.length; j++) dp[0][j] = j
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      dp[i][j] =
+        b[i - 1] === a[j - 1]
+          ? dp[i - 1][j - 1]
+          : Math.min(dp[i - 1][j - 1] + 1, dp[i][j - 1] + 1, dp[i - 1][j] + 1)
     }
-    return dp[b.length][a.length]
-  })()
+  }
+
+  const dist = dp[b.length][a.length]
   const maxLen = Math.max(a.length, b.length)
   similarity.value = Math.round(((maxLen - dist) / maxLen) * 100)
 }
 
-const nextPhrase = () => {
+const selectPhrase = (index: number) => {
+  currentIndex.value = index
+  currentPhrase.value = phrases.value[index].text
+  spokenPhrase.value = ''
+  similarity.value = null
+  attempts.value = []
+  averageResult.value = null
+}
+
+const nextPhrase = async () => {
+  if (similarity.value !== null) {
+    attempts.value.push(similarity.value)
+  }
+
   if (currentIndex.value + 1 < phrases.value.length) {
     currentIndex.value++
     currentPhrase.value = phrases.value[currentIndex.value].text
     spokenPhrase.value = ''
     similarity.value = null
+  } else {
+    const sum = attempts.value.reduce((acc, x) => acc + x, 0)
+    const avg = attempts.value.length > 0 ? sum / attempts.value.length : 0
+    averageResult.value = Math.round(avg)
+
+    try {
+      await saveSpeakingResult(languageId, lessonId, { averageAccuracy: avg })
+    } catch (e) {
+      console.error('Не вдалося надіслати результат на бекенд:', e)
+    }
   }
 }
 </script>
@@ -124,14 +157,7 @@ const nextPhrase = () => {
           v-for="(p, i) in phrases"
           :key="p.id"
           :class="{ active: i === currentIndex }"
-          @click="
-            () => {
-              currentIndex = i
-              currentPhrase = phrases[i].text
-              spokenPhrase = ''
-              similarity = null
-            }
-          "
+          @click="selectPhrase(i)"
         >
           {{ p.text }}
         </li>
@@ -151,6 +177,13 @@ const nextPhrase = () => {
         {{ isRecording ? '🎙️ Говоріть...' : '🎙️ Повторити' }}
       </button>
       <button @click="stopRecording" :disabled="!isRecording">🛑 Зупинити</button>
+      <button
+        class="next-btn"
+        @click="nextPhrase"
+        :disabled="similarity === null && attempts.length === currentIndex"
+      >
+        {{ currentIndex + 1 < phrases.length ? '➡️ Наступна фраза' : '🔒 Завершити тест' }}
+      </button>
     </div>
 
     <div v-if="similarity !== null" class="result">
@@ -159,9 +192,13 @@ const nextPhrase = () => {
         Схожість: <strong>{{ similarity }}%</strong>
       </p>
       <p>Ваша відповідь: “{{ spokenPhrase }}”</p>
-      <button v-if="currentIndex + 1 < phrases.length" @click="nextPhrase" class="next-btn">
-        ➡️ Наступна фраза
-      </button>
+    </div>
+
+    <div v-if="averageResult !== null" class="final-result">
+      <h4>Тестування завершено</h4>
+      <p>
+        Ваш середній відсоток вимови: <strong>{{ averageResult }}%</strong>
+      </p>
     </div>
   </div>
 </template>
@@ -241,12 +278,24 @@ const nextPhrase = () => {
   transform: translateY(-2px);
 }
 
+.next-btn {
+  background: #2196f3;
+}
+.next-btn:disabled {
+  background: #aaa;
+}
+.next-btn:not(:disabled):hover {
+  background: #1976d2;
+  transform: translateY(-2px);
+}
+
 .result {
   background: #fff;
   border: 2px solid #4caf50;
   border-radius: 8px;
   padding: 15px;
   text-align: center;
+  margin-bottom: 20px;
 }
 .result h4 {
   margin-bottom: 10px;
@@ -256,12 +305,21 @@ const nextPhrase = () => {
   margin: 6px 0;
   font-size: 16px;
 }
-.next-btn {
-  margin-top: 12px;
-  padding: 8px 16px;
-  background: #2196f3;
+
+.final-result {
+  background: #fff;
+  border: 2px solid #2196f3;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  margin-top: 20px;
 }
-.next-btn:hover {
-  background: #1976d2;
+.final-result h4 {
+  margin-bottom: 10px;
+  color: #2196f3;
+}
+.final-result p {
+  margin: 6px 0;
+  font-size: 16px;
 }
 </style>

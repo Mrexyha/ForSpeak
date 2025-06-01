@@ -11,6 +11,10 @@ export interface SpeakingModule {
   id: number
 }
 
+export interface SpeakingResult {
+  averageAccuracy: number
+}
+
 const API = 'https://localhost:7058/api'
 
 export async function fetchSpeaking(languageId: number, lessonId: number): Promise<SpeakingModule> {
@@ -18,4 +22,12 @@ export async function fetchSpeaking(languageId: number, lessonId: number): Promi
     `${API}/languages/${languageId}/lessons/${lessonId}/speaking`,
   )
   return data
+}
+
+export async function saveSpeakingResult(
+  languageId: number,
+  lessonId: number,
+  result: SpeakingResult,
+): Promise<void> {
+  await axios.post(`${API}/languages/${languageId}/lessons/${lessonId}/speaking/results`, result)
 }
