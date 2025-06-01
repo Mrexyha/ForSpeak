@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import PageLayout from '../layouts/PageLayout.vue'
 import LanguageCardMyLangs from '../components/LanguageCardMyLangs.vue'
-import { deleteLanguageFromUser, getUserLanguages } from '../services/userService'
+import { getUserLanguages } from '../services/userService'
 
 interface UserLanguage {
   languageId: number
@@ -31,17 +31,6 @@ const fetchMyLangs = async () => {
   }
 }
 
-const onLanguageDeleted = async (languageId: number) => {
-  try {
-    await deleteLanguageFromUser(languageId)
-    userLanguages.value = userLanguages.value.filter((lang) => lang.languageId !== languageId)
-    alert('Мову успішно видалено!')
-  } catch (e: unknown) {
-    const message = e instanceof Error ? e.message : 'Помилка при видаленні мови'
-    alert(message)
-  }
-}
-
 onMounted(fetchMyLangs)
 </script>
 
@@ -63,7 +52,6 @@ onMounted(fetchMyLangs)
           :progress="lang.progress"
           :tasksCount="lang.tasksCount"
           :isFinished="lang.isFinished"
-          @deleted="onLanguageDeleted"
         />
       </template>
     </div>

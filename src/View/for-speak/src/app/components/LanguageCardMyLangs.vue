@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps<{
@@ -16,16 +16,6 @@ const router = useRouter()
 const goToEducation = () => {
   router.push(`/education/${props.languageId}`)
 }
-
-const emit = defineEmits<{
-  (e: 'deleted', id: number): void
-}>()
-
-const handleDelete = () => {
-  if (confirm(`Ви дійсно хочете видалити мову "${props.name}"?`)) {
-    emit('deleted', props.languageId)
-  }
-}
 </script>
 
 <template>
@@ -41,7 +31,6 @@ const handleDelete = () => {
       <button class="continue-btn" @click="goToEducation">
         {{ isFinished ? 'Почати спочатку' : 'Перемкнутися' }}
       </button>
-      <button class="delete-btn" @click="handleDelete">Видалити</button>
     </div>
   </div>
 </template>
@@ -123,20 +112,5 @@ button {
 
 .continue-btn:hover {
   background: #005b8f;
-}
-
-.delete-btn {
-  width: 200px;
-  height: 42px;
-  border-radius: 8px;
-  background: #b60003;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-}
-.delete-btn:hover {
-  background: #920002;
 }
 </style>

@@ -50,35 +50,5 @@ export const useLanguagesStore = defineStore('languages', {
     setSelectedLanguage(id: number) {
       this.selectedLanguageId = id
     },
-
-    async markAsFinished(id: number) {
-      const token = localStorage.getItem('token')
-      const userId = localStorage.getItem('userId')
-      if (!token || !userId) return
-
-      await axios.patch(
-        `${API_BASE}/User/${userId}/languages/${id}`,
-        { isFinished: true },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
-
-      const lang = this.list.find((l) => l.id === id)
-      if (lang) lang.isFinished = true
-    },
-
-    async restoreLanguage(id: number) {
-      const token = localStorage.getItem('token')
-      const userId = localStorage.getItem('userId')
-      if (!token || !userId) return
-
-      await axios.patch(
-        `${API_BASE}/User/${userId}/languages/${id}`,
-        { isFinished: false },
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
-
-      const lang = this.list.find((l) => l.id === id)
-      if (lang) lang.isFinished = false
-    },
   },
 })
