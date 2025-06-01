@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { fetchSpeaking, type SpeakingPhrase } from '../../services/speakingService'
 
-const phrases = [
-  'Hello, how are you?',
-  'I would like a cup of coffee, please.',
-  'What time is the meeting today?',
-  'Can you help me find the nearest station?',
-  'What is your favorite book?',
-]
+const route = useRoute()
 
+const languageId = Number(route.params.languageId)
+const lessonId = Number(route.params.id)
+
+const phrases = ref<SpeakingPhrase[]>([])
 const currentIndex = ref(0)
-const currentPhrase = ref(phrases[currentIndex.value])
+const currentPhrase = ref<string>('')
 
 const isPlaying = ref(false)
 const isRecording = ref(false)
@@ -20,7 +20,21 @@ const similarity = ref<number | null>(null)
 let recognition: SpeechRecognition | null = null
 const synth = window.speechSynthesis
 
+async function loadPhrases() {
+  try {
+    const module = await fetchSpeaking(languageId, lessonId)
+    phrases.value = module.phrases
+    if (phrases.value.length > 0) {
+      currentPhrase.value = phrases.value[0].text
+    }
+  } catch (err) {
+    console.error('Не вдалося завантажити фрази для говоріння:', err)
+  }
+}
+
 onMounted(() => {
+  loadPhrases()
+
   const ctor = window.SpeechRecognition || window.webkitSpeechRecognition
   if (!ctor) return
   recognition = new ctor()
@@ -44,6 +58,7 @@ onUnmounted(() => {
 })
 
 const playPhrase = () => {
+  if (!currentPhrase.value) return
   isPlaying.value = true
   const utt = new SpeechSynthesisUtterance(currentPhrase.value)
   utt.lang = 'en-US'
@@ -91,9 +106,9 @@ const calculateSimilarity = (spokenText: string) => {
 }
 
 const nextPhrase = () => {
-  if (currentIndex.value + 1 < phrases.length) {
+  if (currentIndex.value + 1 < phrases.value.length) {
     currentIndex.value++
-    currentPhrase.value = phrases[currentIndex.value]
+    currentPhrase.value = phrases.value[currentIndex.value].text
     spokenPhrase.value = ''
     similarity.value = null
   }
@@ -107,11 +122,18 @@ const nextPhrase = () => {
       <ul>
         <li
           v-for="(p, i) in phrases"
-          :key="i"
+          :key="p.id"
           :class="{ active: i === currentIndex }"
-          @click="((currentIndex = i), (currentPhrase = phrases[i]))"
+          @click="
+            () => {
+              currentIndex = i
+              currentPhrase = phrases[i].text
+              spokenPhrase = ''
+              similarity = null
+            }
+          "
         >
-          {{ p }}
+          {{ p.text }}
         </li>
       </ul>
     </div>
@@ -136,7 +158,7 @@ const nextPhrase = () => {
       <p>
         Схожість: <strong>{{ similarity }}%</strong>
       </p>
-      <p>Ваша відповіль: “{{ spokenPhrase }}”</p>
+      <p>Ваша відповідь: “{{ spokenPhrase }}”</p>
       <button v-if="currentIndex + 1 < phrases.length" @click="nextPhrase" class="next-btn">
         ➡️ Наступна фраза
       </button>
