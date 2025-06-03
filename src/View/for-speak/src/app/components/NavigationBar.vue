@@ -9,7 +9,6 @@ const isActive = (path: string) => route.path === path
 
 const auth = useAuthStore()
 const userRole = computed(() => auth.currentUser?.role ?? '')
-const isAdmin = computed(() => userRole.value.toLowerCase() === 'admin')
 
 const langsStore = useLanguagesStore()
 watch(
@@ -40,8 +39,6 @@ const isHomePage = route.path === '/'
       >
         Навчання
       </RouterLink>
-
-      <RouterLink v-if="isAdmin" class="nav" to="/admin/modules/create">Створити модуль</RouterLink>
 
       <div :class="['pic', { 'right-corner': !isHomePage }]">
         <RouterLink class="nav profile" to="/profile"></RouterLink>

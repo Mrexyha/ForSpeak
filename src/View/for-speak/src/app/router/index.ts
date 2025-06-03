@@ -13,7 +13,6 @@ import QuizTaskView from '../views/TaskViews/QuizTaskView.vue'
 import ReadingTaskView from '../views/TaskViews/ReadingTaskView.vue'
 import SpeakingTaskView from '../views/TaskViews/SpeakingTaskView.vue'
 import VocabularyTaskView from '../views/TaskViews/VocabularyTaskView.vue'
-import AdminView from '../views/AdminView.vue'
 import { useLanguagesStore } from '../stores/languages'
 
 const routes = [
@@ -91,12 +90,6 @@ const routes = [
     component: LoginView,
     meta: { guestOnly: true },
   },
-  {
-    path: '/admin/modules/create',
-    name: 'admin-create-module',
-    component: AdminView,
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
 ]
 
 const router = createRouter({
@@ -115,10 +108,6 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !isLoggedIn) {
     return next({ name: 'login', query: { redirect: to.fullPath } })
-  }
-
-  if (to.meta.requiresAdmin && role !== 'admin') {
-    return next({ name: 'home' })
   }
 
   next()
