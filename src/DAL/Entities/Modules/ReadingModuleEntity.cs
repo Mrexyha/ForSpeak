@@ -16,5 +16,7 @@ namespace DAL.Entities.Modules
         public LessonEntity Lesson { get; set; }
 
         public ICollection<FillInTheBlankTaskEntity> Tasks { get; set; }
+
+        public double ComprehensionScore { get; set; }
     }
 }

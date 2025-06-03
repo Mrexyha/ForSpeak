@@ -22,3 +22,9 @@ export async function fetchQuiz(languageId: number, lessonId: number) {
 export async function saveQuiz(languageId: number, lessonId: number, payload: QuizModule) {
   return axios.put(`${API}/languages/${languageId}/lessons/${lessonId}/quiz`, payload)
 }
+
+export async function saveQuizResult(languageId: number, lessonId: number, score: number) {
+  await axios.post(`/api/languages/${languageId}/lessons/${lessonId}/quiz/results`, {
+    score,
+  })
+}

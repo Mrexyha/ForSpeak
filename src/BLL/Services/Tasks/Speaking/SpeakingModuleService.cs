@@ -1,6 +1,7 @@
 ﻿using BLL.Models.Modules;
 using BLL.Models.Tasks;
 using DAL;
+using DAL.Entities.Results;
 using DAL.Entities.Tasks;
 using DAL.Repositories.Tasks.Speaking;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,10 @@ namespace BLL.Services.Tasks.Speaking
     {
         private readonly AppDbContext _context;
         private readonly ISpeakingModuleRepository _repo;
-        public SpeakingModuleService(ISpeakingModuleRepository repo) => _repo = repo;
+        public SpeakingModuleService(ISpeakingModuleRepository repo, AppDbContext context) {
+            _repo = repo; 
+            _context = context;
+        }
 
         public async Task<SpeakingModuleModel> GetByLessonIdAsync(int lessonId)
         {
@@ -65,5 +69,37 @@ namespace BLL.Services.Tasks.Speaking
             return avg;
         }
 
+        public async Task<double?> GetAverageAccuracyAsync(int lessonId, int userId)
+        {
+            var entity = await _context.SpeakingResults
+                .FirstOrDefaultAsync(r => r.LessonId == lessonId && r.UserId == userId);
+
+            return entity?.AverageAccuracy;
+        }
+
+        public async Task UpdateUserResultAsync(int lessonId, int userId, double averageAccuracy)
+        {
+            var entity = await _context.SpeakingResults
+                .FirstOrDefaultAsync(r => r.LessonId == lessonId && r.UserId == userId);
+
+            if (entity == null)
+            {
+                entity = new SpeakingResultEntity
+                {
+                    LessonId = lessonId,
+                    UserId = userId,
+                    AverageAccuracy = averageAccuracy,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.SpeakingResults.Add(entity);
+            }
+            else
+            {
+                entity.AverageAccuracy = averageAccuracy;
+                _context.SpeakingResults.Update(entity);
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

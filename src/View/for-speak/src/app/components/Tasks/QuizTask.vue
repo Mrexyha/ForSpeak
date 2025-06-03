@@ -17,6 +17,12 @@ const error = ref<string | null>(null)
 
 async function load() {
   try {
+    const attemptCount = Number(localStorage.getItem(`quizAttempts-${languageId}-${lessonId}`)) || 0
+    if (attemptCount >= 3) {
+      error.value = 'Ви вже вичерпали 3 спроби.'
+      return
+    }
+
     const quiz = await fetchQuiz(languageId, lessonId)
     questions.value = quiz.questions
   } catch (e) {

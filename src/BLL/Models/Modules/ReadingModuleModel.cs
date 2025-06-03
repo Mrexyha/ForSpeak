@@ -11,5 +11,7 @@ namespace BLL.Models.Modules
     {
         public string Text { get; set; }
         public List<FillInTheBlankTaskModel> Tasks { get; set; }
+
+        public double ComprehensionScore { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using DAL.Entities.Lessons;
 using DAL.Entities.Modules;
 using DAL.Entities.Relations;
+using DAL.Entities.Results;
 using DAL.Entities.Tasks;
 using DAL.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,9 @@ namespace DAL
 
         public DbSet<SpeakingPhraseAttemptEntity> SpeakingPhraseAttempts { get; set; }
 
+        public DbSet<QuizResultEntity> QuizResults { get; set; }
+        public DbSet<ReadingResultEntity> ReadingResults { get; set; }
+        public DbSet<SpeakingResultEntity> SpeakingResults { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

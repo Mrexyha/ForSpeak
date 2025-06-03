@@ -13,5 +13,9 @@ namespace BLL.Services.Tasks.Reading
         Task AddAsync(int lessonId, ReadingModuleModel model);
         Task UpdateAsync(int lessonId, ReadingModuleModel model);
         Task DeleteAsync(int lessonId);
+
+        Task<double> RecalculateComprehensionScore(int lessonId);
+        Task<double?> GetComprehensionScoreAsync(int lessonId, int userId);
+        Task UpdateUserResultAsync(int lessonId, int userId, double comprehensionScore);
     }
 }

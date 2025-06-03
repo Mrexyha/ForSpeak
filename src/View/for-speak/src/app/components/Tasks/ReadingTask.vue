@@ -18,6 +18,13 @@ const score = ref(0)
 
 async function load() {
   try {
+    const attemptCount =
+      Number(localStorage.getItem(`readingAttempts-${languageId}-${lessonId}`)) || 0
+    if (attemptCount >= 3) {
+      error.value = 'Ви вже вичерпали 3 спроби.'
+      return
+    }
+
     moduleData.value = await fetchReading(languageId, lessonId)
   } catch (e) {
     console.error(e)

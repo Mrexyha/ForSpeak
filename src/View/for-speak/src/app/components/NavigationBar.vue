@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
 import { useLanguagesStore } from '../stores/languages'
 
 const route = useRoute()
 const isActive = (path: string) => route.path === path
-
-const auth = useAuthStore()
-const userRole = computed(() => auth.currentUser?.role ?? '')
 
 const langsStore = useLanguagesStore()
 watch(

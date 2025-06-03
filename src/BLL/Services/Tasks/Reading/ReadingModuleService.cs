@@ -1,8 +1,11 @@
 ﻿using BLL.Models.Modules;
 using BLL.Models.Tasks;
+using DAL;
 using DAL.Entities.Modules;
+using DAL.Entities.Results;
 using DAL.Entities.Tasks;
 using DAL.Repositories.Tasks.Reading;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +17,12 @@ namespace BLL.Services.Tasks.Reading
     public class ReadingModuleService : IReadingModuleService
     {
         private readonly IReadingModuleRepository _repo;
+        private readonly AppDbContext _context;
 
-        public ReadingModuleService(IReadingModuleRepository repo)
+        public ReadingModuleService(IReadingModuleRepository repo, AppDbContext context)
         {
             _repo = repo;
+            _context = context;
         }
 
         public async Task<ReadingModuleModel> GetByLessonIdAsync(int lessonId)
@@ -72,5 +77,53 @@ namespace BLL.Services.Tasks.Reading
 
         public async Task DeleteAsync(int lessonId)
             => await _repo.DeleteAsync(lessonId);
+
+        public async Task<double> RecalculateComprehensionScore(int lessonId)
+        {
+            var avg = await _context.SpeakingPhraseAttempts
+                .Where(a => a.Phrase.SpeakingModule.LessonId == lessonId)
+                .AverageAsync(a => a.Accuracy);
+
+            var module = await _repo.GetByLessonIdAsync(lessonId)
+                         ?? throw new KeyNotFoundException($"Module {lessonId} not found");
+
+            module.ComprehensionScore = avg;
+            await _repo.UpdateAsync(module);
+
+            return avg;
+        }
+
+        public async Task<double?> GetComprehensionScoreAsync(int lessonId, int userId)
+        {
+            var entity = await _context.ReadingResults
+                .FirstOrDefaultAsync(r => r.LessonId == lessonId && r.UserId == userId);
+
+            return entity?.ComprehensionScore;
+        }
+
+        public async Task UpdateUserResultAsync(int lessonId, int userId, double comprehensionScore)
+        {
+            var entity = await _context.ReadingResults
+                .FirstOrDefaultAsync(r => r.LessonId == lessonId && r.UserId == userId);
+
+            if (entity == null)
+            {
+                entity = new ReadingResultEntity
+                {
+                    LessonId = lessonId,
+                    UserId = userId,
+                    ComprehensionScore = comprehensionScore,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.ReadingResults.Add(entity);
+            }
+            else
+            {
+                entity.ComprehensionScore = comprehensionScore;
+                _context.ReadingResults.Update(entity);
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -69,15 +69,6 @@ namespace BLL.Services.Languages
                         Title = le.Title,
                         ImageUrl = le.ImageUrl,
                         Level = le.Level,
-                        Modules = (le.Modules ?? Enumerable.Empty<ModuleEntity>())
-                            .Select(m => new ModuleModel
-                            {
-                                Id = m.Id,
-                                LessonId = m.LessonId,
-                                Title = m.Title,
-                                Type = m.Type
-                            })
-                            .ToList(),
                         Theory = new TheoryModuleModel
                         {
                             Text = le.Theory?.Text ?? string.Empty

@@ -1,4 +1,5 @@
 ﻿using BLL.Models.Modules;
+using BLL.Models.Results;
 using BLL.Services.Lessons;
 using BLL.Services.Tasks.Quiz;
 using Microsoft.AspNetCore.Http;
@@ -53,6 +54,37 @@ namespace ForSpeak.Controllers
         {
             await _quizService.DeleteAsync(lessonId);
             return NoContent();
+        }
+
+        [HttpGet("results/{userId}")]
+        public async Task<IActionResult> GetResult(int languageId, int lessonId, int userId)
+        {
+            var lesson = await _lessonService.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (lesson == null)
+                return NotFound($"Lesson {lessonId} in language {languageId} not found.");
+
+            var score = await _quizService.GetScoreAsync(lessonId, userId);
+            if (score == null)
+                return NotFound($"Quiz score for user {userId} not found.");
+
+            return Ok(new { UserId = userId, Score = score });
+        }
+
+
+        [HttpPost("results/{userId}")]
+        public async Task<IActionResult> SaveResult(
+        int languageId,
+        int lessonId,
+        int userId,
+        [FromBody] QuizResultModel result)
+        {
+            var lesson = await _lessonService.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (lesson == null)
+                return NotFound($"Lesson {lessonId} in language {languageId} not found.");
+
+            await _quizService.UpdateUserResultAsync(lessonId, userId, result.Score);
+
+            return Ok(new { UserId = userId, Score = result.Score });
         }
     }
 }

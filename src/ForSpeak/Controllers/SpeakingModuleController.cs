@@ -61,18 +61,37 @@ namespace ForSpeak.Controllers
             return NoContent();
         }
 
-        [HttpPost("results")]
+        [HttpGet("results/{userId}")]
+        public async Task<IActionResult> GetResult(
+            int languageId,
+            int lessonId,
+            int userId)
+        {
+            var lesson = await _lessonService.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (lesson == null)
+                return NotFound($"Lesson {lessonId} in language {languageId} not found.");
+
+            var score = await _speakingService.GetAverageAccuracyAsync(lessonId, userId);
+            if (score == null)
+                return NotFound($"Speaking score for user {userId} not found.");
+
+            return Ok(new { UserId = userId, AverageAccuracy = score });
+        }
+
+        [HttpPost("results/{userId}")]
         public async Task<IActionResult> SaveResult(
             int languageId,
             int lessonId,
+            int userId,
             [FromBody] SpeakingResultModel result)
         {
             var lesson = await _lessonService.GetLessonByLanguageAndIdAsync(languageId, lessonId);
-            if (lesson == null) return NotFound($"Lesson {lessonId} in language {languageId} not found.");
+            if (lesson == null)
+                return NotFound($"Lesson {lessonId} in language {languageId} not found.");
 
-            await _speakingService.UpdateAverageAsync(lessonId, result.AverageAccuracy);
+            await _speakingService.UpdateUserResultAsync(lessonId, userId, result.AverageAccuracy);
 
-            return Ok(new { AverageAccuracy = result.AverageAccuracy });
+            return Ok(new { UserId = userId, AverageAccuracy = result.AverageAccuracy });
         }
     }
 }

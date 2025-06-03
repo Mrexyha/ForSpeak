@@ -13,5 +13,11 @@ namespace BLL.Services.Tasks.Quiz
         Task AddAsync(int lessonId, QuizModuleModel model);
         Task UpdateAsync(int lessonId, QuizModuleModel model);
         Task DeleteAsync(int lessonId);
+
+        Task<double> RecalculateScore(int lessonId);
+        Task UpdateAverageAsync(int lessonId, double average);
+        Task<double?> GetScoreAsync(int lessonId, int userId);
+        Task UpdateUserResultAsync(int lessonId, int userId, double score);
+        Task SaveUserResultAsync(int userId, int lessonId, double score);
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250602232655_FixModuleLanguageFK")]
-    partial class FixModuleLanguageFK
+    [Migration("20250603022621_AddDefaultCreatedAtToQuizResults")]
+    partial class AddDefaultCreatedAtToQuizResults
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,6 +175,9 @@ namespace DAL.Migrations
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
 
+                    b.Property<double>("Score")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LessonId")
@@ -190,6 +193,9 @@ namespace DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("ComprehensionScore")
+                        .HasColumnType("float");
 
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
@@ -310,6 +316,34 @@ namespace DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("UsersToLessons");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Results.QuizResultEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Score")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuizResults");
                 });
 
             modelBuilder.Entity("DAL.Entities.Tasks.FillInTheBlankTaskEntity", b =>

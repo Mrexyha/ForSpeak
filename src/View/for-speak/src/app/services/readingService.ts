@@ -17,3 +17,9 @@ export async function fetchReading(languageId: number, lessonId: number) {
   )
   return data
 }
+
+export async function saveReadingResult(languageId: number, lessonId: number, score: number) {
+  await axios.post(`/api/languages/${languageId}/lessons/${lessonId}/reading/results`, {
+    score,
+  })
+}

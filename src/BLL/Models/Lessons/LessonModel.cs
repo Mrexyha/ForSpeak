@@ -20,7 +20,7 @@ namespace BLL.Models.Lessons
 
         public LessonLevel Level { get; set; }
 
-        public List<ModuleModel> Modules { get; set; } = new List<ModuleModel>();
+        public List<ModuleModel> Modules { get; set; }
 
         public TheoryModuleModel Theory { get; set; }
         public VocabularyModuleModel Vocabulary { get; set; }

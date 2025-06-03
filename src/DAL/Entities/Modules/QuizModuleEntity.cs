@@ -14,5 +14,7 @@ namespace DAL.Entities.Modules
         public LessonEntity Lesson { get; set; }
 
         public ICollection<QuizQuestionEntity> Questions { get; set; }
+
+        public double Score { get; set; }
     }
 }
