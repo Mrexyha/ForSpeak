@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { reactive, defineEmits } from 'vue'
 
-const form = reactive({
+interface Form {
+  email: string
+  username: string
+  password: string
+  passwordHash: string
+  confirmPassword: string
+}
+
+const form = reactive<Form>({
   email: '',
   username: '',
   password: '',
@@ -9,18 +17,40 @@ const form = reactive({
   confirmPassword: '',
 })
 
-const emit = defineEmits(['next'])
+const emit = defineEmits<{
+  (e: 'next', payload: Form): void
+}>()
+
+function validatePassword(password: string): string | null {
+  if (password.length < 8) {
+    return 'Пароль має містити щонайменше 8 символів.'
+  }
+  if (!/\d/.test(password)) {
+    return 'Пароль має містити хоча б одну цифру.'
+  }
+  if (!/[A-Z]/.test(password)) {
+    return 'Пароль має містити хоча б одну велику літеру.'
+  }
+  return null
+}
 
 const nextStep = () => {
   if (!form.email || !form.username || !form.password || !form.confirmPassword) {
     alert('Заповніть всі поля!')
     return
   }
+
+  const passwordError = validatePassword(form.password)
+  if (passwordError) {
+    alert(passwordError)
+    return
+  }
+
   if (form.password !== form.confirmPassword) {
     alert('Паролі не співпадають!')
     return
   }
-  emit('next', form)
+  emit('next', { ...form })
 }
 </script>
 
@@ -28,7 +58,12 @@ const nextStep = () => {
   <div class="step-one">
     <input type="email" v-model="form.email" placeholder="Електронна пошта" required />
     <input type="text" v-model="form.username" placeholder="Користувацьке ім'я" required />
-    <input type="password" v-model="form.password" placeholder="Пароль" required />
+    <input
+      type="password"
+      v-model="form.password"
+      placeholder="Пароль (мінімум 8 символів, велика літера, цифра)"
+      required
+    />
     <input
       type="password"
       v-model="form.confirmPassword"

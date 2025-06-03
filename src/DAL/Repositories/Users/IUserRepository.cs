@@ -26,5 +26,7 @@ namespace DAL.Repositories.Users
 
         Task<int> GetUserPointsForLanguageAsync(int userId, int languageId);
         Task<int> GetUserTotalPointsAsync(int userId);
+
+        Task<bool> RemoveLanguageFromUserAsync(int userId, int languageId);
     }
 }

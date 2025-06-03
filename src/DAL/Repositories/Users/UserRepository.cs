@@ -87,5 +87,16 @@ namespace DAL.Repositories.Users
                 .Where(ul => ul.UserId == userId)
                 .SumAsync(ul => ul.AwardedPoints);
         }
+
+        public async Task<bool> RemoveLanguageFromUserAsync(int userId, int languageId)
+        {
+            var ul = await _context.UserLanguages
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.LanguageId == languageId);
+            if (ul == null) return false;
+
+            _context.UserLanguages.Remove(ul);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

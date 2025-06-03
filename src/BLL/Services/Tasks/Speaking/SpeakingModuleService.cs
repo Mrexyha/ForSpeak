@@ -40,8 +40,7 @@ namespace BLL.Services.Tasks.Speaking
         public async Task UpdateAverageAsync(int lessonId, double newAverage)
         {
             var module = await _repo.GetByLessonIdAsync(lessonId)
-             ?? throw new KeyNotFoundException(
-                  $"Cannot update average: speaking module for lessonId = {lessonId} not found");
+              ?? throw new KeyNotFoundException($"Cannot update average: speaking module for lessonId = {lessonId} not found");
             module.AverageAccuracy = newAverage;
             await _repo.UpdateAsync(module);
         }

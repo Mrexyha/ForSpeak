@@ -31,126 +31,129 @@ namespace BLL.Services.Lessons
             {
                 Id = l.Id,
                 LanguageId = l.LanguageId,
-                LanguageName = l.LanguageName,
+                LanguageName = l.Language?.Name,
                 Title = l.Title,
                 ImageUrl = l.ImageUrl,
                 Level = l.Level,
 
-                Modules = l.Modules.Select(m => new ModuleModel
+                Modules = l.Modules?.Select(m => new ModuleModel
                 {
                     Id = m.Id,
                     LessonId = m.LessonId,
                     Title = m.Title,
                     Type = m.Type
-                }).ToList(),
+                }).ToList() ?? new List<ModuleModel>(),
 
-                Theory = new TheoryModuleModel { Text = l.Theory.Text },
+                Theory = l.Theory != null ? new TheoryModuleModel { Text = l.Theory.Text } : null,
 
-                Vocabulary =  new VocabularyModuleModel
+                Vocabulary = l.Vocabulary != null ? new VocabularyModuleModel
+                {
+                    Words = l.Vocabulary.Words?.Select(w => new WordModel
                     {
-                        Words = l.Vocabulary.Words
-                            .Select(w => new WordModel
-                            {
-                                Id = w.Id,
-                                Word = w.Word,
-                                Transcription = w.Transcription,
-                                Translation = w.Translation
-                            })
-                            .ToList()
-                    },
+                        Id = w.Id,
+                        Word = w.Word,
+                        Transcription = w.Transcription,
+                        Translation = w.Translation
+                    }).ToList() ?? new List<WordModel>()
+                } : null,
 
-                Quiz = new QuizModuleModel
+                Quiz = l.Quiz != null ? new QuizModuleModel
+                {
+                    Questions = l.Quiz.Questions?.Select(q => new QuizQuestionModel
                     {
-                        Questions = l.Quiz.Questions
-                            .Select(q => new QuizQuestionModel
-                            {
-                                Question = q.Question,
-                                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
-                                CorrectOptionIndex = q.CorrectOptionIndex
-                            })
-                            .ToList()
-                    },
+                        Question = q.Question,
+                        Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
+                        CorrectOptionIndex = q.CorrectOptionIndex
+                    }).ToList() ?? new List<QuizQuestionModel>()
+                } : null,
 
-                Reading =  new ReadingModuleModel
+                Reading = l.Reading != null ? new ReadingModuleModel
+                {
+                    Text = l.Reading.Text,
+                    Tasks = l.Reading.Tasks?.Select(t => new FillInTheBlankTaskModel
                     {
-                        Text = l.Reading.Text,
-                        Tasks = l.Reading.Tasks
-                            .Select(t => new FillInTheBlankTaskModel
-                            {
-                                Sentence = t.Sentence,
-                                CorrectWord = t.CorrectWord
-                            })
-                            .ToList()
-                    },
+                        Sentence = t.Sentence,
+                        CorrectWord = t.CorrectWord
+                    }).ToList() ?? new List<FillInTheBlankTaskModel>()
+                } : null,
 
                 Speaking = new SpeakingModuleModel
+                {
+                    Phrases = l.Speaking?.Phrases?.Select(p => new SpeakingPhraseModel
                     {
-                        Phrases = l.Speaking.Phrases
-                            .Select(p => new SpeakingPhraseModel
-                            {
-                                Text = p.Text,
-                            })
-                            .ToList()
-                    },
+                        Text = p.Text
+                    }).ToList() ?? new List<SpeakingPhraseModel>()
+                }
             });
         }
 
         public async Task<LessonModel> GetLessonByLanguageAndIdAsync(int languageId, int lessonId)
         {
-            var lessonEntity = await _lessonRepository.GetLessonByLanguageAndIdAsync(languageId, lessonId);
-            if (lessonEntity == null) return null;
+            var l = await _lessonRepository.GetLessonByLanguageAndIdAsync(languageId, lessonId);
+            if (l == null) return null;
 
             return new LessonModel
             {
-                Id = lessonEntity.Id,
-                LanguageId = lessonEntity.LanguageId,
-                LanguageName = lessonEntity.LanguageName,
-                Title = lessonEntity.Title,
-                ImageUrl = lessonEntity.ImageUrl,
-                Level = lessonEntity.Level,
+                Id = l.Id,
+                LanguageId = l.LanguageId,
+                LanguageName = l.Language?.Name,
+                Title = l.Title,
+                ImageUrl = l.ImageUrl,
+                Level = l.Level,
 
-                Modules = lessonEntity.Modules
-                    .Select(m => new ModuleModel
-                    {
-                        Id = m.Id,
-                        Title = m.Title,
-                        Type = m.Type
-                    })
-                    .ToList(),
+                Modules = l.Modules?.Select(m => new ModuleModel
+                {
+                    Id = m.Id,
+                    LessonId = m.LessonId,
+                    Title = m.Title,
+                    Type = m.Type
+                }).ToList() ?? new List<ModuleModel>(),
 
-                Theory = new TheoryModuleModel { Text = lessonEntity.Theory.Text },
+                Theory = l.Theory != null ? new TheoryModuleModel { Text = l.Theory.Text } : null,
 
-                Vocabulary = new VocabularyModuleModel
-                    {
-                        Words = lessonEntity.Vocabulary.Words
-                            .Select(w => new WordModel
-                            {
-                                Id = w.Id,
-                                Word = w.Word,
-                                Transcription = w.Transcription,
-                                Translation = w.Translation
-                            })
-                            .ToList()
-                    },
+                Vocabulary = l.Vocabulary != null ? new VocabularyModuleModel
+                {
+                    Words = l.Vocabulary.Words?
+            .Select(w => new WordModel
+            {
+                Id = w.Id,
+                Word = w.Word,
+                Transcription = w.Transcription,
+                Translation = w.Translation
+            })
+            .ToList() ?? new List<WordModel>()
+                } : null,
 
-                    Quiz = new QuizModuleModel
-                        {
-                            Questions = lessonEntity.Quiz.Questions.Select(q => new QuizQuestionModel
-                            {
-                                Question = q.Question,
-                                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
-                                CorrectOptionIndex = q.CorrectOptionIndex
-                            }).ToList()
-                        },
-                Reading = new ReadingModuleModel
-        {
-            Text = lessonEntity.Reading.Text,
-            Tasks = lessonEntity.Reading.Tasks.Select(t => new FillInTheBlankTaskModel
+                Quiz = l.Quiz != null ? new QuizModuleModel
+                {
+                    Questions = l.Quiz.Questions?
+            .Select(q => new QuizQuestionModel
+            {
+                Question = q.Question,
+                Options = new[] { q.Option1, q.Option2, q.Option3 }.ToList(),
+                CorrectOptionIndex = q.CorrectOptionIndex
+            })
+            .ToList() ?? new List<QuizQuestionModel>()
+                } : null,
+
+                Reading = l.Reading != null ? new ReadingModuleModel
+                {
+                    Text = l.Reading.Text,
+                    Tasks = l.Reading.Tasks?
+            .Select(t => new FillInTheBlankTaskModel
             {
                 Sentence = t.Sentence,
                 CorrectWord = t.CorrectWord
-            }).ToList()
-        }
+            })
+            .ToList() ?? new List<FillInTheBlankTaskModel>()
+                } : null,
+
+                Speaking = new SpeakingModuleModel
+                {
+                    Phrases = l.Speaking?.Phrases
+            .Select(p => new SpeakingPhraseModel { Text = p.Text })
+            .ToList() ?? new List<SpeakingPhraseModel>()
+                }
             };
         }
 

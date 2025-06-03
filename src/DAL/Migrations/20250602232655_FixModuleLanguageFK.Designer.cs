@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250425193401_MapReadingModule")]
-    partial class MapReadingModule
+    [Migration("20250602232655_FixModuleLanguageFK")]
+    partial class FixModuleLanguageFK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,7 +180,7 @@ namespace DAL.Migrations
                     b.HasIndex("LessonId")
                         .IsUnique();
 
-                    b.ToTable("QuizModuleEntity");
+                    b.ToTable("QuizModules");
                 });
 
             modelBuilder.Entity("DAL.Entities.Modules.ReadingModuleEntity", b =>
@@ -214,6 +214,9 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("AverageAccuracy")
+                        .HasColumnType("float");
+
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
 
@@ -222,7 +225,7 @@ namespace DAL.Migrations
                     b.HasIndex("LessonId")
                         .IsUnique();
 
-                    b.ToTable("SpeakingModuleEntity");
+                    b.ToTable("SpeakingModules", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Modules.TheoryModuleEntity", b =>
@@ -275,8 +278,26 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AwardedPoints")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCompleted")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("PointsAwarded")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("QuizCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ReadingCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SpeakingCompleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -351,7 +372,31 @@ namespace DAL.Migrations
 
                     b.HasIndex("QuizModuleId");
 
-                    b.ToTable("QuizQuestionEntity");
+                    b.ToTable("QuizQuestions");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Tasks.SpeakingPhraseAttemptEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Accuracy")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("AttemptedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SpeakingPhraseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpeakingPhraseId");
+
+                    b.ToTable("SpeakingPhraseAttempts");
                 });
 
             modelBuilder.Entity("DAL.Entities.Tasks.SpeakingPhraseEntity", b =>
@@ -362,9 +407,8 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AudioUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("Accuracy")
+                        .HasColumnType("float");
 
                     b.Property<int>("SpeakingModuleId")
                         .HasColumnType("int");
@@ -377,7 +421,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("SpeakingModuleId");
 
-                    b.ToTable("SpeakingPhraseEntity");
+                    b.ToTable("SpeakingPhrases", (string)null);
                 });
 
             modelBuilder.Entity("DAL.Entities.Tasks.TaskLangEntity", b =>
@@ -619,6 +663,17 @@ namespace DAL.Migrations
                     b.Navigation("QuizModule");
                 });
 
+            modelBuilder.Entity("DAL.Entities.Tasks.SpeakingPhraseAttemptEntity", b =>
+                {
+                    b.HasOne("DAL.Entities.Tasks.SpeakingPhraseEntity", "Phrase")
+                        .WithMany("Attempts")
+                        .HasForeignKey("SpeakingPhraseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Phrase");
+                });
+
             modelBuilder.Entity("DAL.Entities.Tasks.SpeakingPhraseEntity", b =>
                 {
                     b.HasOne("DAL.Entities.Modules.SpeakingModuleEntity", "SpeakingModule")
@@ -704,6 +759,11 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Modules.VocabularyModuleEntity", b =>
                 {
                     b.Navigation("Words");
+                });
+
+            modelBuilder.Entity("DAL.Entities.Tasks.SpeakingPhraseEntity", b =>
+                {
+                    b.Navigation("Attempts");
                 });
 
             modelBuilder.Entity("DAL.Entities.Users.UserEntity", b =>

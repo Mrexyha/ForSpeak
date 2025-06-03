@@ -92,5 +92,14 @@ namespace ForSpeak.Controllers
             }
             return NotFound();
         }
+
+        [HttpDelete("{userId}/languages/{languageId}")]
+        public async Task<IActionResult> RemoveLanguageFromUser(int userId, int languageId)
+        {
+            var success = await _userService.RemoveLanguageFromUserAsync(userId, languageId);
+            if (!success)
+                return BadRequest("Не вдалося видалити мову або користувач/мова не знайдені.");
+            return NoContent(); 
+        }
     }
 }

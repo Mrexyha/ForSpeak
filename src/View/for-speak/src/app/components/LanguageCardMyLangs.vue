@@ -1,44 +1,36 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue'
+import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 
-interface Props {
+const props = defineProps<{
   languageId: number
   name: string
   description: string
   progress: number
   tasksCount: number
-}
-const props = defineProps<Props>()
+  isFinished: boolean
+}>()
 
 const router = useRouter()
-const isFinished = ref(false)
 
 const goToEducation = () => {
   router.push(`/education/${props.languageId}`)
-}
-const finishLearning = () => {
-  isFinished.value = true
-}
-const restoreLearning = () => {
-  isFinished.value = false
 }
 </script>
 
 <template>
   <div class="my-lang-container">
     <div class="content-container">
-      <h1 class="title">{{ props.name }}</h1>
-      <p class="highlight">{{ props.tasksCount }} тем у вільному доступі</p>
-      <p>{{ props.description }}</p>
-      <p>Прогрес: {{ Math.round(props.progress * 100) }}%</p>
+      <h1 class="title">{{ name }}</h1>
+      <p class="highlight">{{ tasksCount }} тем у вільному доступі</p>
+      <p>{{ description }}</p>
+      <p>Прогрес: {{ Math.round(progress * 100) }}%</p>
     </div>
+
     <div class="btns-container">
-      <template v-if="!isFinished">
-        <button class="continue-btn" @click="goToEducation">Продовжити</button>
-        <button class="finish-btn" @click="finishLearning">Завершити</button>
-      </template>
-      <button v-else class="restore-btn" @click="restoreLearning">Відновити навчання</button>
+      <button class="continue-btn" @click="goToEducation">
+        {{ isFinished ? 'Почати спочатку' : 'Перемкнутися' }}
+      </button>
     </div>
   </div>
 </template>
@@ -120,25 +112,5 @@ button {
 
 .continue-btn:hover {
   background: #005b8f;
-}
-
-.finish-btn {
-  background: #b60003;
-  color: #ffffff;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25) inset;
-}
-
-.finish-btn:hover {
-  background: #920002;
-}
-
-.restore-btn {
-  background: #28a745;
-  color: white;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25) inset;
-}
-
-.restore-btn:hover {
-  background: #218838;
 }
 </style>

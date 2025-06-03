@@ -16,11 +16,6 @@ export const getLanguageHistory = async (languageId: number): Promise<number[]> 
 }
 
 export const getTotalHistory = async (): Promise<number[]> => {
-  try {
-    const res = await api.get<number[]>(`/Progress/total-points/history`)
-    return res.data
-  } catch (error) {
-    console.error('Failed to fetch total history:', error)
-    throw error
-  }
+  const res = await api.get<number[]>(`/Progress/total-points/history`)
+  return res.data
 }

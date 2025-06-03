@@ -78,10 +78,13 @@ namespace BLL.Services.Languages
                                 Type = m.Type
                             })
                             .ToList(),
-                        Theory = new TheoryModuleModel { Text = le.Theory.Text },
+                        Theory = new TheoryModuleModel
+                        {
+                            Text = le.Theory?.Text ?? string.Empty
+                        },
                         Vocabulary = new VocabularyModuleModel
                             {
-                                Words = (le.Vocabulary.Words ?? Enumerable.Empty<WordEntity>())
+                            Words = (le.Vocabulary?.Words ?? Enumerable.Empty<WordEntity>())
                                     .Select(w => new WordModel
                                     {
                                         Id = w.Id,
@@ -93,7 +96,7 @@ namespace BLL.Services.Languages
                             },
                         Quiz = new QuizModuleModel
                             {
-                                Questions = (le.Quiz.Questions ?? Enumerable.Empty<QuizQuestionEntity>())
+                            Questions = (le.Quiz?.Questions ?? Enumerable.Empty<QuizQuestionEntity>())
                                     .Select(q => new QuizQuestionModel
                                     {
                                         Question = q.Question,
@@ -104,8 +107,8 @@ namespace BLL.Services.Languages
                             },
                         Reading = new ReadingModuleModel
                             {
-                                Text = le.Reading.Text,
-                                Tasks = (le.Reading.Tasks ?? Enumerable.Empty<FillInTheBlankTaskEntity>())
+                            Text = le.Reading?.Text ?? string.Empty,
+                            Tasks = (le.Reading?.Tasks ?? Enumerable.Empty<FillInTheBlankTaskEntity>())
                                     .Select(t => new FillInTheBlankTaskModel
                                     {
                                         Sentence = t.Sentence,
@@ -115,7 +118,7 @@ namespace BLL.Services.Languages
                             },
                         Speaking = new SpeakingModuleModel
                             {
-                                Phrases = (le.Speaking.Phrases ?? Enumerable.Empty<SpeakingPhraseEntity>())
+                            Phrases = (le.Speaking?.Phrases ?? Enumerable.Empty<SpeakingPhraseEntity>())
                                     .Select(p => new SpeakingPhraseModel
                                     {
                                         Text = p.Text                                    })

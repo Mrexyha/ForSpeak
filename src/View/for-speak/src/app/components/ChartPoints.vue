@@ -15,8 +15,8 @@ import {
   type ChartOptions,
   type Plugin,
 } from 'chart.js'
-import { fetchLanguages, type Language } from '../services/languageService'
 import { getLanguageHistory, getTotalHistory } from '../services/progressService'
+import { useLanguagesStore } from '../stores/languages'
 
 const lineShadow: Plugin<'line'> = {
   id: 'lineShadow',
@@ -133,16 +133,20 @@ function createGradient(ctx: CanvasRenderingContext2D, color: string) {
 
 onMounted(async () => {
   try {
-    const langs = await fetchLanguages()
+    const langsStore = useLanguagesStore()
+    await langsStore.fetchUserLanguages()
+    const langs = langsStore.list
+
     const labels = lastNMonths(6)
 
     const canvas = document.createElement('canvas')
-    canvas.width = 800
-    canvas.height = 400
     const ctx = canvas.getContext('2d')!
 
+    canvas.width = 800
+    canvas.height = 400
+
     const datasets = await Promise.all(
-      langs.map(async (lang: Language, idx: number) => {
+      langs.map(async (lang, idx) => {
         const data = await getLanguageHistory(lang.id)
         const baseColor = COLORS[idx % COLORS.length]
         return {

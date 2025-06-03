@@ -15,5 +15,6 @@ namespace BLL.Services.Users.User
         Task<RegisterModel> UpdateUserAsync(RegisterModel userModel);
         Task<bool> AddLanguageToUserAsync(int userId, int languageId);
         Task<bool> DeleteUserAsync(int userId);
+        Task<bool> RemoveLanguageFromUserAsync(int userId, int languageId);
     }
 }

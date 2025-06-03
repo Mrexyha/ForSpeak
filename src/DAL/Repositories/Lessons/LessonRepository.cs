@@ -38,6 +38,7 @@ namespace DAL.Repositories.Lessons
                 .Include(l => l.Vocabulary).ThenInclude(v => v.Words)
                 .Include(l => l.Quiz).ThenInclude(q => q.Questions)
                 .Include(l => l.Reading).ThenInclude(r => r.Tasks)
+                .Include(l => l.Speaking).ThenInclude(s => s.Phrases)
                 .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.Id == lessonId);
         }
 

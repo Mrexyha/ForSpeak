@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchLessons } from '../services/lessonsService'
-
+import { useLanguagesStore } from '../stores/languages'
 import PageLayout from '../layouts/PageLayout.vue'
 import LessonCard from '../components/LessonCard.vue'
+import { fetchLanguages, type Language } from '../services/languageService'
 
 interface Lesson {
   id: number
@@ -14,92 +15,143 @@ interface Lesson {
 
 const route = useRoute()
 const router = useRouter()
+const langsStore = useLanguagesStore()
+
+const languages = ref<Language[]>([])
+const isLoadingLanguages = ref(true)
+onMounted(async () => {
+  try {
+    languages.value = await fetchLanguages()
+  } catch {
+    console.error('Помилка при завантаженні мов')
+  } finally {
+    isLoadingLanguages.value = false
+  }
+})
+
+const languageId = computed<number>(() => {
+  const p = route.params.languageId
+  return p ? +(Array.isArray(p) ? p[0] : p) : 0
+})
+const currentLanguage = computed(() => languages.value.find((l) => l.id === languageId.value))
+
 const lessons = ref<Lesson[]>([])
 const searchQuery = ref('')
 const selectedDifficulty = ref('all')
 const selectedSort = ref('newest')
 
-const languageId = computed(() => {
-  const id = route.params.languageId
-  return Array.isArray(id) ? id[0] : id || 1
-})
-
 watch(
   languageId,
-  async (newLanguageId) => {
-    lessons.value = await fetchLessons(newLanguageId)
+  async (newId) => {
+    if (newId) {
+      lessons.value = await fetchLessons(newId)
+      langsStore.setSelectedLanguage(newId)
+    }
   },
   { immediate: true },
 )
 
-const filteredLessons = computed(() => {
-  if (!Array.isArray(lessons.value)) return []
+watch(
+  () => langsStore.selectedLanguageId,
+  (newId) => {
+    if (newId !== null && newId !== languageId.value) {
+      router.push(`/education/${newId}`)
+    }
+  },
+)
 
-  return lessons.value.filter((lesson) => {
-    const matchesSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-
-    const matchesDifficulty =
-      selectedDifficulty.value === 'all' ||
-      lesson.difficulty.toLowerCase() === selectedDifficulty.value
-
-    return matchesSearch && matchesDifficulty
-  })
+const filteredLessons = computed(
+  () =>
+    lessons.value.filter((lesson) => {
+      const mSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+      const mDiff =
+        selectedDifficulty.value === 'all' ||
+        lesson.difficulty.toLowerCase() === selectedDifficulty.value
+      return mSearch && mDiff
+    }),
   // .sort((a, b) => {
   //   return selectedSort.value === 'newest'
   //     ? new Date(b.date).getTime() - new Date(a.date).getTime()
   //     : new Date(a.date).getTime() - new Date(b.date).getTime()
   // })
-})
+)
 
 const goToLesson = (lessonId: number) => {
   router.push(`/education/${languageId.value}/${lessonId}`)
 }
+
+const isAllFinished = computed(
+  () => langsStore.list.length > 0 && langsStore.list.every((l) => l.isFinished),
+)
+
+const isCurrentLanguageFinished = computed(() => {
+  const lang = langsStore.list.find((l) => l.id === languageId.value)
+  return lang?.isFinished ?? false
+})
 </script>
 
 <template>
   <PageLayout>
-    <div class="education-page">
-      <div class="header-container">
-        <h1 class="lang-title">Англійська мова</h1>
+    <div v-if="isAllFinished" class="all-done">
+      <p>Ви завершили всі мови. Можете відновити їх у вкладці "Мої мови".</p>
+    </div>
 
-        <div class="search-filter-container">
-          <div class="search-container">
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Уведіть тему..."
-              v-model="searchQuery"
-            />
-            <span class="search-icon">🔍</span>
-          </div>
+    <div v-else-if="currentLanguage && isCurrentLanguageFinished">
+      <p>Навчання з {{ currentLanguage.name }} завершено.</p>
+      <p>Щоб повернутися до уроків, натисніть “Відновити” у вкладці "Мої мови".</p>
+    </div>
 
-          <div class="filter-container">
-            <select class="filter-select" v-model="selectedDifficulty">
-              <option value="all">Всі рівні</option>
-              <option value="elementary">Легкий</option>
-              <option value="intermediate">Середній</option>
-              <option value="advanced">Важкий</option>
-            </select>
+    <template v-else
+      ><div class="education-page">
+        <div class="header-container">
+          <template v-if="!isLoadingLanguages && currentLanguage">
+            <div class="lang-header">
+              <h1 class="lang-title">{{ currentLanguage.name }}</h1>
+            </div>
+          </template>
+          <template v-else>
+            <h1 class="lang-title">Завантаження мови…</h1>
+          </template>
 
-            <select class="filter-select" v-model="selectedSort">
-              <option value="newest">Найновіші</option>
-              <option value="oldest">Найстаріші</option>
-            </select>
+          <div class="search-filter-container">
+            <div class="search-container">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Уведіть тему..."
+                v-model="searchQuery"
+              />
+              <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="filter-container">
+              <select class="filter-select" v-model="selectedDifficulty">
+                <option value="all">Всі рівні</option>
+                <option value="elementary">Легкий</option>
+                <option value="intermediate">Середній</option>
+                <option value="advanced">Важкий</option>
+              </select>
+
+              <select class="filter-select" v-model="selectedSort">
+                <option value="newest">Найновіші</option>
+                <option value="oldest">Найстаріші</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div
-        class="cards-container"
-        v-for="lesson in filteredLessons"
-        :key="lesson.id"
-        @click="goToLesson(lesson.id)"
-      >
-        <LessonCard :id="lesson.id" :title="lesson.title" :difficulty="lesson.difficulty" />
-      </div>
+        <div
+          class="cards-container"
+          v-for="lesson in filteredLessons"
+          :key="lesson.id"
+          @click="goToLesson(lesson.id)"
+        >
+          <LessonCard :id="lesson.id" :title="lesson.title" :difficulty="lesson.difficulty" />
+        </div>
 
-      <p v-if="filteredLessons.length === 0" class="no-results">Нічого не знайдено 😕</p>
-    </div>
+        <p v-if="filteredLessons.length === 0" class="no-results">Нічого не знайдено 😕</p>
+      </div></template
+    >
   </PageLayout>
 </template>
 
@@ -197,5 +249,11 @@ const goToLesson = (lessonId: number) => {
   font-size: 18px;
   color: #6c757d;
   margin-top: 20px;
+}
+
+.lang-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 </style>

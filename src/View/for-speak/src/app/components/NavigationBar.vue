@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import { useLanguagesStore } from '../stores/languages'
 
 const route = useRoute()
 const isActive = (path: string) => route.path === path
 
-const languageId = computed(() => route.params.languageId || 1)
+const auth = useAuthStore()
+const userRole = computed(() => auth.currentUser?.role ?? '')
 
+const langsStore = useLanguagesStore()
+watch(
+  () => langsStore.ready,
+  (ready) => {
+    if (!ready) langsStore.fetchUserLanguages()
+  },
+  { immediate: true },
+)
+
+const languageId = computed<number>(() => {
+  return langsStore.selectedLanguageId ?? langsStore.defaultLanguageId
+})
 const isHomePage = route.path === '/'
 </script>
 
@@ -24,13 +39,7 @@ const isHomePage = route.path === '/'
       >
         Навчання
       </RouterLink>
-      <RouterLink
-        class="nav"
-        :class="{ active: isActive('/admin/modules/create') }"
-        :to="'/admin/modules/create'"
-      >
-        Створити модуль
-      </RouterLink>
+
       <div :class="['pic', { 'right-corner': !isHomePage }]">
         <RouterLink class="nav profile" to="/profile"></RouterLink>
       </div>
