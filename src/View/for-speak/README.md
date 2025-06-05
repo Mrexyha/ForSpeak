@@ -1,61 +1,90 @@
-# for-speak
+# For Speak
 
-This template should help get you started developing with Vue 3 in Vite.
+**For Speak** — це мовна навчальна платформа, створена на основі Vue 3, Pinia, Vue Router, Chart.js та підтримкою синтезу мовлення через Web Speech API.
 
-## Recommended IDE Setup
+## 📦 Проєкт
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Тип**: SPA (Single Page Application)
+- **Фреймворк**: Vue 3 + TypeScript
+- **Стан**: Ранній етап (v0.0.0)
+- **Модульність**: ES-модулі (`type: module`)
+- **Приватність**: Так (проєкт приватний)
 
-## Type Support for `.vue` Imports in TS
+---
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 🧩 Технології
 
-## Customize configuration
+| Технологія             | Призначення                         |
+| ---------------------- | ----------------------------------- |
+| Vue 3                  | Основний фреймворк                  |
+| Pinia                  | Управління станом                   |
+| Vue Router             | Клієнтська маршрутизація            |
+| Chart.js + vue-chartjs | Побудова графіків                   |
+| Markdown-it            | Рендеринг markdown контенту         |
+| Web Speech API         | Голосове озвучення                  |
+| TypeScript             | Типізація                           |
+| Cypress                | E2E та unit-тестування              |
+| Vite                   | Збірка та запуск локального сервера |
+| ESLint + Prettier      | Лінтинг та форматування коду        |
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## 🚀 Скрипти
 
-```sh
+| Команда                 | Опис                                                     |
+| ----------------------- | -------------------------------------------------------- |
+| `npm run dev`           | Запуск проєкту у режимі розробки                         |
+| `npm run build`         | Збірка проєкту з перевіркою типів                        |
+| `npm run preview`       | Перегляд зібраного додатку локально                      |
+| `npm run type-check`    | Перевірка типів за допомогою `vue-tsc`                   |
+| `npm run lint`          | Лінтинг коду з автоматичним виправленням                 |
+| `npm run format`        | Форматування файлів у папці `src/` за допомогою Prettier |
+| `npm run test:e2e`      | E2E тестування з Cypress (автоматичний режим)            |
+| `npm run test:e2e:dev`  | E2E тестування з Cypress у режимі розробки               |
+| `npm run test:unit`     | Компонентне тестування з Cypress                         |
+| `npm run test:unit:dev` | Відкриття Cypress UI для компонентного тестування        |
+
+---
+
+## 📁 Структура (очікувана)
+
+for-speak/
+├── public/
+├── src/
+│ ├── assets/
+│ ├── components/
+│ ├── composables/
+│ ├── router/
+│ ├── store/
+│ ├── views/
+│ ├── App.vue
+│ └── main.ts
+├── tests/
+├── vite.config.ts
+├── tsconfig.json
+├── package.json
+└── README.md
+
+---
+
+## 🧪 Тестування
+
+Проєкт підтримує компонентне та E2E тестування за допомогою Cypress:
+
+- Компоненти: `npm run test:unit:dev`
+- Кінець-кінцю: `npm run test:e2e` або `:dev`
+
+---
+
+## 🧰 Розробка
+
+Після клонування репозиторію:
+
+```bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
+Для збірки:
 npm run build
-```
-
-### Run Headed Component Tests with [Cypress Component Testing](https://on.cypress.io/component)
-
-```sh
-npm run test:unit:dev # or `npm run test:unit` for headless testing
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+npm run preview

@@ -1,35 +1,24 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { fetchLanguages } from '../services/languageService'
 import MainLayout from '../layouts/MainLayout.vue'
 import LanguageCardMain from '../components/LanguageCardMain.vue'
 
+interface Language {
+  id: number
+  name: string
+  description: string
+  countryImage: string
+  flagImage: string
+}
+
 const searchQuery = ref('')
-const languages = ref([
-  {
-    id: 1,
-    name: 'Англійська мова',
-    description:
-      "Англійська мова відкриває доступ до кращих освітніх, кар'єрних та культурних можливостей у світі, а також допомагає спілкуватися з людьми з різних країн. Це універсальний інструмент для подорожей, саморозвитку та успіху в багатьох сферах життя.",
-    image: new URL('../../assets/main/UK-main.jpg', import.meta.url).href,
-    flag: new URL('../../assets/main/UK-flag.jpg', import.meta.url).href,
-  },
-  {
-    id: 2,
-    name: 'Німецька мова',
-    description:
-      "Німецька мова відкриває доступ до якісної освіти, кар'єрних можливостей у Європі та культурної спадщини німецькомовних країн. Вона також корисна для подорожей і бізнесу, адже є однією з найпоширеніших мов у ЄС.",
-    image: new URL('../../assets/main/German-main.jpg', import.meta.url).href,
-    flag: new URL('../../assets/main/Germany-flag.jpg', import.meta.url).href,
-  },
-  {
-    id: 3,
-    name: 'Французька мова',
-    description:
-      'Французька мова є однією з основних мов міжнародної дипломатії, культури та мистецтва, відкриваючи доступ до освіти та роботи у франкомовних країнах. Вона також корисна для подорожей і розширює можливості у спілкуванні по всьому світу.',
-    image: new URL('../../assets/main/France-main.jpg', import.meta.url).href,
-    flag: new URL('../../assets/main/France-flag.jpg', import.meta.url).href,
-  },
-])
+
+const languages = ref<Language[]>([])
+
+onMounted(async () => {
+  languages.value = await fetchLanguages()
+})
 
 const filteredLanguages = computed(() => {
   return languages.value.filter((lang) =>
@@ -53,16 +42,15 @@ const filteredLanguages = computed(() => {
         />
         <div class="search-btn">🔍</div>
       </div>
-      <img class="main-img" src="../../assets/main/main.jpeg" alt="main page" />
+      <img class="main-img" src="../../../public/assets/main/main.jpeg" alt="main page" />
     </div>
     <div class="content">
-      <div
+      <LanguageCardMain
         v-for="(language, index) in filteredLanguages"
         :key="language.id"
-        :class="{ 'reverse-card': index % 2 !== 0 }"
-      >
-        <LanguageCardMain :language="language" />
-      </div>
+        :language="language"
+        :reverse="index % 2 !== 0"
+      />
     </div>
   </MainLayout>
 </template>
@@ -132,7 +120,8 @@ h1 {
 .content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
 }
 
 .reverse-card .lang-container {

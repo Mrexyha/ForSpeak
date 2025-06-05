@@ -12,6 +12,10 @@
     }
   ],
   "compilerOptions": {
-    "module": "NodeNext"
-  }
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "types": ["web-speech-api"]
+  },
+  "include": ["src/shims-speech-recognition.d.ts"]
 }

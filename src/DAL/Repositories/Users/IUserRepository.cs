@@ -9,10 +9,24 @@ namespace DAL.Repositories.Users
 {
     public interface IUserRepository
     {
-        User GetById(int id);
-        List<User> GetAll();
-        void Add(User user);
-        void Update(User user);
-        void Delete(int id);
+        //User GetById(int id);
+        //List<User> GetAll();
+        //void Add(User user);
+        //void Update(User user);
+        //void Delete(int id);
+
+        Task<List<UserEntity>> GetAllUsersAsync();
+        Task<UserEntity> GetUserByIdAsync(int userId);
+        Task<UserEntity> GetUserWithLanguagesAsync(int userId);
+        Task<UserEntity> UpdateUserAsync(UserEntity user);
+        Task<bool> DeleteUserAsync(int userId);
+
+        Task<UserEntity> GetUserByEmailAsync(string email);
+        Task<UserEntity> CreateUserAsync(UserEntity user);
+
+        Task<int> GetUserPointsForLanguageAsync(int userId, int languageId);
+        Task<int> GetUserTotalPointsAsync(int userId);
+
+        Task<bool> RemoveLanguageFromUserAsync(int userId, int languageId);
     }
 }

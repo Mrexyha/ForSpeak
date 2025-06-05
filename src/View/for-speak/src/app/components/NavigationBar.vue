@@ -1,9 +1,23 @@
 <script setup lang="ts">
+import { computed, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useLanguagesStore } from '../stores/languages'
 
 const route = useRoute()
 const isActive = (path: string) => route.path === path
 
+const langsStore = useLanguagesStore()
+watch(
+  () => langsStore.ready,
+  (ready) => {
+    if (!ready) langsStore.fetchUserLanguages()
+  },
+  { immediate: true },
+)
+
+const languageId = computed<number>(() => {
+  return langsStore.selectedLanguageId ?? langsStore.defaultLanguageId
+})
 const isHomePage = route.path === '/'
 </script>
 
@@ -14,9 +28,14 @@ const isHomePage = route.path === '/'
       <RouterLink class="nav" :class="{ active: isActive('/my-languages') }" to="/my-languages">
         Мої мови
       </RouterLink>
-      <RouterLink class="nav" :class="{ active: isActive('/education') }" to="/education">
+      <RouterLink
+        class="nav"
+        :class="{ active: isActive(`/education/${languageId}`) }"
+        :to="`/education/${languageId}`"
+      >
         Навчання
       </RouterLink>
+
       <div :class="['pic', { 'right-corner': !isHomePage }]">
         <RouterLink class="nav profile" to="/profile"></RouterLink>
       </div>
@@ -34,7 +53,7 @@ const isHomePage = route.path === '/'
 .pic {
   width: 36px;
   height: 36px;
-  background: url('../../assets/general/user-profile.svg') no-repeat center;
+  background: url('../../../public/assets/general/user-profile.svg') no-repeat center;
   background-size: cover;
   border-radius: 50%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);

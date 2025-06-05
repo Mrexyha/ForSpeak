@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BLL.Models.Tasks
+{
+    public class SpeakingPhraseModel : BaseModel
+    {
+        public string Text { get; set; }
+    }
+}

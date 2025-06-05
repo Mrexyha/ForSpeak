@@ -1,16 +1,28 @@
 <script setup lang="ts">
-defineProps({
-  title: String,
-  difficulty: String,
-})
+import { defineEmits, defineProps } from 'vue'
+
+const { id, title, difficulty, imageUrl } = defineProps<{
+  id: number
+  title: string
+  difficulty: string
+  imageUrl: string
+  onClick?: (id: number) => void
+}>()
+
+const emit = defineEmits<{
+  (e: 'click', id: number): void
+}>()
+
+const handleClick = () => {
+  emit('click', id)
+}
 </script>
 
 <template>
-  <div class="main-lesson-container">
-    <div class="points">+5</div>
+  <div class="main-lesson-container" @click="handleClick">
     <div class="card">
       <h1 class="main-lesson-title">{{ title }}</h1>
-      <img src="../../assets/lessons/family.png" alt="family photo" class="main-lesson-photo" />
+      <img :src="imageUrl" class="main-lesson-photo" alt="Lesson image" />
       <div class="difficulty">
         <div class="difficulty-color"></div>
         <div class="difficulty-label">{{ difficulty }}</div>

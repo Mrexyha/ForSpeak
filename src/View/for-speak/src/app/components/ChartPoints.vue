@@ -1,116 +1,142 @@
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { Line } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  LinearScale,
-  CategoryScale,
-  PointElement,
-  type TooltipItem,
-} from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement)
-
-interface ChartData {
-  labels: string[]
-  datasets: {
-    label: string
-    borderColor: string
-    backgroundColor: string
-    data: number[]
-    fill: boolean
-    tension: number
-    pointRadius: number
-    pointBackgroundColor: string
-  }[]
-}
-
-const englishScores = [620, 580, 540, 500, 300, 245]
-const frenchScores = [200, 220, 240, 180, 150, 120]
-
-const chartData = ref<ChartData | null>(null)
-
-const chartOptions = ref({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    tooltip: {
-      callbacks: {
-        label: (tooltipItem: TooltipItem<'line'>) => {
-          const datasetLabel = tooltipItem.dataset.label || ''
-          const value = tooltipItem.raw as number
-          return `${datasetLabel}: ${value} балів`
-        },
-      },
-    },
-    legend: {
-      labels: {
-        color: 'black',
-      },
-    },
-  },
-  scales: {
-    x: {
-      ticks: {
-        color: 'black',
-      },
-    },
-    y: {
-      ticks: {
-        color: 'black',
-      },
-    },
-  },
-})
-
-onMounted(() => {
-  chartData.value = {
-    labels: ['Вер 2023', 'Жов 2023', 'Лис 2023', 'Гру 2023', 'Січ 2024', 'Лют 2024'],
-    datasets: [
-      {
-        label: 'Англійська мова',
-        borderColor: 'red',
-        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-        data: englishScores,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 5,
-        pointBackgroundColor: 'red',
-      },
-      {
-        label: 'Французька мова',
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-        data: frenchScores,
-        fill: true,
-        tension: 0.3,
-        pointRadius: 5,
-        pointBackgroundColor: 'blue',
-      },
-    ],
-  }
-})
-</script>
-
 <template>
   <div class="chart-container">
-    <Line v-if="chartData" :data="chartData" :options="chartOptions" />
+    <div class="chart-block">
+      <h3 class="chart-block__title">Відсотки за поточну мову</h3>
+      <div class="progress-circle-wrapper">
+        <svg viewBox="0 0 36 36" class="progress-circle">
+          <path
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="#eee"
+            stroke-width="2"
+          />
+          <path
+            class="progress"
+            :stroke-dasharray="`${languagePercent}, 100`"
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="#007bff"
+            stroke-width="2"
+          />
+          <text x="18" y="20.35" class="percentage">{{ languagePercent }}%</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="chart-block">
+      <h3 class="chart-block__title">Загальний відсоток навчання</h3>
+      <div class="progress-circle-wrapper">
+        <svg viewBox="0 0 36 36" class="progress-circle">
+          <path
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="#eee"
+            stroke-width="2"
+          />
+          <path
+            class="progress"
+            :stroke-dasharray="`${totalPercent}, 100`"
+            d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+            fill="none"
+            stroke="#28a745"
+            stroke-width="2"
+          />
+          <text x="18" y="20.35" class="percentage">{{ totalPercent }}%</text>
+        </svg>
+      </div>
+    </div>
   </div>
 </template>
 
+<script setup lang="ts">
+import { computed, defineProps } from 'vue'
+
+const props = defineProps<{
+  languagePoints: number
+  totalPoints: number
+}>()
+
+const maxLanguagePoints: number = 100
+const maxTotalPoints: number = 500
+
+const languagePercent = computed(() => {
+  if (maxLanguagePoints === 0) return 0
+  const pct = Math.round((props.languagePoints / maxLanguagePoints) * 100)
+  return pct > 100 ? 100 : pct
+})
+
+const totalPercent = computed(() => {
+  if (maxTotalPoints === 0) return 0
+  const pct = Math.round((props.totalPoints / maxTotalPoints) * 100)
+  return pct > 100 ? 100 : pct
+})
+</script>
+
 <style scoped>
 .chart-container {
-  width: 100%;
-  max-width: 700px;
-  height: 400px;
-  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.chart-block {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
   padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 180px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.chart-block:hover {
+  transform: translateY(-4px);
+}
+
+.chart-block__title {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #333;
+  font-weight: 500;
+}
+
+.progress-circle-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 10px;
+}
+
+.progress-circle {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+path.progress {
+  transition: stroke-dasharray 0.6s ease;
+  stroke-linecap: round;
+}
+
+.percentage {
+  fill: #333;
+  font-size: 0.6em;
+  text-anchor: middle;
+  transform: rotate(90deg);
+}
+
+.points-label {
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
 }
 </style>
