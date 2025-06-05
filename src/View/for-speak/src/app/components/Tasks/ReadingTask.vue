@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchReading, type ReadingModule } from '@/app/services/readingService'
+import axios from 'axios'
+import { useAuthStore } from '@/app/stores/auth'
 
 const route = useRoute()
+const auth = useAuthStore()
+
+auth.initFromLocalStorage()
+
+const userId = computed(() => auth.currentUser?.id ?? null)
+
 const languageId = Number(route.params.languageId)
 const lessonId = Number(route.params.id)
 
@@ -16,10 +24,12 @@ const answer = ref('')
 const feedback = ref<string | null>(null)
 const score = ref(0)
 
+const testFinished = ref(false)
+
 async function load() {
   try {
-    const attemptCount =
-      Number(localStorage.getItem(`readingAttempts-${languageId}-${lessonId}`)) || 0
+    const key = `readingAttempts-${languageId}-${lessonId}`
+    const attemptCount = Number(localStorage.getItem(key)) || 0
     if (attemptCount >= 3) {
       error.value = 'Ви вже вичерпали 3 спроби.'
       return
@@ -28,7 +38,7 @@ async function load() {
     moduleData.value = await fetchReading(languageId, lessonId)
   } catch (e) {
     console.error(e)
-    error.value = 'Failed to load text'
+    error.value = 'Не вдалося завантажити текст для читання.'
   } finally {
     loading.value = false
   }
@@ -45,11 +55,28 @@ function check() {
   }
 }
 
-function next() {
+async function nextOrFinish() {
   answer.value = ''
   feedback.value = null
+
   if (moduleData.value && currentIndex.value + 1 < moduleData.value.tasks.length) {
     currentIndex.value++
+  } else {
+    testFinished.value = true
+
+    const key = `readingAttempts-${languageId}-${lessonId}`
+    const prevCount = Number(localStorage.getItem(key)) || 0
+    localStorage.setItem(key, String(prevCount + 1))
+
+    try {
+      await axios.post(
+        `https://localhost:7058/api/languages/${languageId}/lessons/${lessonId}/reading/results/${userId.value}`,
+        { comprehensionScore: score.value },
+      )
+      console.log('Результат читання успішно збережено')
+    } catch (err) {
+      console.error('Не вдалося зберегти результат читання на бекенд:', err)
+    }
   }
 }
 
@@ -66,7 +93,7 @@ onMounted(load)
     <div v-else>
       <p class="text">{{ moduleData.text }}</p>
 
-      <div class="task-block" v-if="currentIndex < moduleData.tasks.length">
+      <div v-if="!testFinished && currentIndex < moduleData.tasks.length" class="task-block">
         <p class="sentence">
           {{ moduleData.tasks[currentIndex].sentence.replace('____', '_____') }}
         </p>
@@ -84,20 +111,17 @@ onMounted(load)
           {{ feedback }}
         </p>
 
-        <button
-          v-if="feedback && currentIndex + 1 < moduleData.tasks.length"
-          class="btn-next"
-          @click="next"
-        >
-          Далі
+        <button v-if="feedback" class="btn-next" @click="nextOrFinish">
+          {{ currentIndex + 1 < moduleData.tasks.length ? 'Далі' : 'Завершити тест' }}
         </button>
+      </div>
 
-        <div v-else-if="feedback && currentIndex + 1 === moduleData.tasks.length" class="summary">
-          <p>Тестування завершено!</p>
-          <p>
-            Ваш результат: <strong>{{ score }} / {{ moduleData.tasks.length }}</strong>
-          </p>
-        </div>
+      <div v-else-if="testFinished" class="summary">
+        <p>Тестування завершено!</p>
+        <p>
+          Ваш результат: <strong>{{ score }} / {{ moduleData.tasks.length }}</strong>
+        </p>
+        <p>Результат збережено в базі</p>
       </div>
     </div>
   </div>

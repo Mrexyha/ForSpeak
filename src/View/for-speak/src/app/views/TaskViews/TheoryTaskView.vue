@@ -4,7 +4,6 @@ import axios from 'axios'
 import { useRoute } from 'vue-router'
 
 import PageLayout from '../../layouts/PageLayout.vue'
-import GoToLessonButton from '@/app/components/GoToLessonButton.vue'
 import TheoryTask from '@/app/components/Tasks/TheoryTask.vue'
 
 interface TheoryModule {
@@ -43,7 +42,6 @@ onMounted(fetchLessonTheory)
 
 <template>
   <PageLayout>
-    <GoToLessonButton />
     <h1>{{ lesson.title }}</h1>
     <TheoryTask :lesson="lesson" />
   </PageLayout>

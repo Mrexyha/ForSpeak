@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import {
-  fetchSpeaking,
-  saveSpeakingResult,
-  type SpeakingPhrase,
-} from '../../services/speakingService'
+import { fetchSpeaking, type SpeakingPhrase } from '@/app/services/speakingService'
+import axios from 'axios'
+import { useAuthStore } from '@/app/stores/auth'
 
 const route = useRoute()
+const auth = useAuthStore()
+auth.initFromLocalStorage()
+
+const userId = computed(() => auth.currentUser?.id ?? null)
 
 const languageId = Number(route.params.languageId)
 const lessonId = Number(route.params.lessonId || route.params.id)
@@ -22,14 +24,24 @@ const spokenPhrase = ref('')
 const similarity = ref<number | null>(null)
 
 const attempts = ref<number[]>([])
-
 const averageResult = ref<number | null>(null)
 
 let recognition: SpeechRecognition | null = null
 const synth = window.speechSynthesis
 
 async function loadPhrases() {
+  if (!userId.value) {
+    console.warn('Неавторизований користувач не може проходити говоріння')
+    return
+  }
+
   try {
+    const key = `speakingAttempts-${languageId}-${lessonId}`
+    const attemptCount = Number(localStorage.getItem(key)) || 0
+    if (attemptCount >= 3) {
+      return
+    }
+
     const module = await fetchSpeaking(languageId, lessonId)
     phrases.value = module.phrases
     if (phrases.value.length > 0) {
@@ -124,7 +136,7 @@ const selectPhrase = (index: number) => {
   averageResult.value = null
 }
 
-const nextPhrase = async () => {
+async function nextPhrase() {
   if (similarity.value !== null) {
     attempts.value.push(similarity.value)
   }
@@ -139,10 +151,23 @@ const nextPhrase = async () => {
     const avg = attempts.value.length > 0 ? sum / attempts.value.length : 0
     averageResult.value = Math.round(avg)
 
+    const key = `speakingAttempts-${languageId}-${lessonId}`
+    const prevCount = Number(localStorage.getItem(key)) || 0
+    localStorage.setItem(key, String(prevCount + 1))
+
+    if (!userId.value) {
+      console.error('Потрібно увійти, щоб зберегти результат говоріння.')
+      return
+    }
+
     try {
-      await saveSpeakingResult(languageId, lessonId, { averageAccuracy: avg })
+      await axios.post(
+        `https://localhost:7058/api/languages/${languageId}/lessons/${lessonId}/speaking/results/${userId.value}`,
+        { averageAccuracy: avg },
+      )
+      console.log('Результат говоріння успішно збережено')
     } catch (e) {
-      console.error('Не вдалося надіслати результат на бекенд:', e)
+      console.error('Не вдалося зберегти результат говоріння:', e)
     }
   }
 }

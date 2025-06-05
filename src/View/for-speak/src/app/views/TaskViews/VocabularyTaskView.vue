@@ -2,7 +2,6 @@
 import PageLayout from '../../layouts/PageLayout.vue'
 import VocabularyTask from '@/app/components/Tasks/VocabularyTask.vue'
 import { defineProps } from 'vue'
-import GoToLessonButton from '@/app/components/GoToLessonButton.vue'
 
 interface Lesson {
   id: number
@@ -16,7 +15,6 @@ defineProps<{ lesson: Lesson }>()
 
 <template>
   <PageLayout>
-    <GoToLessonButton />
     <VocabularyTask :lesson="lesson" />
   </PageLayout>
 </template>

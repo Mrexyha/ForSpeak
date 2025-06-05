@@ -24,7 +24,6 @@ const goToEducation = () => {
       <h1 class="title">{{ name }}</h1>
       <p class="highlight">{{ tasksCount }} тем у вільному доступі</p>
       <p>{{ description }}</p>
-      <p>Прогрес: {{ Math.round(progress * 100) }}%</p>
     </div>
 
     <div class="btns-container">

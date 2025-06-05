@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import PageLayout from '../../layouts/PageLayout.vue'
 import QuizTask from '@/app/components/Tasks/QuizTask.vue'
-import GoToLessonButton from '@/app/components/GoToLessonButton.vue'
 import { defineProps } from 'vue'
 
 interface Lesson {
@@ -16,7 +15,6 @@ defineProps<{ lesson: Lesson }>()
 
 <template>
   <PageLayout>
-    <GoToLessonButton />
     <QuizTask :lesson="lesson" />
   </PageLayout>
 </template>

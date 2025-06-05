@@ -11,6 +11,8 @@ interface Lesson {
   id: number
   title: string
   difficulty: string
+  date: string
+  imageUrl: string
 }
 
 const route = useRoute()
@@ -60,21 +62,22 @@ watch(
   },
 )
 
-const filteredLessons = computed(
-  () =>
-    lessons.value.filter((lesson) => {
-      const mSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-      const mDiff =
-        selectedDifficulty.value === 'all' ||
-        lesson.difficulty.toLowerCase() === selectedDifficulty.value
-      return mSearch && mDiff
-    }),
-  // .sort((a, b) => {
-  //   return selectedSort.value === 'newest'
-  //     ? new Date(b.date).getTime() - new Date(a.date).getTime()
-  //     : new Date(a.date).getTime() - new Date(b.date).getTime()
-  // })
-)
+const filteredLessons = computed(() => {
+  const filtered = lessons.value.filter((lesson) => {
+    const mSearch = lesson.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const mDiff =
+      selectedDifficulty.value === 'all' ||
+      lesson.difficulty.toLowerCase() === selectedDifficulty.value
+    return mSearch && mDiff
+  })
+
+  return filtered.sort((a, b) => {
+    if (selectedSort.value === 'newest') {
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    }
+    return new Date(a.date).getTime() - new Date(b.date).getTime()
+  })
+})
 
 const goToLesson = (lessonId: number) => {
   router.push(`/education/${languageId.value}/${lessonId}`)
@@ -146,7 +149,12 @@ const isCurrentLanguageFinished = computed(() => {
           :key="lesson.id"
           @click="goToLesson(lesson.id)"
         >
-          <LessonCard :id="lesson.id" :title="lesson.title" :difficulty="lesson.difficulty" />
+          <LessonCard
+            :id="lesson.id"
+            :title="lesson.title"
+            :difficulty="lesson.difficulty"
+            :imageUrl="lesson.imageUrl"
+          />
         </div>
 
         <p v-if="filteredLessons.length === 0" class="no-results">Нічого не знайдено 😕</p>

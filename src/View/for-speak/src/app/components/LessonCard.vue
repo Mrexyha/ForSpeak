@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { defineEmits, defineProps } from 'vue'
 
-const { id, title, difficulty } = defineProps<{
+const { id, title, difficulty, imageUrl } = defineProps<{
   id: number
   title: string
   difficulty: string
+  imageUrl: string
   onClick?: (id: number) => void
 }>()
 
@@ -19,14 +20,9 @@ const handleClick = () => {
 
 <template>
   <div class="main-lesson-container" @click="handleClick">
-    <div class="points">+5</div>
     <div class="card">
       <h1 class="main-lesson-title">{{ title }}</h1>
-      <img
-        src="../../../public/assets/lessons/family.png"
-        alt="family photo"
-        class="main-lesson-photo"
-      />
+      <img :src="imageUrl" class="main-lesson-photo" alt="Lesson image" />
       <div class="difficulty">
         <div class="difficulty-color"></div>
         <div class="difficulty-label">{{ difficulty }}</div>

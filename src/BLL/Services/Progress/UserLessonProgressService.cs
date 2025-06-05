@@ -143,5 +143,248 @@ ORDER BY lm.M;
             }
             return result;
         }
+
+        public async Task<int> GetCompletedModulesCountAsync(int userId, int languageId)
+        {
+            var lessons = await _context.Lessons
+                .Where(l => l.LanguageId == languageId)
+                .Select(l => new { l.Id, Level = l.Level })
+                .ToListAsync();
+
+            if (!lessons.Any())
+                return 0;
+
+            int totalCompletedModules = 0;
+
+            foreach (var lesson in lessons)
+            {
+                int completedInThisLesson = 0;
+
+                var quizEntry = await _context.QuizResults
+                    .Where(r => r.UserId == userId && r.LessonId == lesson.Id)
+                    .Select(r => r.Score)
+                    .FirstOrDefaultAsync();
+                if (quizEntry > 0) completedInThisLesson++;
+
+                var readingEntry = await _context.ReadingResults
+                    .Where(r => r.UserId == userId && r.LessonId == lesson.Id)
+                    .Select(r => r.ComprehensionScore)
+                    .FirstOrDefaultAsync();
+                if (readingEntry > 0) completedInThisLesson++;
+
+                var speakingEntry = await _context.SpeakingResults
+                    .Where(r => r.UserId == userId && r.LessonId == lesson.Id)
+                    .Select(r => r.AverageAccuracy)
+                    .FirstOrDefaultAsync();
+                if (speakingEntry > 0) completedInThisLesson++;
+
+                totalCompletedModules += completedInThisLesson;
+            }
+
+            return totalCompletedModules;
+        }
+
+        public async Task<int> GetPointsForLanguageAsync(int userId, int languageId)
+        {
+            var sum = await _context.UsersToLessons
+                .Where(utl => utl.UserId == userId
+                           && utl.PointsAwarded
+                           && _context.Lessons.Any(l => l.Id == utl.LessonId && l.LanguageId == languageId))
+                .SumAsync(utl => utl.AwardedPoints);
+            return sum;
+        }
+
+        public async Task<int> GetTotalPointsAsync(int userId)
+        {
+            var userLessons = await _context.Lessons
+                .Select(l => new { l.Id, l.LanguageId, l.Level })
+                .ToListAsync();
+
+            var byLanguage = userLessons.GroupBy(l => l.LanguageId);
+
+            int total = 0;
+
+            foreach (var group in byLanguage)
+            {
+                int languageId = group.Key;
+                foreach (var lesson in group)
+                {
+                    bool hasAny =
+                        await _context.QuizResults.AnyAsync(r => r.UserId == userId && r.LessonId == lesson.Id && r.Score > 0)
+                        || await _context.ReadingResults.AnyAsync(r => r.UserId == userId && r.LessonId == lesson.Id && r.ComprehensionScore > 0)
+                        || await _context.SpeakingResults.AnyAsync(r => r.UserId == userId && r.LessonId == lesson.Id && r.AverageAccuracy > 0);
+
+                    if (hasAny) total += (int)lesson.Level;
+                }
+            }
+
+            return total;
+        }
+
+        public async Task<List<int>> GetMonthlyPointsForLanguageAsync(int userId, int languageId)
+        {
+            var lessons = await _context.Lessons
+                .Where(l => l.LanguageId == languageId)
+                .ToListAsync();
+
+            var now = DateTime.UtcNow;
+            var months = Enumerable.Range(0, 6)
+                .Select(offset => new
+                {
+                    Year = now.AddMonths(-offset).Year,
+                    Month = now.AddMonths(-offset).Month
+                })
+                .Reverse() 
+                .ToList();
+
+            var result = new List<int>(new int[6]);
+
+            for (int i = 0; i < months.Count; i++)
+            {
+                int year = months[i].Year;
+                int month = months[i].Month;
+
+                int pointsInMonth = 0;
+
+                foreach (var lesson in lessons)
+                {
+                    var quizEntry = await _context.QuizResults
+                        .Where(r => r.UserId == userId && r.LessonId == lesson.Id
+                            && r.CreatedAt.Year == year && r.CreatedAt.Month == month
+                            && r.Score > 0)
+                        .AnyAsync();
+                    var readingEntry = await _context.ReadingResults
+                        .Where(r => r.UserId == userId && r.LessonId == lesson.Id
+                            && r.CreatedAt.Year == year && r.CreatedAt.Month == month
+                            && r.ComprehensionScore > 0)
+                        .AnyAsync();
+                    var speakingEntry = await _context.SpeakingResults
+                        .Where(r => r.UserId == userId && r.LessonId == lesson.Id
+                            && r.CreatedAt.Year == year && r.CreatedAt.Month == month
+                            && r.AverageAccuracy > 0)
+                        .AnyAsync();
+
+                    if (quizEntry || readingEntry || speakingEntry)
+                    {
+                        pointsInMonth += (int)lesson.Level;
+                    }
+                }
+
+                result[i] = pointsInMonth;
+            }
+
+            return result;
+        }
+
+       
+        public async Task<List<int>> GetMonthlyTotalPointsAsync(int userId)
+        {
+            var allLessons = await _context.Lessons.ToListAsync();
+
+            var now = DateTime.UtcNow;
+            var months = Enumerable.Range(0, 6)
+                .Select(offset => new
+                {
+                    Year = now.AddMonths(-offset).Year,
+                    Month = now.AddMonths(-offset).Month
+                })
+                .Reverse()
+                .ToList();
+
+            var result = new List<int>(new int[6]);
+
+            for (int i = 0; i < months.Count; i++)
+            {
+                int year = months[i].Year;
+                int month = months[i].Month;
+
+                int pointsInMonth = 0;
+
+                foreach (var lesson in allLessons)
+                {
+                    var quizEntry = await _context.QuizResults
+                        .Where(r => r.UserId == userId && r.LessonId == lesson.Id
+                            && r.CreatedAt.Year == year && r.CreatedAt.Month == month
+                            && r.Score > 0)
+                        .AnyAsync();
+                    var readingEntry = await _context.ReadingResults
+                        .Where(r => r.UserId == userId && r.LessonId == lesson.Id
+                            && r.CreatedAt.Year == year && r.CreatedAt.Month == month
+                            && r.ComprehensionScore > 0)
+                        .AnyAsync();
+                    var speakingEntry = await _context.SpeakingResults
+                        .Where(r => r.UserId == userId && r.LessonId == lesson.Id
+                            && r.CreatedAt.Year == year && r.CreatedAt.Month == month
+                            && r.AverageAccuracy > 0)
+                        .AnyAsync();
+
+                    if (quizEntry || readingEntry || speakingEntry)
+                    {
+                        pointsInMonth += (int)lesson.Level;
+                    }
+                }
+
+                result[i] = pointsInMonth;
+            }
+
+            return result;
+        }
+
+        public async Task<decimal> GetLessonCompletionPercentAsync(int userId, int lessonId)
+        {
+            int cnt = 0;
+
+            if (await _context.QuizResults.AnyAsync(r => r.UserId == userId && r.LessonId == lessonId && r.Score > 0))
+                cnt++;
+            if (await _context.ReadingResults.AnyAsync(r => r.UserId == userId && r.LessonId == lessonId && r.ComprehensionScore > 0))
+                cnt++;
+            if (await _context.SpeakingResults.AnyAsync(r => r.UserId == userId && r.LessonId == lessonId && r.AverageAccuracy > 0))
+                cnt++;
+
+            return Math.Round((decimal)cnt / 3 * 100, 2);
+        }
+
+        public async Task<decimal> GetCompletedLessonsPercentAsync(int userId, int languageId)
+        {
+            var totalLessons = await _context.Lessons
+                .CountAsync(l => l.LanguageId == languageId);
+
+            if (totalLessons == 0)
+                return 0m;
+
+            var completedLessons = await _context.UsersToLessons
+                .Where(utl => utl.UserId == userId
+                           && utl.QuizCompleted
+                           && utl.ReadingCompleted
+                           && utl.SpeakingCompleted
+                           && _context.Lessons.Any(l => l.Id == utl.LessonId && l.LanguageId == languageId))
+                .Select(utl => utl.LessonId)
+                .Distinct()
+                .CountAsync();
+
+            var percent = Math.Round((decimal)completedLessons / totalLessons * 100m, 2);
+            return percent;
+        }
+
+        public async Task<decimal> GetOverallLessonsPercentAsync(int userId)
+        {
+            var totalLessons = await _context.Lessons.CountAsync();
+
+            if (totalLessons == 0)
+                return 0m;
+
+            var completedLessons = await _context.UsersToLessons
+                .Where(utl => utl.UserId == userId
+                           && utl.QuizCompleted
+                           && utl.ReadingCompleted
+                           && utl.SpeakingCompleted
+                           && _context.Lessons.Any(l => l.Id == utl.LessonId))
+                .Select(utl => utl.LessonId)
+                .Distinct()
+                .CountAsync();
+
+            var percent = Math.Round((decimal)completedLessons / totalLessons * 100m, 2);
+            return percent;
+        }
     }
 }

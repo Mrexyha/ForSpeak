@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchQuiz, type QuizQuestion } from '@/app/services/quizService'
+import axios from 'axios'
+import { useAuthStore } from '@/app/stores/auth'
 
 const route = useRoute()
+const auth = useAuthStore()
+
+auth.initFromLocalStorage()
+
+const userId = computed(() => auth.currentUser?.id ?? null)
+
 const languageId = Number(route.params.languageId)
 const lessonId = Number(route.params.id)
 
@@ -16,8 +24,14 @@ const finished = ref(false)
 const error = ref<string | null>(null)
 
 async function load() {
+  if (!userId.value) {
+    error.value = 'Будь ласка, увійдіть у систему'
+    return
+  }
+
   try {
-    const attemptCount = Number(localStorage.getItem(`quizAttempts-${languageId}-${lessonId}`)) || 0
+    const key = `quizAttempts-${languageId}-${lessonId}`
+    const attemptCount = Number(localStorage.getItem(key)) || 0
     if (attemptCount >= 3) {
       error.value = 'Ви вже вичерпали 3 спроби.'
       return
@@ -27,11 +41,11 @@ async function load() {
     questions.value = quiz.questions
   } catch (e) {
     console.error(e)
-    error.value = 'Failed to load quiz'
+    error.value = 'Не вдалося завантажити тестування.'
   }
 }
 
-function submitAnswer() {
+async function submitAnswer() {
   if (selected.value === null) return
 
   lastSelected.value = selected.value
@@ -46,6 +60,26 @@ function submitAnswer() {
     current.value++
   } else {
     finished.value = true
+
+    const key = `quizAttempts-${languageId}-${lessonId}`
+    const prevCount = Number(localStorage.getItem(key)) || 0
+    localStorage.setItem(key, String(prevCount + 1))
+
+    if (!userId.value) {
+      error.value = 'Потрібно увійти, щоб зберегти результат.'
+      return
+    }
+
+    try {
+      await axios.post(
+        `https://localhost:7058/api/languages/${languageId}/lessons/${lessonId}/quiz/results/${userId.value}`,
+        { score: score.value },
+      )
+      console.log('Результат тестування успішно збережено')
+    } catch (err) {
+      console.error('Не вдалося зберегти результат тестування на бекенд:', err)
+      error.value = 'Помилка при збереженні результату'
+    }
   }
 }
 
@@ -55,6 +89,7 @@ onMounted(load)
 <template>
   <div class="task">
     <h2>📝 Тестування</h2>
+
     <div v-if="error" class="error">{{ error }}</div>
     <div v-else-if="questions.length === 0">Завантаження...</div>
     <div v-else>
@@ -97,6 +132,7 @@ onMounted(load)
           Тестування завершено! Ваш результат:
           <strong>{{ score }}</strong> / {{ questions.length }}
         </p>
+        <p>Результат збережено в базі</p>
       </div>
     </div>
   </div>

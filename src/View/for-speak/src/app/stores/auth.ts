@@ -18,9 +18,11 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     setUser(user: User) {
       this.currentUser = user
+      localStorage.setItem('user', JSON.stringify(user))
     },
     clearUser() {
       this.currentUser = null
+      localStorage.removeItem('user')
     },
     initFromLocalStorage() {
       const raw = localStorage.getItem('user')
